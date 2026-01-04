@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Built an Adaptive RAG Chatbot - Tonderai Saidi</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1 class="logo">Tonderai Saidi</h1>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../blog.html">Blog</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-content">
+            <h1 class="post-title">I Built an Adaptive RAG Chatbot and It Works on My Machine</h1>
+            <p class="post-meta">January 4, 2026</p>
+
+            <p><em>A journey through retrieval-augmented generation, multilingual AI, and the art of context engineering</em></p>
+
+            <h3>Introduction</h3>
+            <p>What started as a simple terminal chat application talking to the Gemini API evolved into something far more interesting: an adaptive RAG (Retrieval-Augmented Generation) system that can understand questions in Shona, retrieve relevant information from an English knowledge base of 130,000+ Wikipedia passages, and respond back in the user's language.</p>
+
+            <p>Along the way, I learned that building AI applications is less about the AI itself and more about <strong>context engineering</strong>—the art of getting the right information to the model at the right time, in the right format.</p>
+
+            <p>This is the story of that evolution, the concepts I learned, and why "it works on my machine" is actually a feature, not a bug.</p>
+
+            <h3>The Starting Point: A 50-Line Chat Script</h3>
+            <p>The project began with <code>app.py</code>—a humble 50-line Python script that did exactly one thing: chat in Shona using Google's Gemini API.</p>
+
+<pre><code># The entire "architecture" was this:
+history = [
+    {"role": "system", "content": "Iwe uri nyanzvi yechiShona..."}
+]
+
+while True:
+    user_input = input("Iwe: ")
+    history.append({"role": "user", "content": user_input})
+    response = client.chat.completions.create(model="gemini-2.5-flash-lite", messages=history)
+    print(f"Agent: {response.choices[0].message.content}")</code></pre>
+
+            <p>It worked. But it had a problem: <strong>the model only knew what it was trained on</strong>. Ask it about specific topics, and you'd get generic responses—or worse, confident hallucinations.</p>
+
+            <p>This is where RAG enters the picture.</p>
+
+            <h3>Key Concept #1: What is RAG?</h3>
+            <p>RAG stands for <strong>Retrieval-Augmented Generation</strong>. Instead of relying solely on what the LLM "knows," you give it relevant information at query time.</p>
+
+            <p>Think of it like this:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Without RAG</th>
+                        <th>With RAG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"Hey LLM, answer this question from your training data"</td>
+                        <td>"Hey LLM, here's some relevant context I found. Now answer the question using this."</td>
+                    </tr>
+                    <tr>
+                        <td>Model guesses or hallucinates</td>
+                        <td>Model synthesizes from provided facts</td>
+                    </tr>
+                    <tr>
+                        <td>Generic responses</td>
+                        <td>Grounded, specific responses</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>The key insight: <strong>LLMs are excellent at synthesis and reasoning, but terrible at recall</strong>. RAG plays to their strengths.</p>
+
+            <h3>The RAG Pipeline: How It Actually Works</h3>
+            <p>Here's the pipeline I built, broken down into digestible pieces:</p>
+
+<pre>┌─────────────────────────────────────────────────────────────────────┐
+│                        RAG PIPELINE FLOW                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐           │
+│  │   User      │     │  Embedding  │     │   Vector    │           │
+│  │   Query     │────▶│   Model     │────▶│   Search    │           │
+│  │             │     │             │     │   (FAISS)   │           │
+│  └─────────────┘     └─────────────┘     └──────┬──────┘           │
+│                                                  │                  │
+│                                                  ▼                  │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐           │
+│  │  Response   │◀────│     LLM     │◀────│  Retrieved  │           │
+│  │   (Final)   │     │  Generation │     │  Contexts   │           │
+│  └─────────────┘     └─────────────┘     └─────────────┘           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘</pre>
+
+            <h4>Step 1: Ingestion (One-Time Setup)</h4>
+            <p>Before you can retrieve anything, you need to build your knowledge base:</p>
+
+            <ul>
+                <li><strong>Load documents</strong> — I used SQuAD 2.0, which has 130K+ Wikipedia Q&A pairs</li>
+                <li><strong>Generate embeddings</strong> — Convert each text chunk into a 384-dimensional vector</li>
+                <li><strong>Build an index</strong> — Store vectors in FAISS for fast similarity search</li>
+            </ul>
+
+<pre><code># The ingestion pipeline
+examples = loader.load_squad_examples()  # 130K examples
+embeddings = embedding_service.embed_texts([ex['context'] for ex in examples])
+vector_store.add_embeddings(embeddings, examples)
+vector_store.save('faiss_index.index', 'faiss_metadata.json')</code></pre>
+
+            <h4>Step 2: Retrieval (Per Query)</h4>
+            <p>When a user asks a question:</p>
+
+            <ul>
+                <li><strong>Embed the query</strong> — Same model, same vector space</li>
+                <li><strong>Search for similar vectors</strong> — FAISS finds the top-k nearest neighbors</li>
+                <li><strong>Return the associated metadata</strong> — The actual text chunks</li>
+            </ul>
+
+<pre><code>query_embedding = embedding_service.embed_query("What is photosynthesis?")
+results = vector_store.search(query_embedding, top_k=3)
+# Returns: [(metadata_dict, distance), ...]</code></pre>
+
+            <h4>Step 3: Generation (The Magic)</h4>
+            <p>Now comes the <strong>context engineering</strong> part. We augment the user's query with retrieved context:</p>
+
+<pre><code>prompt = f"""
+Here are relevant context passages:
+
+Context 1: {context_1}
+Context 2: {context_2}
+Context 3: {context_3}
+
+Use this information to answer: {user_query}
+"""</code></pre>
+
+            <p>The LLM now has specific, relevant information to work with—not just its training data.</p>
+
+            <h3>Key Concept #2: Embeddings and Vector Search</h3>
+            <p>Embeddings are the secret sauce of RAG. They convert text into numerical vectors where <strong>semantically similar texts are close together</strong> in vector space.</p>
+
+<pre>┌────────────────────────────────────────────────────────────────────┐
+│                    EMBEDDING SPACE (Simplified)                    │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│     "What is the capital of France?"                               │
+│                    ●                                               │
+│                     \                                              │
+│                      \  (close in vector space)                    │
+│                       \                                            │
+│                        ●  "Paris is the capital of France"         │
+│                                                                    │
+│                                                                    │
+│                                                                    │
+│     "How do plants make food?"                                     │
+│                    ●                                               │
+│                     \                                              │
+│                      ●  "Photosynthesis converts sunlight..."      │
+│                                                                    │
+│                                        (far away)                  │
+│                                              ●  "The stock market" │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘</pre>
+
+            <div id="rag-diagrams-root"></div>
+
+            <p>I used <code>all-MiniLM-L6-v2</code>—a lightweight model that produces 384-dimensional vectors. It's fast (~15ms per embedding) and good enough for English text.</p>
+
+            <p><strong>Key Learning</strong>: The embedding model doesn't need to understand the task. It just needs to put similar things close together. The LLM does the understanding.</p>
+
+            <h3>The Adaptive Part: Multilingual Query Processing</h3>
+            <p>Here's where it gets interesting. My target users speak Shona, but my knowledge base (SQuAD 2.0) is in English.</p>
+
+            <p>The solution? <strong>A translation pipeline that adapts to the user's language.</strong></p>
+
+<pre>┌─────────────────────────────────────────────────────────────────────┐
+│                  ADAPTIVE MULTILINGUAL PIPELINE                     │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  User Input (Shona)                                                 │
+│  "Guta guru reFrance nderipi?"                                      │
+│       │                                                             │
+│       ▼                                                             │
+│  ┌─────────────────────┐                                            │
+│  │ Language Detection  │  ◀── Detect: "sn" (Shona)                  │
+│  └──────────┬──────────┘                                            │
+│             │                                                       │
+│             ▼                                                       │
+│  ┌─────────────────────┐                                            │
+│  │ Translate to English│  ◀── LLM Translation                       │
+│  │ "What is the capital│                                            │
+│  │  of France?"        │                                            │
+│  └──────────┬──────────┘                                            │
+│             │                                                       │
+│             ▼                                                       │
+│  ┌─────────────────────┐                                            │
+│  │ Embed English Query │  ◀── Same embedding model                  │
+│  └──────────┬──────────┘                                            │
+│             │                                                       │
+│             ▼                                                       │
+│  ┌─────────────────────┐                                            │
+│  │ FAISS Vector Search │  ◀── Search English knowledge base         │
+│  └──────────┬──────────┘                                            │
+│             │                                                       │
+│             ▼                                                       │
+│  ┌─────────────────────┐                                            │
+│  │ Generate Answer     │  ◀── "Answer in Shona using this context"  │
+│  │ (in Shona)          │                                            │
+│  └──────────┬──────────┘                                            │
+│             │                                                       │
+│             ▼                                                       │
+│  Response (Shona)                                                   │
+│  "Guta guru reFrance ndiParis..."                                   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘</pre>
+
+            <p>The key insight: <strong>Use English as the "lingua franca" internally</strong>, then translate in/out. This lets you leverage the massive English knowledge bases available (SQuAD, Wikipedia, etc.) while serving users in their native language.</p>
+
+            <h3>Key Concept #3: Context Engineering</h3>
+            <p>Context engineering is the practice of <strong>carefully crafting what information you give to an LLM</strong>. It's arguably more important than prompt engineering.</p>
+
+            <h4>The System Prompt</h4>
+
+<pre><code>SYSTEM_PROMPT = """You are a knowledgeable assistant with access to information from Wikipedia.
+
+You have deep knowledge and can think critically.
+When answering questions, use the provided context examples to inform your response.
+Provide accurate, helpful answers based on the given information.
+"""</code></pre>
+
+            <h4>The Augmented User Message</h4>
+
+<pre><code>def build_user_message(query: str, retrieved_examples: List[Dict]) -> str:
+    context = format_rag_context(retrieved_examples)
+
+    if context:
+        return f"{context}\n\nQuestion: {query}"
+    else:
+        return query</code></pre>
+
+            <h4>The Formatted Context</h4>
+
+<pre><code>def format_rag_context(retrieved_examples: List[Dict]) -> str:
+    context_parts = ["Here are relevant context passages:"]
+
+    for i, example in enumerate(retrieved_examples, 1):
+        context_parts.append(f"\nContext {i}:")
+        context_parts.append(f"Topic: {example['title']}")
+        context_parts.append(f"Information: {example['context']}")
+        if 'question' in example and 'answer' in example:
+            context_parts.append(f"Example Q: {example['question']}")
+            context_parts.append(f"Example A: {example['answer']}")
+
+    context_parts.append("\nUse this information to answer the question.")
+
+    return "\n".join(context_parts)</code></pre>
+
+            <p><strong>Why this matters</strong>: The structure, ordering, and phrasing of context directly impacts response quality. I experimented with:</p>
+
+            <ul>
+                <li>Including example Q&A pairs (improved answer format)</li>
+                <li>Adding topic labels (helped with disambiguation)</li>
+                <li>Limiting context length (prevented confusion)</li>
+            </ul>
+
+            <h3>How the Project Evolved</h3>
+            <p>The project went through several distinct phases:</p>
+
+<pre>┌────────────────────────────────────────────────────────────────────┐
+│                     PROJECT EVOLUTION TIMELINE                      │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│  PHASE 1: Simple Chat (December 2024)                              │
+│  ─────────────────────────────────────                             │
+│  • 50-line terminal app                                            │
+│  • Direct Gemini API calls                                         │
+│  • Shona system prompt                                             │
+│  • No retrieval, no persistence                                    │
+│                                                                    │
+│           │                                                        │
+│           ▼                                                        │
+│                                                                    │
+│  PHASE 2: RAG with Fikira Dataset                                  │
+│  ────────────────────────────────                                  │
+│  • Added FAISS vector store                                        │
+│  • Used vamboai/fikira (5K Shona examples)                         │
+│  • Multilingual embeddings                                         │
+│  • Streamlit UI                                                    │
+│                                                                    │
+│           │                                                        │
+│           ▼                                                        │
+│                                                                    │
+│  PHASE 3: SQuAD + Translation Pipeline                             │
+│  ─────────────────────────────────────                             │
+│  • Switched to SQuAD 2.0 (130K English examples)                   │
+│  • Added translation layer (Shona ↔ English)                       │
+│  • Lightweight embeddings (all-MiniLM-L6-v2)                       │
+│  • Multi-provider support (LM Studio, OpenAI, Gemini)              │
+│                                                                    │
+│           │                                                        │
+│           ▼                                                        │
+│                                                                    │
+│  PHASE 4: Project Reorganization                                   │
+│  ───────────────────────────────                                   │
+│  • Proper src/ structure                                           │
+│  • Separated concerns (core, ui, data)                             │
+│  • CLI flags for configuration                                     │
+│  • Terminal + Web interfaces                                       │
+│                                                                    │
+│           │                                                        │
+│           ▼                                                        │
+│                                                                    │
+│  FUTURE: South African Languages Expansion                         │
+│  ─────────────────────────────────────────                         │
+│  • Zulu, Xhosa, Afrikaans, Sesotho...                              │
+│  • Automatic language detection                                    │
+│  • Per-language response generation                                │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘</pre>
+
+            <h4>Key Pivot: Fikira → SQuAD</h4>
+            <p>The original plan was to use a Shona reasoning dataset (Fikira) directly. But I realized:</p>
+
+            <ul>
+                <li><strong>Fikira had only 5K examples</strong> — Limited knowledge coverage</li>
+                <li><strong>SQuAD has 130K examples</strong> — Massive Wikipedia coverage</li>
+                <li><strong>Translation is a solved problem</strong> — Modern LLMs handle Shona reasonably well</li>
+            </ul>
+
+            <p>So instead of embedding Shona text and searching in Shona, I:</p>
+            <ul>
+                <li>Translate user query to English</li>
+                <li>Search English knowledge base</li>
+                <li>Generate answer using English context</li>
+                <li>Respond in user's original language</li>
+            </ul>
+
+            <p>This gave me 26x more knowledge to work with.</p>
+
+            <h3>Using Agents for Development</h3>
+            <p>A significant part of this project was built using AI agents (specifically Claude) for:</p>
+
+            <h4>1. Research and Planning</h4>
+            <p>Before writing code, agents analyzed:</p>
+            <ul>
+                <li>The existing codebase structure</li>
+                <li>Available datasets and their schemas</li>
+                <li>Embedding model options</li>
+                <li>LLM capabilities for African languages</li>
+            </ul>
+
+            <p>This produced detailed implementation plans with specific file changes, code snippets, and success criteria.</p>
+
+            <h4>2. Implementation</h4>
+            <p>Agents wrote the actual code following the plans:</p>
+            <ul>
+                <li>Created new modules (<code>vector_store.py</code>, <code>embeddings.py</code>, <code>pipeline.py</code>)</li>
+                <li>Updated existing files with new imports and logic</li>
+                <li>Generated comprehensive docstrings and type hints</li>
+            </ul>
+
+            <h4>3. Documentation</h4>
+            <p>All the handoff documents, research notes, and ticket descriptions were agent-generated, keeping track of:</p>
+            <ul>
+                <li>What was implemented</li>
+                <li>What decisions were made and why</li>
+                <li>What remains to be done</li>
+            </ul>
+
+            <p><strong>Key Learning</strong>: Agents are most effective when you give them:</p>
+            <ul>
+                <li>Clear context (codebase structure, existing code)</li>
+                <li>Specific goals (not "make it better" but "add language detection using lingua-py")</li>
+                <li>Success criteria (tests to pass, behaviors to verify)</li>
+            </ul>
+
+            <h3>The "Works on My Machine" Philosophy</h3>
+            <p>The title references the infamous developer excuse, but there's a real philosophy here:</p>
+
+            <h4>Local-First Architecture</h4>
+
+<pre>┌─────────────────────────────────────────────────────────────────────┐
+│                    LOCAL-FIRST RAG ARCHITECTURE                     │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────┐                                                │
+│  │  YOUR MACHINE   │                                                │
+│  │                 │                                                │
+│  │  ┌───────────┐  │     ┌──────────────────┐                       │
+│  │  │  Python   │  │     │    LM Studio     │                       │
+│  │  │  Script   │──┼────▶│  (localhost:1234)│                       │
+│  │  │           │  │     │                  │                       │
+│  │  │  • FAISS  │  │     │  Qwen 2.5 7B     │                       │
+│  │  │  • Embed  │  │     │  or other model  │                       │
+│  │  └───────────┘  │     └──────────────────┘                       │
+│  │                 │                                                │
+│  └─────────────────┘                                                │
+│                                                                     │
+│  No cloud dependency for core RAG functionality                     │
+│  Optional: OpenAI/Gemini for higher quality                         │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘</pre>
+
+            <p><strong>Benefits</strong>:</p>
+            <ul>
+                <li><strong>Privacy</strong>: Your queries never leave your machine</li>
+                <li><strong>Cost</strong>: No per-token API charges</li>
+                <li><strong>Speed</strong>: Local inference can be faster than API calls</li>
+                <li><strong>Reliability</strong>: No dependency on external services</li>
+            </ul>
+
+            <p><strong>Trade-off</strong>: You need a decent GPU and ~8GB VRAM for the 7B model.</p>
+
+            <h4>Multi-Provider Support</h4>
+            <p>The system supports three LLM backends:</p>
+
+<pre><code>class LLMProvider(Enum):
+    LM_STUDIO = "lm_studio"   # Local, free
+    OPENAI = "openai"         # Cloud, paid, highest quality
+    GEMINI = "gemini"         # Cloud, free tier available</code></pre>
+
+            <p>You can switch at runtime:</p>
+<pre><code># Local (free)
+python scripts/terminal_chat.py --llm-provider lm_studio
+
+# Cloud (paid but better)
+python scripts/terminal_chat.py --llm-provider openai</code></pre>
+
+            <h3>What I Actually Accomplished</h3>
+            <p>Let me be concrete about what works:</p>
+
+            <h4>✅ Working Features</h4>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SQuAD ingestion</td>
+                        <td>✅</td>
+                        <td>130K examples indexed</td>
+                    </tr>
+                    <tr>
+                        <td>FAISS search</td>
+                        <td>✅</td>
+                        <td>&lt;10ms per query</td>
+                    </tr>
+                    <tr>
+                        <td>Local embeddings</td>
+                        <td>✅</td>
+                        <td>all-MiniLM-L6-v2</td>
+                    </tr>
+                    <tr>
+                        <td>Shona translation</td>
+                        <td>✅</td>
+                        <td>Via LLM</td>
+                    </tr>
+                    <tr>
+                        <td>Streamlit UI</td>
+                        <td>✅</td>
+                        <td>Chat interface + config</td>
+                    </tr>
+                    <tr>
+                        <td>Terminal chat</td>
+                        <td>✅</td>
+                        <td>CLI with flags</td>
+                    </tr>
+                    <tr>
+                        <td>Multi-provider</td>
+                        <td>✅</td>
+                        <td>LM Studio, OpenAI, Gemini</td>
+                    </tr>
+                    <tr>
+                        <td>Context display</td>
+                        <td>✅</td>
+                        <td>Show retrieved examples</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>📊 Performance Numbers</h4>
+
+<pre>Initialization:
+  - First run (downloads): ~3 minutes
+  - Subsequent runs: ~30 seconds
+
+Per Query:
+  - Embedding generation: ~15ms
+  - FAISS search: ~5ms
+  - LLM generation: 1-5 seconds (depends on provider)
+  - Total: 2-6 seconds
+
+Resources:
+  - FAISS index: ~100MB
+  - Embedding model: ~90MB
+  - LM Studio model: ~4GB (Q4 quantized)</pre>
+
+            <h4>🔮 Future Work</h4>
+
+            <ul>
+                <li>Language detection for automatic routing</li>
+                <li>South African language support (Zulu, Xhosa, etc.)</li>
+                <li>Persistent conversation history</li>
+                <li>Fine-tuned embedding model for African languages</li>
+            </ul>
+
+            <h3>Lessons Learned</h3>
+
+            <h4>1. Context > Prompts</h4>
+            <p>The quality of your RAG system depends more on <strong>what context you provide</strong> than how you phrase the prompt. Spend time on your retrieval pipeline.</p>
+
+            <h4>2. Translation is Your Friend</h4>
+            <p>Don't try to build separate knowledge bases for each language. Use English as your internal representation and translate at the edges.</p>
+
+            <h4>3. Start Simple, Iterate</h4>
+            <p>Phase 1 was 50 lines. Phase 4 is a proper project structure. Each phase built on the last. Don't over-engineer from the start.</p>
+
+            <h4>4. Local LLMs Are Ready</h4>
+            <p>LM Studio + a quantized 7B model gives you 80% of GPT-4 quality at 0% of the cost. For many use cases, that's enough.</p>
+
+            <h4>5. Agents Accelerate Development</h4>
+            <p>Using AI agents for planning, implementation, and documentation turned weeks of work into days. The key is giving them good context.</p>
+
+            <h3>Conclusion</h3>
+            <p>Building this RAG system taught me that AI applications are really <strong>data engineering problems</strong> wrapped in ML. The hardest parts weren't the embeddings or the LLM calls—they were:</p>
+
+            <ul>
+                <li>Getting the data in the right format</li>
+                <li>Building a reliable retrieval pipeline</li>
+                <li>Engineering context that helps the model succeed</li>
+            </ul>
+
+            <p>The "adaptive" part—handling multiple languages, supporting multiple providers, working locally—emerged from treating the system as a pipeline rather than a black box.</p>
+
+            <p>And yes, it works on my machine. But more importantly, it works <em>because</em> it's on my machine—local, private, and under my control.</p>
+
+            <p><em>The full code is available on GitHub. Feel free to fork it, break it, and make it work on your machine too.</em></p>
+
+            <h3>Appendix: Project Structure</h3>
+
+<pre>chatty/
+├── src/
+│   ├── config.py           # Provider enums, settings
+│   ├── prompts.py          # Context formatting
+│   ├── ui/
+│   │   └── app.py          # Streamlit interface
+│   ├── core/
+│   │   ├── embeddings.py   # Sentence transformers
+│   │   ├── vector_store.py # FAISS operations
+│   │   ├── pipeline.py     # RAG orchestrator
+│   │   └── chat.py         # Conversation service
+│   └── data/
+│       └── loader.py       # SQuAD dataset
+├── scripts/
+│   ├── initialize_rag.py   # Build FAISS index
+│   └── terminal_chat.py    # CLI interface
+├── data/
+│   ├── faiss_index.index   # Vector index
+│   └── faiss_metadata.json # Document metadata
+└── tests/
+    └── *.py                # Validation tests</pre>
+
+            <a href="../blog.html" class="back-link">← Back to Blog</a>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Tonderai Saidi</p>
+    </footer>
+
+    <!-- React Diagrams Bundle -->
+    <script type="module" src="../dist/assets/diagrams.js"></script>
+</body>
+</html>
