@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cape Town WiFi Heatmap</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #1e3048; border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ── App config ────────────────────────────────────────────────
+const SHEET_ID = "1RYst3eHlQ_5unp2CpZzooDIbbNg8DM9yERnoyfNqZYg";
+
+// ── Theme ─────────────────────────────────────────────────────
+const C = {
+  bg:"#09101c", surface:"#111827", surfaceAlt:"#16202e", border:"#1e3048",
+  text:"#dce8f5", muted:"#6b82a0", accent:"#38a0ff", accentDim:"#0f2540",
+  danger:"#ff4444", warn:"#ffaa22", success:"#22d4a0",
+};
+
+// ── Floor plan ────────────────────────────────────────────────
+const SECTIONS = {
+  A:{ cx:28.5,cy:71,  cols:[["A1","A2","A3"],["A4","A5","A6"]] },
+  B:{ cx:19.5,cy:71,  cols:[["B1","B2","B3"],["B4","B5","B6"]] },
+  D:{ cx:22,  cy:56,  cols:[["D1","D2","D3"],["D4","D5","D6"]] },
+  E:{ cx:22,  cy:45,  cols:[["E1","E2","E3","E4"],["E5","E6","E7","E8"]] },
+  F:{ cx:18.5,cy:31,  cols:[["F1","F2","F3","F4"]] },
+  G:{ cx:25.5,cy:31,  cols:[["G1","G2","G3"],["G4","G5","G6","G7"]] },
+  H:{ cx:33,  cy:31,  cols:[["H1","H2","H3","H4"],["H5","H6","H7","H8"]] },
+  I:{ cx:61,  cy:31,  cols:[["I1","I2","I3"],["I4","I5","I6"]] },
+  J:{ cx:67.5,cy:31,  cols:[["J1","J2","J3","J4"],["J5","J6","J7","J8"]] },
+  K:{ cx:75,  cy:31,  cols:[["K1","K2","K3","K4","K5"],["K6","K7","K8","K9","K10"]] },
+  L:{ cx:82,  cy:31,  cols:[["L1","L2","L3","L4","L5","L6"],["L7","L8","L9","L10","L11","L12"]] },
+  M:{ cx:87.5,cy:31,  cols:[["M1","M2","M3","M4","M5","M6"],["M7","M8","M9","M10","M11","M12"]] },
+  N:{ cx:93,  cy:31,  cols:[["N1","N2","N3","N4","N5","N6"],["N7","N8","N9","N10","N11","N12"]] },
+  O:{ cx:98,  cy:31,  cols:[["O1","O2","O3","O4"]] },
+};
+function buildDesks() {
+  const out=[];
+  Object.entries(SECTIONS).forEach(([section,cfg]) => {
+    const nc=cfg.cols.length, mr=Math.max(...cfg.cols.map(c=>c.length));
+    cfg.cols.forEach((col,ci) => col.forEach((id,ri) => out.push({
+      id, section,
+      x: cfg.cx+(ci-(nc-1)/2)*3.0,
+      y: cfg.cy+((mr-1)/2-ri)*2.2,
+    })));
+  });
+  return out;
+}
+const ALL_DESKS = buildDesks();
+
+function heatRGB(t) {
+  if (t<=0)   return [56,160,255];
+  if (t<0.33) { const u=t/0.33;        return [Math.round(56+u*199),Math.round(160+u*40),255]; }
+  if (t<0.5)  { const u=(t-0.33)/0.17; return [255,Math.round(200-u*80),0]; }
+  if (t<0.75) { const u=(t-0.5)/0.25;  return [255,Math.round(120-u*60),0]; }
+  const u=(t-0.75)/0.25; return [Math.round(255-u*55),Math.round(60-u*60),0];
+}
+
+function tbtn(on) {
+  return {
+    padding:"5px 11px", border:`1px solid ${on?C.accent:C.border}`,
+    borderRadius:5, background:on?C.accentDim:C.surface,
+    color:on?C.accent:C.muted, cursor:"pointer", fontSize:11,
+    fontWeight:600, fontFamily:"'JetBrains Mono',monospace",
+    transition:"all 0.15s", whiteSpace:"nowrap",
+  };
+}
+
+// ── Loading / Error screens ───────────────────────────────────
+function DataLoadingScreen() {
+  return (
+    <div style={{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"'DM Sans',sans-serif"}}>
+      <div style={{textAlign:"center"}}>
+        <div style={{width:10,height:10,borderRadius:"50%",background:C.accent,boxShadow:`0 0 14px ${C.accent}`,margin:"0 auto 16px"}}/>
+        <div style={{fontSize:13,color:C.muted}}>Loading survey data…</div>
+      </div>
+    </div>
+  );
+}
+
+function DataErrorScreen({ msg }) {
+  return (
+    <div style={{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"'DM Sans',sans-serif"}}>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"32px 28px",maxWidth:420,textAlign:"center"}}>
+        <div style={{color:C.danger,fontSize:14,fontWeight:600,marginBottom:8}}>Failed to load sheet data</div>
+        <div style={{color:C.muted,fontSize:12,lineHeight:1.6}}>{msg}</div>
+        <button onClick={()=>window.location.reload()} style={{marginTop:20,padding:"8px 20px",background:C.accentDim,border:`1px solid ${C.accent}`,borderRadius:6,color:C.accent,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
+          Retry
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Main heatmap ──────────────────────────────────────────────
+// data       — array of { timestamp, desk, section, wifi, email, notes }
+// lastSynced — timestamp string of the newest row
+function Heatmap({ data, lastSynced }) {
+  const [tab,      setTab]      = useState("map");
+  const [dateFilt, setDateFilt] = useState("all");
+  const [wifiFilt, setWifiFilt] = useState("all");
+  const [showHeat, setShowHeat] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [hovered,  setHovered]  = useState(null);
+
+  const filtered = data.filter(inc => {
+    if (dateFilt !== "all" && inc.timestamp) {
+      const d=new Date(inc.timestamp), now=new Date();
+      if (dateFilt==="today" && d.toDateString()!==now.toDateString()) return false;
+      if (dateFilt==="week"  && (now-d)>7*864e5)  return false;
+      if (dateFilt==="month" && (now-d)>30*864e5) return false;
+    }
+    if (wifiFilt!=="all" && inc.wifi && inc.wifi!==wifiFilt) return false;
+    return true;
+  });
+
+  const counts={};
+  filtered.forEach(i => { counts[i.desk]=(counts[i.desk]||0)+1; });
+  const maxC=Math.max(1,...Object.values(counts));
+
+  const secCounts={};
+  filtered.forEach(i => { const s=i.desk.replace(/[0-9]/g,""); secCounts[s]=(secCounts[s]||0)+1; });
+
+  const topDesks=ALL_DESKS.map(d=>({...d,count:counts[d.id]||0})).filter(d=>d.count>0).sort((a,b)=>b.count-a.count).slice(0,8);
+  const activeDesk=hovered||selected;
+  const selInc=selected?filtered.filter(i=>i.desk===selected).reverse().slice(0,8):[];
+
+  return (
+    <div style={{height:"100vh",display:"flex",flexDirection:"column",background:C.bg,color:C.text,fontFamily:"'DM Sans',sans-serif",overflow:"hidden"}}>
+
+      {/* Header */}
+      <div style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"10px 14px",display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+        <div style={{width:8,height:8,borderRadius:"50%",background:C.success,boxShadow:`0 0 7px ${C.success}`}}/>
+        <span style={{fontSize:15,fontWeight:700}}>Cape Town WiFi Heatmap</span>
+        <div style={{flex:1}}/>
+        <button onClick={()=>window.location.href='/api/logout'} style={{...tbtn(false),fontSize:10,padding:"3px 8px"}}>Lock</button>
+      </div>
+
+      {/* Status bar */}
+      <div style={{background:"rgba(34,212,160,0.06)",borderBottom:`1px solid rgba(34,212,160,0.15)`,padding:"4px 14px",fontSize:10,color:C.muted,flexShrink:0,display:"flex",gap:6}}>
+        <span style={{color:C.success}}>&#10003;</span>
+        <span>{data.length} incidents</span>
+        <span style={{color:C.border}}>|</span>
+        <span>Last synced: <b style={{color:C.text}}>{lastSynced || "—"}</b></span>
+      </div>
+
+      {/* Tabs + toolbar */}
+      <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center",flexWrap:"wrap"}}>
+        {[["map","Map"],["stats","Stats"],["info","Info"]].map(([t,l])=>(
+          <button key={t} onClick={()=>setTab(t)} style={{
+            padding:"8px 16px", border:"none",
+            borderBottom:`2px solid ${tab===t?C.accent:"transparent"}`,
+            background:"none", color:tab===t?C.accent:C.muted,
+            fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
+          }}>{l}</button>
+        ))}
+        {tab==="map" && (
+          <>
+            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
+            {["all","today","week","month"].map(f=>(
+              <button key={f} style={tbtn(dateFilt===f)} onClick={()=>setDateFilt(f)}>
+                {f==="all"?"All":f[0].toUpperCase()+f.slice(1)}
+              </button>
+            ))}
+            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
+            {["all","Staff","Mobile","Guest"].map(f=>(
+              <button key={f} style={tbtn(wifiFilt===f)} onClick={()=>setWifiFilt(f)}>
+                {f==="all"?"All Networks":f}
+              </button>
+            ))}
+            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
+            <button style={tbtn(showHeat)} onClick={()=>setShowHeat(v=>!v)}>Heat</button>
+          </>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{flex:1,overflow:"hidden",display:"flex"}}>
+
+        {tab==="info" && (
+          <div style={{padding:20,overflowY:"auto",flex:1}}>
+            <div style={{maxWidth:440}}>
+              <div style={{background:C.surfaceAlt,borderRadius:8,border:`1px solid ${C.border}`,padding:16,marginBottom:12}}>
+                <div style={{fontSize:13,fontWeight:700,marginBottom:8}}>About</div>
+                <p style={{fontSize:12,color:C.muted,lineHeight:1.7,margin:0}}>
+                  WiFi incident heatmap for Entelect Cape Town. Incidents are logged via Google Form and synced live from Google Sheets. Hotter colours indicate more reported drops.
+                </p>
+                <a href={`https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`} target="_blank" rel="noreferrer"
+                  style={{display:"inline-block",marginTop:10,fontSize:11,color:C.accent,textDecoration:"none"}}>
+                  View incident log
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab==="stats" && (
+          <div style={{padding:16,overflowY:"auto",flex:1,display:"flex",gap:16,flexWrap:"wrap",alignContent:"start"}}>
+            <div style={{background:C.surfaceAlt,borderRadius:8,border:`1px solid ${C.border}`,padding:16,flex:"1 1 200px"}}>
+              <div style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:10}}>Worst Sections</div>
+              {Object.entries(secCounts).sort((a,b)=>b[1]-a[1]).map(([s,cnt],i)=>{
+                const mx=Math.max(...Object.values(secCounts)), [r,g,b]=heatRGB(cnt/mx);
+                return (
+                  <div key={s} style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:10,color:C.muted,width:14}}>{i+1}</span>
+                    <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:13,fontWeight:700,color:`rgb(${r},${g},${b})`,width:18}}>{s}</span>
+                    <div style={{flex:1,height:8,background:C.surface,borderRadius:4,overflow:"hidden"}}>
+                      <div style={{width:`${(cnt/mx)*100}%`,height:"100%",borderRadius:4,background:`rgb(${r},${g},${b})`}}/>
+                    </div>
+                    <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:`rgb(${r},${g},${b})`,fontWeight:700,width:22,textAlign:"right"}}>{cnt}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{background:C.surfaceAlt,borderRadius:8,border:`1px solid ${C.border}`,padding:16,flex:"1 1 200px"}}>
+              <div style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:10}}>Worst Desks</div>
+              {topDesks.map((d,i)=>{
+                const [r,g,b]=heatRGB(d.count/maxC);
+                return (
+                  <div key={d.id} style={{display:"flex",alignItems:"center",gap:8,marginBottom:7}}>
+                    <span style={{fontSize:10,color:C.muted,width:14}}>{i+1}</span>
+                    <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,fontWeight:700,color:C.text,width:28}}>{d.id}</span>
+                    <div style={{flex:1,height:6,background:C.surface,borderRadius:3,overflow:"hidden"}}>
+                      <div style={{width:`${(d.count/maxC)*100}%`,height:"100%",borderRadius:3,background:`rgb(${r},${g},${b})`}}/>
+                    </div>
+                    <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:`rgb(${r},${g},${b})`,fontWeight:700,width:18,textAlign:"right"}}>{d.count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {tab==="map" && (
+          <div style={{flex:1,display:"flex",overflow:"hidden"}}>
+            <div style={{flex:1,position:"relative",overflow:"hidden"}}>
+              <svg viewBox="0 0 1180 780" style={{width:"100%",height:"100%",display:"block"}} preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  {showHeat && ALL_DESKS.map(desk=>{
+                    const c=counts[desk.id]||0;
+                    if (!c) return null;
+                    const t=c/maxC, [r,g,b]=heatRGB(t);
+                    return (
+                      <radialGradient key={`g-${desk.id}`} id={`hg-${desk.id}`} cx="50%" cy="50%" r="50%">
+                        <stop offset="0%"   stopColor={`rgb(${r},${g},${b})`} stopOpacity={0.7+t*0.15}/>
+                        <stop offset="50%"  stopColor={`rgb(${r},${g},${b})`} stopOpacity={0.25}/>
+                        <stop offset="100%" stopColor={`rgb(${r},${g},${b})`} stopOpacity={0}/>
+                      </radialGradient>
+                    );
+                  })}
+                </defs>
+
+                <rect width="1180" height="780" fill="#1a1f2e"/>
+                <rect x="40" y="120" width="1110" height="560" fill="#1e263a" stroke="#2a3a52" strokeWidth="1.5" rx="6"/>
+                {[[155,155,82,155],[252,155,82,155],[346,155,95,155],[195,330,95,110],[195,455,95,100],[165,575,82,90],[275,575,82,90],[650,155,72,155],[732,155,82,155],[824,155,82,155],[916,155,86,155],[1010,155,56,155],[1074,155,40,155],[1120,155,22,155]].map(([x,y,w,h],i)=>(
+                  <rect key={i} x={x} y={y} width={w} height={h} fill="#243040" stroke="#2d4060" strokeWidth="1" rx="4"/>
+                ))}
+                {[[55,160,88,90],[55,370,88,75],[55,558,88,90],[462,355,172,265],[650,365,215,155],[877,365,68,68],[953,365,68,68],[1028,365,68,68],[1100,365,42,68]].map(([x,y,w,h],i)=>(
+                  <rect key={i} x={x} y={y} width={w} height={h} fill="#1a2d40" stroke="#2d4a60" strokeWidth="1" rx="3"/>
+                ))}
+                <text x="590" y="112" fill="#4a6080" fontSize="11" fontFamily="DM Sans" textAnchor="middle" letterSpacing="2">CANAL WALK SIDE</text>
+                <text x="590" y="710" fill="#4a6080" fontSize="11" fontFamily="DM Sans" textAnchor="middle" letterSpacing="2">N1 HIGHWAY SIDE</text>
+                {[["F",196,238],["G",293,238],["H",394,238],["E",243,390],["D",243,510],["B",207,625],["A",316,625],["I",686,238],["J",773,238],["K",865,238],["L",959,238],["M",1038,238],["N",1094,238],["O",1131,238]].map(([l,x,y])=>(
+                  <text key={l} x={x} y={y} fill="#3a5070" fontSize="20" fontWeight="700" fontFamily="DM Sans" textAnchor="middle" opacity="0.7">{l}</text>
+                ))}
+                <text x="99"  y="207" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Delete</text>
+                <text x="99"  y="410" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Alt</text>
+                <text x="99"  y="606" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Ctrl</text>
+                <text x="757" y="450" fill="#3a5878" fontSize="10" fontFamily="DM Sans" textAnchor="middle">Training Centre</text>
+                <text x="548" y="495" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Entrance</text>
+
+                {showHeat && ALL_DESKS.map(desk=>{
+                  const c=counts[desk.id]||0;
+                  if (!c) return null;
+                  const t=c/maxC, rad=28+t*52, px=desk.x/100*1180, py=desk.y/100*780;
+                  return <ellipse key={`h-${desk.id}`} cx={px} cy={py} rx={rad} ry={rad*0.85} fill={`url(#hg-${desk.id})`}/>;
+                })}
+
+                {ALL_DESKS.map(desk=>{
+                  const c=counts[desk.id]||0, t=c?c/maxC:0;
+                  const [r,g,b]=c?heatRGB(t):[45,90,140];
+                  const isActive=activeDesk===desk.id, dr=c?7+t*5:5;
+                  const px=desk.x/100*1180, py=desk.y/100*780;
+                  return (
+                    <g key={desk.id} style={{cursor:"pointer"}}
+                      onClick={()=>setSelected(selected===desk.id?null:desk.id)}
+                      onMouseEnter={()=>setHovered(desk.id)}
+                      onMouseLeave={()=>setHovered(null)}>
+                      {isActive && <circle cx={px} cy={py} r={dr+5} fill="none" stroke="white" strokeWidth="1.5" opacity="0.6"/>}
+                      <circle cx={px} cy={py} r={dr} fill={c?`rgb(${r},${g},${b})`:"rgba(45,90,140,0.4)"} stroke={c?`rgba(255,255,255,${0.3+t*0.4})`:"rgba(50,100,160,0.3)"} strokeWidth="1"/>
+                      <text x={px} y={py+3} textAnchor="middle" fontSize={c?7:6} fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={c?"#fff":"rgba(150,190,230,0.6)"} style={{pointerEvents:"none",userSelect:"none"}}>{desk.id}</text>
+                      {c>0 && <text x={px+dr+1} y={py-dr+1} textAnchor="start" fontSize="7" fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={`rgb(${r},${g},${b})`} style={{pointerEvents:"none"}}>{c}</text>}
+                    </g>
+                  );
+                })}
+
+                {activeDesk && (()=>{
+                  const d=ALL_DESKS.find(dd=>dd.id===activeDesk);
+                  if (!d) return null;
+                  const c=counts[d.id]||0, px=d.x/100*1180, py=d.y/100*780;
+                  const tx=Math.min(px+12,1080), ty=Math.max(py-36,20);
+                  return (
+                    <g>
+                      <rect x={tx-4} y={ty-13} width={72} height={c?28:18} rx="3" fill="#0a1525" stroke="#2a4060" strokeWidth="1" opacity="0.95"/>
+                      <text x={tx} y={ty} fontSize="10" fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={C.accent}>{d.id}</text>
+                      {c>0
+                        ? <text x={tx} y={ty+12} fontSize="9" fontFamily="DM Sans,sans-serif" fill={C.danger}>{c} incident{c>1?"s":""}</text>
+                        : <text x={tx} y={ty+12} fontSize="9" fontFamily="DM Sans,sans-serif" fill={C.muted}>No incidents</text>
+                      }
+                    </g>
+                  );
+                })()}
+              </svg>
+            </div>
+
+            {/* Sidebar */}
+            <div style={{width:190,background:C.surface,borderLeft:`1px solid ${C.border}`,overflowY:"auto",flexShrink:0,padding:10}}>
+              {showHeat && (
+                <div style={{marginBottom:12}}>
+                  <div style={{fontSize:9,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:5}}>Heat Scale</div>
+                  <div style={{height:10,borderRadius:5,background:"linear-gradient(90deg,rgba(56,160,255,0.6),rgba(255,220,50,0.85),rgba(255,68,68,0.9))",marginBottom:3}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:8,color:C.muted}}>
+                    <span>1x</span><span>max ({maxC}x)</span>
+                  </div>
+                </div>
+              )}
+              {selected && (
+                <div style={{background:C.surfaceAlt,borderRadius:6,border:`1px solid ${C.border}`,padding:10,marginBottom:10}}>
+                  <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:14,fontWeight:700,color:C.accent}}>{selected}</div>
+                  <div style={{fontSize:11,color:C.muted,margin:"3px 0"}}>
+                    <span style={{color:(counts[selected]||0)>0?C.danger:C.success,fontWeight:700}}>{counts[selected]||0}</span> incidents
+                  </div>
+                  {selInc.map((inc,i)=>(
+                    <div key={i} style={{fontSize:9,color:C.muted,padding:"3px 0",borderTop:`1px solid ${C.border}`}}>
+                      <div style={{color:C.text,fontFamily:"'JetBrains Mono',monospace",fontSize:9}}>{inc.timestamp}</div>
+                      {inc.wifi  && <div style={{color:inc.wifi==="Staff"?C.success:inc.wifi==="Guest"?C.warn:C.muted}}>Network: {inc.wifi}</div>}
+                      {inc.email && <div style={{color:"#7ab"}}>{inc.email}</div>}
+                      {inc.notes && <div style={{color:"#99aabb"}}>{inc.notes}</div>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:6}}>Hottest Desks</div>
+                {topDesks.map((d,i)=>{
+                  const [r,g,b]=heatRGB(d.count/maxC);
+                  return (
+                    <div key={d.id} style={{display:"flex",alignItems:"center",gap:5,marginBottom:5,cursor:"pointer"}} onClick={()=>setSelected(d.id)}>
+                      <span style={{fontSize:9,color:C.muted,width:10}}>{i+1}</span>
+                      <div style={{width:7,height:7,borderRadius:"50%",background:`rgb(${r},${g},${b})`,flexShrink:0}}/>
+                      <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:700,color:C.text,width:26}}>{d.id}</span>
+                      <div style={{flex:1,height:4,background:C.surfaceAlt,borderRadius:2,overflow:"hidden"}}>
+                        <div style={{width:`${(d.count/maxC)*100}%`,height:"100%",background:`rgb(${r},${g},${b})`}}/>
+                      </div>
+                      <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:`rgb(${r},${g},${b})`,fontWeight:700,width:14,textAlign:"right"}}>{d.count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <div style={{fontSize:9,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:6}}>By Section</div>
+                {Object.keys(SECTIONS).map(s=>{
+                  const cnt=secCounts[s]||0, mx=Math.max(1,...Object.values(secCounts));
+                  const [r,g,b]=cnt?heatRGB(cnt/mx):[45,90,140];
+                  return (
+                    <div key={s} style={{display:"flex",alignItems:"center",gap:4,marginBottom:3}}>
+                      <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:700,width:12,color:cnt?`rgb(${r},${g},${b})`:C.muted}}>{s}</span>
+                      <div style={{flex:1,height:3,background:C.surfaceAlt,borderRadius:2,overflow:"hidden"}}>
+                        <div style={{width:`${mx?(cnt/mx)*100:0}%`,height:"100%",background:`rgb(${r},${g},${b})`,opacity:cnt?0.85:0}}/>
+                      </div>
+                      <span style={{fontSize:9,fontFamily:"'JetBrains Mono',monospace",color:cnt?`rgb(${r},${g},${b})`:C.muted,width:14,textAlign:"right"}}>{cnt||"-"}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Root ──────────────────────────────────────────────────────
+// Auth is handled entirely by the Netlify edge function (protect.js).
+// If the page loads, the user is already authenticated.
+function Root() {
+  const [sheetData,  setSheetData]  = useState(null);
+  const [lastSynced, setLastSynced] = useState("—");
+  const [fetchError, setFetchError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/data")
+      .then(r => r.json())
+      .then(({ rows, lastSynced: ls, error }) => {
+        if (cancelled) return;
+        if (error) { setFetchError(error); return; }
+        setSheetData(rows ?? []);
+        if (ls) setLastSynced(ls);
+      })
+      .catch(err => { if (!cancelled) setFetchError(err.message); });
+    return () => { cancelled = true; };
+  }, []);
+
+  if (fetchError)         return <DataErrorScreen msg={fetchError}/>;
+  if (sheetData === null) return <DataLoadingScreen/>;
+  return <Heatmap data={sheetData} lastSynced={lastSynced}/>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Root/>);
+</script>
+</body>
+</html>

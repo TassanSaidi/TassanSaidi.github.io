@@ -1,0 +1,12 @@
+{
+  "name": "wifi-heatmap",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WiFi signal heatmap with Netlify serverless backend and Google Sheets data source",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^2.0.0"
+  }
+}

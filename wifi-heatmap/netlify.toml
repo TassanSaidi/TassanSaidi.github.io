@@ -1,0 +1,33 @@
+[build]
+  publish = "public"
+  command = "echo 'No build step required'"
+
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"
+
+# Auth guard: runs before every request
+[[edge_functions]]
+  function = "protect"
+  path = "/*"
+
+# Route the login POST handler to the Netlify function
+[[redirects]]
+  from = "/api/login"
+  to = "/.netlify/functions/login"
+  status = 200
+
+# Route the data API to the Netlify function
+[[redirects]]
+  from = "/api/data"
+  to = "/.netlify/functions/get-data"
+  status = 200
+
+# Logout: clears the auth cookie and redirects to /login
+[[redirects]]
+  from = "/api/logout"
+  to = "/.netlify/functions/logout"
+  status = 200
+
+[context.production.environment]
+  NODE_VERSION = "18"
