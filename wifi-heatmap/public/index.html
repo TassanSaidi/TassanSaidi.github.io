@@ -109,7 +109,7 @@ function DataErrorScreen({ msg }) {
 // data       — array of { timestamp, desk, section, wifi, email, notes }
 // lastSynced — timestamp string of the newest row
 function Heatmap({ data, lastSynced }) {
-  const [tab,         setTab]         = useState("map");
+  const [tab,         setTab]         = useState("stats");
   const [dateFilt,    setDateFilt]    = useState("all");
   const [wifiFilt,    setWifiFilt]    = useState("all");
   const [showHeat,    setShowHeat]    = useState(true);
@@ -182,7 +182,7 @@ function Heatmap({ data, lastSynced }) {
 
       {/* Tab row */}
       <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center"}}>
-        {[["map","Map"],["stats","Stats"],["info","Info"]].map(([t,l])=>(
+        {[["stats","Stats"],["map","Map"],["info","Info"]].map(([t,l])=>(
           <button key={t} onClick={()=>setTab(t)} style={{
             padding:"8px 16px", border:"none",
             borderBottom:`2px solid ${tab===t?C.accent:"transparent"}`,
