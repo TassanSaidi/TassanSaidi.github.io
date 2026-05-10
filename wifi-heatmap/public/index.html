@@ -134,49 +134,11 @@ function Heatmap({ data, lastSynced }) {
   const [sectionFilt, setSectionFilt] = useState(null);
   const [isMobile,    setIsMobile]    = useState(() => window.innerWidth < 680);
 
-  // ── Report form state ──────────────────────────────────────
-  const [repSec,      setRepSec]      = useState("");
-  const [repDesk,     setRepDesk]     = useState("");
-  const [repWifi,     setRepWifi]     = useState("");
-  const [repEmail,    setRepEmail]    = useState("");
-  const [repNotes,    setRepNotes]    = useState("");
-  const [subState,    setSubState]    = useState("idle"); // idle|loading|success|error
-  const [subMsg,      setSubMsg]      = useState("");
-
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 680);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("wh_email");
-    if (saved) setRepEmail(saved);
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const isRoom = ROOMS.find(r => r.id === repSec);
-    const desk = isRoom ? repSec : repDesk;
-    if (!desk || !repWifi) return;
-    if (repEmail) localStorage.setItem("wh_email", repEmail);
-    setSubState("loading");
-    try {
-      const res = await fetch("/api/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ desk, section: isRoom ? repSec : repSec, wifi: repWifi, email: repEmail, notes: repNotes }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.ok) throw new Error(json.error || "Submit failed");
-      setSubState("success"); setSubMsg("Incident reported!");
-      setRepNotes("");
-      setTimeout(() => setSubState("idle"), 3000);
-    } catch (err) {
-      setSubState("error"); setSubMsg(err.message || "Failed — try again");
-      setTimeout(() => setSubState("idle"), 4000);
-    }
-  }
 
   const filtered = data.filter(inc => {
     if (dateFilt !== "all" && inc.timestamp) {
@@ -250,7 +212,7 @@ function Heatmap({ data, lastSynced }) {
 
       {/* Tab row */}
       <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center"}}>
-        {[["stats","Stats"],["map","Map"],["report","Report"],["info","Info"]].map(([t,l])=>(
+        {[["stats","Stats"],["map","Map"],["info","Info"]].map(([t,l])=>(
           <button key={t} onClick={()=>setTab(t)} style={{
             padding:"8px 16px", border:"none",
             borderBottom:`2px solid ${tab===t?C.accent:"transparent"}`,
@@ -304,83 +266,7 @@ function Heatmap({ data, lastSynced }) {
       {/* Content */}
       <div style={{flex:1,overflow:"hidden",display:"flex"}}>
 
-        {tab==="report" && (()=>{
-          const fld = {width:"100%",background:C.surface,color:C.text,border:`1px solid ${C.border}`,borderRadius:5,padding:"8px 10px",fontSize:12,fontFamily:"'DM Sans',sans-serif",outline:"none",boxSizing:"border-box"};
-          const lbl = {display:"block",fontSize:10,fontWeight:700,color:C.muted,marginBottom:5,textTransform:"uppercase",letterSpacing:0.8};
-          const isRoom = !!ROOMS.find(r=>r.id===repSec);
-          const deskOptions = repSec && !isRoom ? SECTIONS[repSec].cols.flat() : [];
-          const btnBg = subState==="success"?C.success:subState==="error"?C.danger:C.accent;
-          return (
-            <div style={{padding:16,overflowY:"auto",flex:1}}>
-              <div style={{maxWidth:400,margin:"0 auto"}}>
-                <div style={{fontSize:13,fontWeight:700,marginBottom:16,color:C.text}}>Report WiFi Incident</div>
-                <form onSubmit={handleSubmit}>
-
-                  {/* Section */}
-                  <div style={{marginBottom:12}}>
-                    <label style={lbl}>Section</label>
-                    <select value={repSec} onChange={e=>{setRepSec(e.target.value);setRepDesk("");}} required style={fld}>
-                      <option value="">— Select section —</option>
-                      <optgroup label="Desk Sections">
-                        {Object.keys(SECTIONS).map(s=>(
-                          <option key={s} value={s}>Section {s}</option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Meeting Rooms">
-                        {ROOMS.map(r=>(
-                          <option key={r.id} value={r.id}>{r.id}</option>
-                        ))}
-                      </optgroup>
-                    </select>
-                  </div>
-
-                  {/* Desk — only for letter sections */}
-                  {repSec && !isRoom && (
-                    <div style={{marginBottom:12}}>
-                      <label style={lbl}>Desk</label>
-                      <select value={repDesk} onChange={e=>setRepDesk(e.target.value)} required style={fld}>
-                        <option value="">— Select desk —</option>
-                        {deskOptions.map(d=>(
-                          <option key={d} value={d}>{d}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-
-                  {/* WiFi network */}
-                  <div style={{marginBottom:12}}>
-                    <label style={lbl}>WiFi Network</label>
-                    <select value={repWifi} onChange={e=>setRepWifi(e.target.value)} required style={fld}>
-                      <option value="">— Select network —</option>
-                      <option value="Staff">Staff</option>
-                      <option value="Mobile">Mobile</option>
-                      <option value="Guest">Guest</option>
-                    </select>
-                  </div>
-
-                  {/* Email */}
-                  <div style={{marginBottom:12}}>
-                    <label style={lbl}>Email <span style={{fontWeight:400,textTransform:"none"}}>(optional — saved for next time)</span></label>
-                    <input type="email" value={repEmail} onChange={e=>setRepEmail(e.target.value)} placeholder="your@email.com" style={fld}/>
-                  </div>
-
-                  {/* Notes */}
-                  <div style={{marginBottom:18}}>
-                    <label style={lbl}>Notes <span style={{fontWeight:400,textTransform:"none"}}>(optional)</span></label>
-                    <textarea value={repNotes} onChange={e=>setRepNotes(e.target.value)} placeholder="e.g. complete dropout, slow speeds, can't connect…" rows={3} style={{...fld,resize:"vertical",minHeight:68}}/>
-                  </div>
-
-                  <button type="submit" disabled={subState==="loading"} style={{width:"100%",padding:"11px 0",background:btnBg,border:"none",borderRadius:6,color:"#fff",fontSize:13,fontWeight:700,cursor:subState==="loading"?"wait":"pointer",fontFamily:"'DM Sans',sans-serif",transition:"background 0.2s"}}>
-                    {subState==="loading"?"Submitting…":subState==="success"?"✓ "+subMsg:subState==="error"?"✕ "+subMsg:"Report Incident"}
-                  </button>
-
-                </form>
-              </div>
-            </div>
-          );
-        })()}
-
-        {tab==="info" && (
+{tab==="info" && (
           <div style={{padding:20,overflowY:"auto",flex:1}}>
             <div style={{maxWidth:440}}>
               <div style={{background:C.surfaceAlt,borderRadius:8,border:`1px solid ${C.border}`,padding:16,marginBottom:12}}>
