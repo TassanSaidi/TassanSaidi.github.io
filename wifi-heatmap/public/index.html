@@ -47,6 +47,21 @@ const SECTIONS = {
   N:{ cx:93,  cy:31,  cols:[["N1","N2","N3","N4","N5","N6"],["N7","N8","N9","N10","N11","N12"]] },
   O:{ cx:98,  cy:31,  cols:[["O1","O2","O3","O4"]] },
 };
+
+// ── Special rooms (Training Centre + Meeting Rooms) ───────────
+// rx,ry,rw,rh are SVG pixel coords on the 1180×780 canvas.
+// id must match the "Desk" value submitted via Google Form.
+// label is used in compact UI elements (mobile nav, sidebar).
+const ROOMS = [
+  { id:"Training Centre", label:"TC",        rx:650, ry:365, rw:215, rh:155 },
+  { id:"Delete",          label:"Delete",    rx:55,  ry:160, rw:88,  rh:90  },
+  { id:"Alt",             label:"Alt",       rx:55,  ry:370, rw:88,  rh:75  },
+  { id:"Ctrl",            label:"Ctrl",      rx:55,  ry:558, rw:88,  rh:90  },
+  { id:"Tabs",            label:"Tabs",      rx:877, ry:365, rw:68,  rh:68  },
+  { id:"Press Start",     label:"Prs Start", rx:953, ry:365, rw:68,  rh:68  },
+  { id:"Spaces",          label:"Spaces",    rx:1028,ry:365, rw:68,  rh:68  },
+  { id:"Command",         label:"Command",   rx:1100,ry:365, rw:42,  rh:68  },
+];
 function buildDesks() {
   const out=[];
   Object.entries(SECTIONS).forEach(([section,cfg]) => {
@@ -141,16 +156,31 @@ function Heatmap({ data, lastSynced }) {
   const maxC=Math.max(1,...Object.values(counts));
 
   const secCounts={};
-  filtered.forEach(i => { const s=i.desk.replace(/[0-9]/g,""); secCounts[s]=(secCounts[s]||0)+1; });
+  filtered.forEach(i => {
+    const room=ROOMS.find(r=>r.id===i.desk);
+    const s=room?room.id:i.desk.replace(/[0-9]/g,"");
+    if(s) secCounts[s]=(secCounts[s]||0)+1;
+  });
 
   const topDesks=ALL_DESKS.map(d=>({...d,count:counts[d.id]||0})).filter(d=>d.count>0).sort((a,b)=>b.count-a.count).slice(0,8);
+
+  const roomCounts={};
+  ROOMS.forEach(r => { roomCounts[r.id]=filtered.filter(i=>i.desk===r.id).length; });
+  const maxRoomC=Math.max(1,...ROOMS.map(r=>roomCounts[r.id]));
   const activeDesk=hovered||selected;
   const selInc=selected?filtered.filter(i=>i.desk===selected).reverse().slice(0,8):[];
 
   // Zoom SVG viewBox to a section on mobile
   const svgViewBox = (() => {
     if (!sectionFilt || !isMobile) return "0 0 1180 780";
+    const room = ROOMS.find(r => r.id === sectionFilt);
+    if (room) {
+      const cx = room.rx + room.rw/2, cy = room.ry + room.rh/2;
+      const w = Math.max(room.rw + 120, 320), h = Math.max(room.rh + 120, 260);
+      return `${Math.max(0, cx-w/2)} ${Math.max(0, cy-h/2)} ${w} ${h}`;
+    }
     const sec = SECTIONS[sectionFilt];
+    if (!sec) return "0 0 1180 780";
     const svgCx = sec.cx / 100 * 1180, svgCy = sec.cy / 100 * 780;
     const w = 320, h = 260;
     return `${Math.max(0, svgCx - w/2)} ${Math.max(0, svgCy - h/2)} ${w} ${h}`;
@@ -215,16 +245,18 @@ function Heatmap({ data, lastSynced }) {
       {isMobile && tab==="map" && (
         <div style={{display:"flex",overflowX:"auto",padding:"4px 8px",gap:3,background:C.bg,borderBottom:`1px solid ${C.border}`,flexShrink:0,flexWrap:"nowrap"}}>
           <button style={{...tbtn(!sectionFilt),fontSize:9,padding:"3px 10px",flexShrink:0}} onClick={()=>setSectionFilt(null)}>All</button>
-          {Object.keys(SECTIONS).map(s=>{
+          {[...Object.keys(SECTIONS),...ROOMS.map(r=>r.id)].map(s=>{
             const cnt=secCounts[s]||0, mx=Math.max(1,...Object.values({...secCounts,_:0}));
             const [r,g,b]=cnt?heatRGB(cnt/mx):[45,90,140];
+            const room=ROOMS.find(rm=>rm.id===s);
+            const disp=room?room.label:s;
             return (
               <button key={s} onClick={()=>setSectionFilt(sectionFilt===s?null:s)} style={{
                 ...tbtn(sectionFilt===s), fontSize:9, padding:"3px 8px", flexShrink:0,
                 borderColor:cnt?`rgba(${r},${g},${b},0.7)`:undefined,
                 color:sectionFilt===s?C.accent:cnt?`rgb(${r},${g},${b})`:C.muted,
               }}>
-                {s}{cnt>0?` ${cnt}`:""}
+                {disp}{cnt>0?` ${cnt}`:""}
               </button>
             );
           })}
@@ -324,6 +356,11 @@ function Heatmap({ data, lastSynced }) {
                 <text x="99"  y="410" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Alt</text>
                 <text x="99"  y="606" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Ctrl</text>
                 <text x="757" y="450" fill="#3a5878" fontSize="10" fontFamily="DM Sans" textAnchor="middle">Training Centre</text>
+                <text x="911" y="396" fill="#3a5878" fontSize="8" fontFamily="DM Sans" textAnchor="middle">Tabs</text>
+                <text x="987" y="396" fill="#3a5878" fontSize="8" fontFamily="DM Sans" textAnchor="middle">Press</text>
+                <text x="987" y="406" fill="#3a5878" fontSize="8" fontFamily="DM Sans" textAnchor="middle">Start</text>
+                <text x="1062" y="396" fill="#3a5878" fontSize="8" fontFamily="DM Sans" textAnchor="middle">Spaces</text>
+                <text x="1121" y="396" fill="#3a5878" fontSize="8" fontFamily="DM Sans" textAnchor="middle">Cmd</text>
                 <text x="548" y="495" fill="#3a5878" fontSize="9" fontFamily="DM Sans" textAnchor="middle">Entrance</text>
 
                 {showHeat && ALL_DESKS.map(desk=>{
@@ -331,6 +368,13 @@ function Heatmap({ data, lastSynced }) {
                   if (!c) return null;
                   const t=c/maxC, rad=28+t*52, px=desk.x/100*1180, py=desk.y/100*780;
                   return <ellipse key={`h-${desk.id}`} cx={px} cy={py} rx={rad} ry={rad*0.85} fill={`url(#hg-${desk.id})`}/>;
+                })}
+
+                {showHeat && ROOMS.map(room=>{
+                  const c=roomCounts[room.id]||0;
+                  if(!c) return null;
+                  const t=c/maxRoomC, [r,g,b]=heatRGB(t);
+                  return <rect key={`rh-${room.id}`} x={room.rx} y={room.ry} width={room.rw} height={room.rh} fill={`rgba(${r},${g},${b},${0.15+t*0.35})`} rx="3" style={{pointerEvents:"none"}}/>;
                 })}
 
                 {ALL_DESKS.map(desk=>{
@@ -351,15 +395,39 @@ function Heatmap({ data, lastSynced }) {
                   );
                 })}
 
+                {ROOMS.map(room=>{
+                  const c=roomCounts[room.id]||0, t=c?c/maxRoomC:0;
+                  const [r,g,b]=c?heatRGB(t):[45,90,140];
+                  const cx=room.rx+room.rw/2, cy=room.ry+room.rh/2;
+                  const isActive=activeDesk===room.id;
+                  return (
+                    <g key={room.id} style={{cursor:"pointer"}}
+                      onClick={()=>{ const next=selected===room.id?null:room.id; setSelected(next); if(isMobile&&next) setSidebarOpen(true); }}
+                      onMouseEnter={()=>setHovered(room.id)}
+                      onMouseLeave={()=>setHovered(null)}>
+                      <rect x={room.rx} y={room.ry} width={room.rw} height={room.rh}
+                        fill="transparent"
+                        stroke={isActive?C.accent:c?`rgba(${r},${g},${b},0.6)`:"transparent"}
+                        strokeWidth={isActive?2:1} rx="3"/>
+                      {c>0 && <text x={cx} y={cy+4} textAnchor="middle" fontSize={room.rw>=150?"13":"10"} fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={`rgb(${r},${g},${b})`} style={{pointerEvents:"none"}}>{c}</text>}
+                    </g>
+                  );
+                })}
+
                 {activeDesk && (()=>{
                   const d=ALL_DESKS.find(dd=>dd.id===activeDesk);
-                  if (!d) return null;
-                  const c=counts[d.id]||0, px=d.x/100*1180, py=d.y/100*780;
+                  const room=!d?ROOMS.find(r=>r.id===activeDesk):null;
+                  if(!d && !room) return null;
+                  const c=d?(counts[d.id]||0):(roomCounts[activeDesk]||0);
+                  const px=d?d.x/100*1180:room.rx+room.rw/2;
+                  const py=d?d.y/100*780:room.ry+room.rh/2;
+                  const label=d?d.id:room.id;
                   const tx=Math.min(px+12,1080), ty=Math.max(py-36,20);
+                  const tw=Math.max(72, label.length*6+8);
                   return (
                     <g>
-                      <rect x={tx-4} y={ty-13} width={72} height={c?28:18} rx="3" fill="#0a1525" stroke="#2a4060" strokeWidth="1" opacity="0.95"/>
-                      <text x={tx} y={ty} fontSize="10" fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={C.accent}>{d.id}</text>
+                      <rect x={tx-4} y={ty-13} width={tw} height={c?28:18} rx="3" fill="#0a1525" stroke="#2a4060" strokeWidth="1" opacity="0.95"/>
+                      <text x={tx} y={ty} fontSize="10" fontWeight="700" fontFamily="JetBrains Mono,monospace" fill={C.accent}>{label}</text>
                       {c>0
                         ? <text x={tx} y={ty+12} fontSize="9" fontFamily="DM Sans,sans-serif" fill={C.danger}>{c} incident{c>1?"s":""}</text>
                         : <text x={tx} y={ty+12} fontSize="9" fontFamily="DM Sans,sans-serif" fill={C.muted}>No incidents</text>
@@ -395,7 +463,7 @@ function Heatmap({ data, lastSynced }) {
                 <div style={{background:C.surfaceAlt,borderRadius:6,border:`1px solid ${C.border}`,padding:10,marginBottom:10}}>
                   <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:14,fontWeight:700,color:C.accent}}>{selected}</div>
                   <div style={{fontSize:11,color:C.muted,margin:"3px 0"}}>
-                    <span style={{color:(counts[selected]||0)>0?C.danger:C.success,fontWeight:700}}>{counts[selected]||0}</span> incidents
+                    <span style={{color:(counts[selected]||roomCounts[selected]||0)>0?C.danger:C.success,fontWeight:700}}>{counts[selected]||roomCounts[selected]||0}</span> incidents
                   </div>
                   {selInc.map((inc,i)=>(
                     <div key={i} style={{fontSize:9,color:C.muted,padding:"3px 0",borderTop:`1px solid ${C.border}`}}>
@@ -426,12 +494,14 @@ function Heatmap({ data, lastSynced }) {
               </div>
               <div>
                 <div style={{fontSize:9,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:6}}>By Section</div>
-                {Object.keys(SECTIONS).map(s=>{
+                {[...Object.keys(SECTIONS),...ROOMS.map(r=>r.id)].map(s=>{
                   const cnt=secCounts[s]||0, mx=Math.max(1,...Object.values(secCounts));
                   const [r,g,b]=cnt?heatRGB(cnt/mx):[45,90,140];
+                  const room=ROOMS.find(rm=>rm.id===s);
+                  const disp=room?room.label:s;
                   return (
                     <div key={s} style={{display:"flex",alignItems:"center",gap:4,marginBottom:3}}>
-                      <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,fontWeight:700,width:12,color:cnt?`rgb(${r},${g},${b})`:C.muted}}>{s}</span>
+                      <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:9,fontWeight:700,width:room?42:12,flexShrink:0,color:cnt?`rgb(${r},${g},${b})`:C.muted}}>{disp}</span>
                       <div style={{flex:1,height:3,background:C.surfaceAlt,borderRadius:2,overflow:"hidden"}}>
                         <div style={{width:`${mx?(cnt/mx)*100:0}%`,height:"100%",background:`rgb(${r},${g},${b})`,opacity:cnt?0.85:0}}/>
                       </div>
