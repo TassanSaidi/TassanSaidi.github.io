@@ -192,8 +192,8 @@ function Heatmap({ data, lastSynced }) {
         ))}
       </div>
 
-      {/* Filter row — dropdowns on mobile, button strip on desktop */}
-      {tab==="map" && (isMobile ? (
+      {/* Filter row — dropdowns on all screen sizes, shown on stats + map tabs */}
+      {(tab==="map" || tab==="stats") && (
         <div style={{display:"flex",background:C.surfaceAlt,borderBottom:`1px solid ${C.border}`,flexShrink:0,alignItems:"center",padding:"5px 10px",gap:6}}>
           <select value={dateFilt} onChange={e=>setDateFilt(e.target.value)} style={{flex:1,background:C.surface,color:C.text,border:`1px solid ${C.border}`,borderRadius:5,padding:"5px 6px",fontSize:11,fontFamily:"'DM Sans',sans-serif"}}>
             <option value="all">All time</option>
@@ -207,25 +207,9 @@ function Heatmap({ data, lastSynced }) {
             <option value="Mobile">Mobile</option>
             <option value="Guest">Guest</option>
           </select>
-          <button style={{...tbtn(showHeat),flexShrink:0}} onClick={()=>setShowHeat(v=>!v)}>Heat</button>
+          {tab==="map" && <button style={{...tbtn(showHeat),flexShrink:0}} onClick={()=>setShowHeat(v=>!v)}>Heat</button>}
         </div>
-      ) : (
-        <div style={{display:"flex",background:C.surfaceAlt,borderBottom:`1px solid ${C.border}`,flexShrink:0,alignItems:"center",overflowX:"auto",padding:"4px 8px",gap:4,flexWrap:"nowrap"}}>
-          {["all","today","week","month"].map(f=>(
-            <button key={f} style={tbtn(dateFilt===f)} onClick={()=>setDateFilt(f)}>
-              {f==="all"?"All":f[0].toUpperCase()+f.slice(1)}
-            </button>
-          ))}
-          <div style={{width:1,height:20,background:C.border,flexShrink:0}}/>
-          {["all","Staff","Mobile","Guest"].map(f=>(
-            <button key={f} style={tbtn(wifiFilt===f)} onClick={()=>setWifiFilt(f)}>
-              {f==="all"?"All Networks":f}
-            </button>
-          ))}
-          <div style={{width:1,height:20,background:C.border,flexShrink:0}}/>
-          <button style={tbtn(showHeat)} onClick={()=>setShowHeat(v=>!v)}>Heat</button>
-        </div>
-      ))}
+      )}
 
       {/* Section zoom nav — mobile only */}
       {isMobile && tab==="map" && (
