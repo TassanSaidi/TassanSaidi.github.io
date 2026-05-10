@@ -2,6 +2,12 @@
   publish = "public"
   command = "echo 'No build step required'"
 
+[dev]
+  framework = "#static"
+  targetPort = 3999
+  publish = "public"
+  port = 8888
+
 [functions]
   node_bundler = "esbuild"
   directory = "netlify/functions"
