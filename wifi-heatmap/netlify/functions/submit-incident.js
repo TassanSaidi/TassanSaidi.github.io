@@ -39,11 +39,17 @@ exports.handler = async function (event) {
     });
 
     const text = await res.text();
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return jsonError(502, 'Apps Script returned a non-JSON response — check deployment settings and script permissions');
+    }
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: text,
+      body: JSON.stringify(parsed),
     };
   } catch (err) {
     return jsonError(502, `Could not reach Apps Script: ${err.message}`);
