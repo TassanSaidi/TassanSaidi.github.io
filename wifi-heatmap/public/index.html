@@ -109,12 +109,20 @@ function DataErrorScreen({ msg }) {
 // data       — array of { timestamp, desk, section, wifi, email, notes }
 // lastSynced — timestamp string of the newest row
 function Heatmap({ data, lastSynced }) {
-  const [tab,      setTab]      = useState("map");
-  const [dateFilt, setDateFilt] = useState("all");
-  const [wifiFilt, setWifiFilt] = useState("all");
-  const [showHeat, setShowHeat] = useState(true);
-  const [selected, setSelected] = useState(null);
-  const [hovered,  setHovered]  = useState(null);
+  const [tab,         setTab]         = useState("map");
+  const [dateFilt,    setDateFilt]    = useState("all");
+  const [wifiFilt,    setWifiFilt]    = useState("all");
+  const [showHeat,    setShowHeat]    = useState(true);
+  const [selected,    setSelected]    = useState(null);
+  const [hovered,     setHovered]     = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile,    setIsMobile]    = useState(() => window.innerWidth < 680);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 680);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const filtered = data.filter(inc => {
     if (dateFilt !== "all" && inc.timestamp) {
@@ -146,6 +154,11 @@ function Heatmap({ data, lastSynced }) {
         <div style={{width:8,height:8,borderRadius:"50%",background:C.success,boxShadow:`0 0 7px ${C.success}`}}/>
         <span style={{fontSize:15,fontWeight:700}}>Cape Town WiFi Heatmap</span>
         <div style={{flex:1}}/>
+        {isMobile && (
+          <button onClick={()=>setSidebarOpen(v=>!v)} style={{...tbtn(sidebarOpen),fontSize:10,padding:"3px 8px",marginRight:4}}>
+            {sidebarOpen ? "Close" : "Panel"}
+          </button>
+        )}
         <button onClick={()=>window.location.href='/api/logout'} style={{...tbtn(false),fontSize:10,padding:"3px 8px"}}>Lock</button>
       </div>
 
@@ -158,7 +171,7 @@ function Heatmap({ data, lastSynced }) {
       </div>
 
       {/* Tabs + toolbar */}
-      <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center",flexWrap:"wrap"}}>
+      <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center",flexWrap:isMobile?"nowrap":"wrap",overflowX:isMobile?"auto":"visible"}}>
         {[["map","Map"],["stats","Stats"],["info","Info"]].map(([t,l])=>(
           <button key={t} onClick={()=>setTab(t)} style={{
             padding:"8px 16px", border:"none",
@@ -296,7 +309,7 @@ function Heatmap({ data, lastSynced }) {
                   const px=desk.x/100*1180, py=desk.y/100*780;
                   return (
                     <g key={desk.id} style={{cursor:"pointer"}}
-                      onClick={()=>setSelected(selected===desk.id?null:desk.id)}
+                      onClick={()=>{ const next=selected===desk.id?null:desk.id; setSelected(next); if(isMobile&&next) setSidebarOpen(true); }}
                       onMouseEnter={()=>setHovered(desk.id)}
                       onMouseLeave={()=>setHovered(null)}>
                       {isActive && <circle cx={px} cy={py} r={dr+5} fill="none" stroke="white" strokeWidth="1.5" opacity="0.6"/>}
@@ -326,8 +339,18 @@ function Heatmap({ data, lastSynced }) {
               </svg>
             </div>
 
-            {/* Sidebar */}
-            <div style={{width:190,background:C.surface,borderLeft:`1px solid ${C.border}`,overflowY:"auto",flexShrink:0,padding:10}}>
+            {/* Sidebar — fixed bottom drawer on mobile, inline panel on desktop */}
+            <div style={isMobile ? {
+              position:"fixed", bottom:0, left:0, right:0, zIndex:50,
+              maxHeight:"60vh", overflowY:"auto", padding:14,
+              background:C.surface, borderTop:`2px solid ${C.accent}`,
+              transform:sidebarOpen?"translateY(0)":"translateY(110%)",
+              transition:"transform 0.22s ease",
+            } : {
+              width:190, background:C.surface,
+              borderLeft:`1px solid ${C.border}`,
+              overflowY:"auto", flexShrink:0, padding:10,
+            }}>
               {showHeat && (
                 <div style={{marginBottom:12}}>
                   <div style={{fontSize:9,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:0.8,marginBottom:5}}>Heat Scale</div>
