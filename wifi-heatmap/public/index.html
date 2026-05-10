@@ -170,8 +170,8 @@ function Heatmap({ data, lastSynced }) {
         <span>Last synced: <b style={{color:C.text}}>{lastSynced || "—"}</b></span>
       </div>
 
-      {/* Tabs + toolbar */}
-      <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center",flexWrap:isMobile?"nowrap":"wrap",overflowX:isMobile?"auto":"visible"}}>
+      {/* Tab row */}
+      <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,background:C.surface,flexShrink:0,alignItems:"center"}}>
         {[["map","Map"],["stats","Stats"],["info","Info"]].map(([t,l])=>(
           <button key={t} onClick={()=>setTab(t)} style={{
             padding:"8px 16px", border:"none",
@@ -180,25 +180,26 @@ function Heatmap({ data, lastSynced }) {
             fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
           }}>{l}</button>
         ))}
-        {tab==="map" && (
-          <>
-            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
-            {["all","today","week","month"].map(f=>(
-              <button key={f} style={tbtn(dateFilt===f)} onClick={()=>setDateFilt(f)}>
-                {f==="all"?"All":f[0].toUpperCase()+f.slice(1)}
-              </button>
-            ))}
-            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
-            {["all","Staff","Mobile","Guest"].map(f=>(
-              <button key={f} style={tbtn(wifiFilt===f)} onClick={()=>setWifiFilt(f)}>
-                {f==="all"?"All Networks":f}
-              </button>
-            ))}
-            <div style={{width:1,height:20,background:C.border,margin:"0 4px"}}/>
-            <button style={tbtn(showHeat)} onClick={()=>setShowHeat(v=>!v)}>Heat</button>
-          </>
-        )}
       </div>
+
+      {/* Filter row — only on map tab, always horizontally scrollable */}
+      {tab==="map" && (
+        <div style={{display:"flex",background:C.surfaceAlt,borderBottom:`1px solid ${C.border}`,flexShrink:0,alignItems:"center",overflowX:"auto",padding:"4px 8px",gap:4,flexWrap:"nowrap"}}>
+          {["all","today","week","month"].map(f=>(
+            <button key={f} style={tbtn(dateFilt===f)} onClick={()=>setDateFilt(f)}>
+              {f==="all"?"All":f[0].toUpperCase()+f.slice(1)}
+            </button>
+          ))}
+          <div style={{width:1,height:20,background:C.border,flexShrink:0}}/>
+          {["all","Staff","Mobile","Guest"].map(f=>(
+            <button key={f} style={tbtn(wifiFilt===f)} onClick={()=>setWifiFilt(f)}>
+              {f==="all"?"All Networks":f}
+            </button>
+          ))}
+          <div style={{width:1,height:20,background:C.border,flexShrink:0}}/>
+          <button style={tbtn(showHeat)} onClick={()=>setShowHeat(v=>!v)}>Heat</button>
+        </div>
+      )}
 
       {/* Content */}
       <div style={{flex:1,overflow:"hidden",display:"flex"}}>
