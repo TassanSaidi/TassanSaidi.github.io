@@ -35,5 +35,11 @@
   to = "/.netlify/functions/logout"
   status = 200
 
+# Submit a new WiFi incident row
+[[redirects]]
+  from = "/api/submit"
+  to = "/.netlify/functions/submit-incident"
+  status = 200
+
 [context.production.environment]
   NODE_VERSION = "18"
