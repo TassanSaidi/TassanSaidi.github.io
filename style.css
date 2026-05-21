@@ -455,6 +455,57 @@ section h3 {
     color: #e0e0e0;
 }
 
+/* Post Images */
+.post-figure {
+    margin: 2rem 0;
+}
+
+.post-figure--wide {
+    margin-left: -2rem;
+    margin-right: -2rem;
+}
+
+.post-figure--phone {
+    display: flex;
+    justify-content: center;
+}
+
+.post-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.post-figure--wide .post-img {
+    border-radius: 10px;
+    max-height: 480px;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+.post-figure--phone .post-img {
+    width: 280px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .post-figure--wide {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+    }
+
+    .post-figure--wide .post-img {
+        border-radius: 0;
+        max-height: 320px;
+    }
+
+    .post-figure--phone .post-img {
+        width: 240px;
+    }
+}
+
 /* Footer */
 footer {
     border-top: 1px solid #2a2a2a;
