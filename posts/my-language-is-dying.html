@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Language Is Dying - Tassan Saidi</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1 class="logo">Tassan Saidi</h1>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../blog.html">Blog</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-content">
+            <h1 class="post-title">My Language Is Dying</h1>
+            <p class="post-meta">August 15, 2026 · On Code, Identity, and What LLMs Are Taking From Us</p>
+
+            <p>Language forms part of our identity. Not only because of our backgrounds but because it allows us to communicate the most intimate parts of ourselves to the next person. Through it, we can observe tendencies unique to certain cultures. French is portrayed as the language of love. I do not speak it so I still suspect that it is just the accent. But these personas that languages have tell us something about the people that speak them. The nuances make all the difference, because even within one language we get different dialects. We find unique ways through which communities adopt a social contract to say this is how we express this thing. And as one gets more comfortable with a language, we observe unique and obscure ways to express ideas that all of us hold but just did not know how to say within the syntax of our own tongue.</p>
+
+            <p>There are hard grammatical rules that all of us are taught as children, from small things such as "me and my friend" should be "my friend and I". And then there are tendencies that we pick up from those around us. They may or may not break syntax, but they slowly become part of how we express ourselves. From saying "f***" every time something unexpected happens, to saying "eish" because you have lived long enough in South Africa to adopt that lexicon. We can identify each other and connect through these tendencies. There is nothing better than knowing you can use an expletive in front of someone. It lets you know that person is cool.</p>
+
+            <h2>Code as Language</h2>
+
+            <p>For the longest time I viewed writing code in the same way. Whether it was Java or Python, I had a connection to the code that I wrote. It started off with Java, a language with an infinite number of rules, and yet somehow many ways through which those rules could be observed. Stylistically there was a way in which I wrote Java code, and it changed over time but certain things remained. Like using <code>camelCase</code> as opposed to <code>snake_case</code> when naming variables. And my personal favourite, I loved reusing old existing logic to help solve a completely unrelated but equally important problem. This required me to sit with challenges and reason through them within the confines of Java, and secondly within the context of what already existed in the codebase. Most of the work that I built carried fragments of the developers that came before me, and I hoped that someday someone would carry on with what I left behind.</p>
+
+            <p>Beyond getting a particular feature to work, I wrote code with an audience in mind, similar to how one would write a book. I knew what certain developers in my team loved to see and I catered for that. There were developers with good foundations who loved robust code, code that was not amazing but could withstand most pressure. And then there were developers who were always up to date with new frameworks and philosophies, and they appreciated novelty. Through my code, I responded to the pressure that my peers and managers would place on my shoulders. Through it, I was challenged to find new ways of getting a feature to work whilst remaining compliant with privacy laws.</p>
+
+            <p>Most of this was shaped at a startup where I worked for just under three years. The demands were never-ending, the hours were hectic and I was challenged. Not only as an engineer but as a person. We would reach these points where a product had somewhat matured and then pivot in a new direction based on feedback from a client. It felt as though I had given my all, resolved many internal conflicts when making decisions and come to a solid understanding of what we were building, and that somehow was not good enough. It left me with a little less motivation to carry out the next task, because I attached myself to the lines of code that I wrote. Every if-statement, every function was a representation of me and my thought process. Even the decisions that I made out of habit created a theme, one that was a function of everything I had accumulated over the years.</p>
+
+            <h2>The Code Review as Mirror</h2>
+
+            <p>And I loved getting feedback on my code. Comments on my PRs, whilst not ideal when I just wanted to finish a task, made for some illuminating conversations. Most of the time the code was functional at the point when I would invite others to review it, but somehow there were use cases I never considered, principles I was not familiar with. It felt as though I was being given an opportunity to take from every interaction that my peers had before me, and to allow that to inform how I wrote code. It allowed me to see things through the lens of my peers, and through that lens I was actually able to peer into my own psyche. To see my own biases. The assumptions that supported some of my decisions were often loosened, and I grew as a consequence. I developed taste, and I have carried those interactions with me as the years have gone by.</p>
+
+            <p>So my code was uniquely mine, and I had a connection to it. I loved seeing it function, and like a second edition I loved how it changed over time. You could tell my naivety from when I first started working all the way to the somewhat seasoned backend developer that I am now. Still got a long way to go.</p>
+
+            <h2>Then Came the LLMs</h2>
+
+            <p>Then came these LLMs. At first they were garbage, but they kept improving. I went from using them to write the kind of code that I do not care for, such as reading from a file or refactoring something old, to actually being able to design and implement full features. They produce outputs so quickly that they allow me to iterate at a rate like never before. Which means they do not need to get something right immediately, they only need to show promise, and it is getting cheaper to invest time and tinker with them. I can ship code faster than I ever could. And in a single day I have many of those same critical points, where I see that what I implemented has diminishing returns beyond a certain point. The only difference is that I have these discussions with myself and Claude. I can start a new session to review what a previous session implemented, and another one to implement the recommendations. With a simple markdown file, I am able to define a standard for the quality of code that I want, and a model with enough reasoning capacity is able to meet that standard. I do not have to think about syntax or semantics. I can focus on the bigger picture. Granted there are times when I have to intervene.</p>
+
+            <p>The code still has a fingerprint. But it is static. It was human reviewers who would interact, and through that flux we produced artefacts that were pieced together in particular ways. Now the flux is somewhat artificial. We define the standard once and never again, and we are robbed of those moments where we mesh, disagree, and inch towards a resolution that suits everyone. Human beings make mistakes. There was almost always a line of code that did not conform to standards but made its way to production anyway, because I wrote it while I was tired and my peers did not want to spend an hour on a long review. The code review facilitated all of that, because there was almost always something small to nitpick and some key architectural decision to argue about. Now the code more or less always conforms. We can still have the architectural debates. But the small things, the accumulated grit that made a codebase feel like it belonged to specific people, those are gone. And the reviewer is gone too. Not just someone checking the diff, but someone who had read my code before and could recognise me in this one. Someone tracking me across time. A model reviews what is in front of it. It has never met me.</p>
+
+            <h2>The Cost of Convenience</h2>
+
+            <p>And I miss the feedback that helped me develop taste when it came to code quality. Now that taste is baked into a markdown file. I worry for those just beginning their careers, because they can get a model to generate higher quality code than they know how to write on their own. It is like being able to write a sonnet with no knowledge of iambic pentameter. It works, but at what cost. And I should be honest that this is not only their problem. My taste is in that markdown file too, and a standard I wrote a year ago cannot argue back.</p>
+
+            <p>I still face situations where I need to pivot, but I embrace them now because it is not my style and my effort being set aside. I hold on to my ideas, my vision for what something should be. But the how? That is somewhat of a black box with certain restrictions. And so I must admit that my language is dying. Or at least that I have been forced to find new ways to express myself as a software developer. What worries me is not that nobody will understand me when I say "eish". It is that when I do say it, it will be because that was the next most probable word for the situation.</p>
+
+            <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Tassan Saidi</p>
+    </footer>
+</body>
+</html>
