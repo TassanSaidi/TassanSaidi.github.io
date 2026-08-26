@@ -3,39 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Built an Augmented RAG Chatbot and It Works on My Machine - Tassan Saidi</title>
+    <title>I Built an Adaptive RAG Chatbot and It Works on My Machine - Tassan Saidi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="nav-container">
-                <h1 class="logo">Tassan Saidi</h1>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../blog.html">Blog</a></li>
-                </ul>
-            </div>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a class="logo" href="../index.html">Tassan Saidi</a>
+            <ul class="nav-links">
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../blog.html" aria-current="page">Blog</a></li>
+                <li><a href="https://github.com/TassanSaidi">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+            </ul>
         </nav>
     </header>
 
-    <main>
-        <article class="post-content">
-            <h1 class="post-title">I Built an Augmented RAG Chatbot and It Works on My Machine</h1>
-            <p class="post-meta">January 4, 2026 · A Personal Journey Through RAG, Vector Search, and Production Failures</p>
+    <main class="wrap">
+        <article class="article">
+            <div class="article-meta">
+                <span class="tag">Engineering</span>
+                <span>January 4, 2026</span>
+                <span>&middot;</span>
+                <span>12 min read</span>
+            </div>
+            <h1 class="post-title">I Built an Adaptive RAG Chatbot and It Works on My Machine</h1>
+            <hr>
+            <div class="post-content">
+                <p>You know that feeling when your code works perfectly in development, and then you deploy it and everything burns to the ground? This is that story.</p>
 
-            <p>You know that feeling when your code works perfectly in development, and then you deploy it and everything burns to the ground? This is that story.</p>
+                <p>What started as "let me build a simple chatbot using the Gemini API" turned into a months-long journey through embeddings, vector databases, adaptive retrieval strategies, and the unique pain of debugging why DuckDuckGo decided my chatbot was a spam bot.</p>
 
-            <p>What started as "let me build a simple chatbot using the Gemini API" turned into a months-long journey through embeddings, vector databases, adaptive retrieval strategies, and the unique pain of debugging why DuckDuckGo decided my chatbot was a spam bot.</p>
+                <p>This is the story of building an adaptive RAG (Retrieval-Augmented Generation) chatbot that can answer questions about 130,000+ Wikipedia passages, handle queries in Shona and respond back in Shona, and—most importantly—fall back gracefully when things inevitably break.</p>
 
-            <p>This is the story of building an adaptive RAG (Retrieval-Augmented Generation) chatbot that can answer questions about 130,000+ Wikipedia passages, handle queries in Shona and respond back in Shona, and—most importantly—fall back gracefully when things inevitably break.</p>
+                <p><strong>Spoiler:</strong> It works on my machine. Production was... a different story.</p>
 
-            <p><strong>Spoiler:</strong> It works on my machine. Production was... a different story.</p>
+                <h3>The Problem: LLMs Don't Know Everything</h3>
 
-            <h3>The Problem: LLMs Don't Know Everything</h3>
-
-            <p>I started with a simple terminal chat app using Gemini's API. Here's the entire "architecture":</p>
+                <p>I started with a simple terminal chat app using Gemini's API. Here's the entire "architecture":</p>
 
 <pre><code class="language-python"># app.py - The whole thing
 history = []
@@ -50,26 +58,26 @@ while True:
     print(f"AI: {response.choices[0].message.content}")
 </code></pre>
 
-            <p>It worked! But then I asked it about South African visa requirements for specific countries, and it confidently told me things that were... creative. Not wrong in an obvious way, just subtly incorrect. The kind of incorrect that would get someone denied at the border.</p>
+                <p>It worked! But then I asked it about South African visa requirements for specific countries, and it confidently told me things that were... creative. Not wrong in an obvious way, just subtly incorrect. The kind of incorrect that would get someone denied at the border.</p>
 
-            <p>The problem: <strong>LLMs hallucinate</strong>. They're trained on data, but they don't have access to specific, up-to-date information. They'll give you an answer even when they shouldn't.</p>
+                <p>The problem: <strong>LLMs hallucinate</strong>. They're trained on data, but they don't have access to specific, up-to-date information. They'll give you an answer even when they shouldn't.</p>
 
-            <p>I needed a way to give the model <em>actual</em> information to work with, not just its training data. That's where RAG comes in.</p>
+                <p>I needed a way to give the model <em>actual</em> information to work with, not just its training data. That's where RAG comes in.</p>
 
-            <h3>Discovery: Embeddings Are Just Numbers</h3>
+                <h3>Discovery: Embeddings Are Just Numbers</h3>
 
-            <p>I'll be honest—when I first heard about "embeddings," I thought it was some ML black magic. Turns out, it's just a fancy way of saying "convert text into a bunch of numbers that capture meaning."</p>
+                <p>I'll be honest—when I first heard about "embeddings," I thought it was some ML black magic. Turns out, it's just a fancy way of saying "convert text into a bunch of numbers that capture meaning."</p>
 
-            <p>I used the <code>all-MiniLM-L6-v2</code> model from sentence-transformers. Why? Because:</p>
+                <p>I used the <code>all-MiniLM-L6-v2</code> model from sentence-transformers. Why? Because:</p>
 
-            <ul>
-                <li>It's small (80MB vs multi-GB monsters)</li>
-                <li>It's fast (runs on CPU, no GPU needed)</li>
-                <li>It generates 384-dimensional vectors (good balance of detail vs size)</li>
-                <li>It just... works</li>
-            </ul>
+                <ul>
+                    <li>It's small (80MB vs multi-GB monsters)</li>
+                    <li>It's fast (runs on CPU, no GPU needed)</li>
+                    <li>It generates 384-dimensional vectors (good balance of detail vs size)</li>
+                    <li>It just... works</li>
+                </ul>
 
-            <p>Here's the actual code that powers the embedding service:</p>
+                <p>Here's the actual code that powers the embedding service:</p>
 
 <pre><code class="language-python"># From src/core/embeddings.py
 from sentence_transformers import SentenceTransformer
@@ -85,15 +93,15 @@ class EmbeddingService:
         return np.array(embedding)
 </code></pre>
 
-            <p>That's it. Three lines (okay, more with the class structure). Feed it a sentence, get back 384 numbers that somehow capture what the sentence means.</p>
+                <p>That's it. Three lines (okay, more with the class structure). Feed it a sentence, get back 384 numbers that somehow capture what the sentence means.</p>
 
-            <p>The magic happens because similar sentences get similar numbers. "How do I bake a cake?" and "What's the recipe for making cake?" will have vectors that are close together in 384-dimensional space. Wild, right?</p>
+                <p>The magic happens because similar sentences get similar numbers. "How do I bake a cake?" and "What's the recipe for making cake?" will have vectors that are close together in 384-dimensional space. Wild, right?</p>
 
-            <h3>Enter FAISS: Finding Needles in 130K Haystacks</h3>
+                <h3>Enter FAISS: Finding Needles in 130K Haystacks</h3>
 
-            <p>So now I had embeddings. Great. But I had 130,000+ Wikipedia passages. How do I find which ones are relevant to a user's question?</p>
+                <p>So now I had embeddings. Great. But I had 130,000+ Wikipedia passages. How do I find which ones are relevant to a user's question?</p>
 
-            <p>That's where FAISS (Facebook AI Similarity Search) comes in. It's a library that does exactly one thing: find similar vectors really, really fast.</p>
+                <p>That's where FAISS (Facebook AI Similarity Search) comes in. It's a library that does exactly one thing: find similar vectors really, really fast.</p>
 
 <pre><code class="language-python"># From src/core/vector_store.py
 import faiss
@@ -117,32 +125,32 @@ class VectorStore:
         return results
 </code></pre>
 
-            <p>I'm using <code>IndexFlatL2</code> which uses L2 (Euclidean) distance. There are fancier indexes (IVF, HNSW), but for 130K vectors? Flat search is fast enough and guarantees exact results.</p>
+                <p>I'm using <code>IndexFlatL2</code> which uses L2 (Euclidean) distance. There are fancier indexes (IVF, HNSW), but for 130K vectors? Flat search is fast enough and guarantees exact results.</p>
 
-            <p>The user asks a question → I convert it to a 384-dim vector → FAISS finds the 3-5 most similar document vectors → I grab those documents and feed them to the LLM.</p>
+                <p>The user asks a question → I convert it to a 384-dim vector → FAISS finds the 3-5 most similar document vectors → I grab those documents and feed them to the LLM.</p>
 
-            <p><strong>This is RAG</strong>. Retrieve relevant information, then let the LLM generate an answer based on that information.</p>
+                <p><strong>This is RAG</strong>. Retrieve relevant information, then let the LLM generate an answer based on that information.</p>
 
-            <h3>When It All Broke: The DuckDuckGo Incident</h3>
+                <h3>When It All Broke: The DuckDuckGo Incident</h3>
 
-            <p>Everything worked beautifully in development. The chatbot would fall back to web search when it couldn't find answers in the Wikipedia corpus. I was using DuckDuckGo's API because it's free and doesn't require authentication. What could go wrong?</p>
+                <p>Everything worked beautifully in development. The chatbot would fall back to web search when it couldn't find answers in the Wikipedia corpus. I was using DuckDuckGo's API because it's free and doesn't require authentication. What could go wrong?</p>
 
-            <p>In production: <strong>everything</strong>.</p>
+                <p>In production: <strong>everything</strong>.</p>
 
-            <p>Turns out, when your chatbot gets popular (or just when you're testing it aggressively), DuckDuckGo starts rate limiting you. Hard. I'd get maybe 3-4 queries through, then:</p>
+                <p>Turns out, when your chatbot gets popular (or just when you're testing it aggressively), DuckDuckGo starts rate limiting you. Hard. I'd get maybe 3-4 queries through, then:</p>
 
 <pre><code>RateLimitError: Ratelimit
 </code></pre>
 
-            <p>My first instinct: "Just add exponential backoff!" Spoiler: That doesn't work when the rate limit window is measured in hours, not seconds.</p>
+                <p>My first instinct: "Just add exponential backoff!" Spoiler: That doesn't work when the rate limit window is measured in hours, not seconds.</p>
 
-            <p>The fix? Add Tavily as a fallback to the fallback. Now the search flow is:</p>
+                <p>The fix? Add Tavily as a fallback to the fallback. Now the search flow is:</p>
 
-            <ol>
-                <li>Try DuckDuckGo (free, fast, but rate limited)</li>
-                <li>If rate limited, try Tavily (paid, but has generous free tier)</li>
-                <li>If both fail, fall back to just using the vector store context</li>
-            </ol>
+                <ol>
+                    <li>Try DuckDuckGo (free, fast, but rate limited)</li>
+                    <li>If rate limited, try Tavily (paid, but has generous free tier)</li>
+                    <li>If both fail, fall back to just using the vector store context</li>
+                </ol>
 
 <pre><code class="language-python"># From src/core/web_search.py
 def search(self, query: str, vectorstore_context: str = None):
@@ -166,13 +174,13 @@ def search(self, query: str, vectorstore_context: str = None):
     return documents
 </code></pre>
 
-            <p>Three-tier fallback architecture, born from production pain. It works on my machine, and now it (mostly) works in production too.</p>
+                <p>Three-tier fallback architecture, born from production pain. It works on my machine, and now it (mostly) works in production too.</p>
 
-            <h3>The Context Loss Bug: A Debugging Nightmare</h3>
+                <h3>The Context Loss Bug: A Debugging Nightmare</h3>
 
-            <p>Here's a fun one. I implemented query transformation—when the retrieved documents aren't relevant, the system rewrites the query and tries again. Sounds smart, right?</p>
+                <p>Here's a fun one. I implemented query transformation—when the retrieved documents aren't relevant, the system rewrites the query and tries again. Sounds smart, right?</p>
 
-            <p>Except I kept losing context. The transformed query would come back, search would happen, but then the generation step wouldn't have access to the retrieved documents. The error logs made no sense:</p>
+                <p>Except I kept losing context. The transformed query would come back, search would happen, but then the generation step wouldn't have access to the retrieved documents. The error logs made no sense:</p>
 
 <pre><code>DEBUG: Retrieved 3 documents
 DEBUG: Grading documents... 0/3 relevant
@@ -181,11 +189,11 @@ DEBUG: Retrieved 5 documents
 ERROR: No documents in context during generation
 </code></pre>
 
-            <p>How are there documents retrieved but none in context?!</p>
+                <p>How are there documents retrieved but none in context?!</p>
 
-            <p>Turns out, LangGraph (the state management library I'm using) doesn't automatically preserve state between node transitions the way I expected. When the query transformation node updated the query, it <em>didn't</em> preserve the retrieved documents in state for the next retrieval cycle.</p>
+                <p>Turns out, LangGraph (the state management library I'm using) doesn't automatically preserve state between node transitions the way I expected. When the query transformation node updated the query, it <em>didn't</em> preserve the retrieved documents in state for the next retrieval cycle.</p>
 
-            <p>The fix was adding a <code>save_context</code> node that explicitly preserves document context:</p>
+                <p>The fix was adding a <code>save_context</code> node that explicitly preserves document context:</p>
 
 <pre><code class="language-python"># From src/core/adaptive_rag/graph.py
 workflow.add_node("retrieve", self.nodes.retrieve)
@@ -196,11 +204,11 @@ workflow.add_edge("retrieve", "save_context")
 workflow.add_edge("save_context", "grade_documents")
 </code></pre>
 
-            <p>Now the documents are explicitly saved to state before grading. Problem solved. Only took me 6 hours of debugging and reading LangGraph source code to figure out.</p>
+                <p>Now the documents are explicitly saved to state before grading. Problem solved. Only took me 6 hours of debugging and reading LangGraph source code to figure out.</p>
 
-            <h3>The LangGraph Pipeline: Adaptive RAG in Action</h3>
+                <h3>The LangGraph Pipeline: Adaptive RAG in Action</h3>
 
-            <p>After all those failures, here's what the final adaptive RAG pipeline looks like:</p>
+                <p>After all those failures, here's what the final adaptive RAG pipeline looks like:</p>
 
 <pre class="ascii-diagram">
 ┌─────────────────────────────────────────────────────┐
@@ -258,7 +266,7 @@ workflow.add_edge("save_context", "grade_documents")
 
 <div id="rag-diagrams-root" class="react-diagrams"></div>
 
-            <p>This is implemented using LangGraph's StateGraph:</p>
+                <p>This is implemented using LangGraph's StateGraph:</p>
 
 <pre><code class="language-python"># From src/core/adaptive_rag/graph.py
 workflow = StateGraph(AdaptiveRAGState)
@@ -304,58 +312,58 @@ workflow.add_edge("generate", END)
 workflow.add_edge("direct_response", END)
 </code></pre>
 
-            <p>The system makes intelligent decisions at every step:</p>
+                <p>The system makes intelligent decisions at every step:</p>
 
-            <ul>
-                <li><strong>Should I use the vector store or web search?</strong> → Router decides based on query type</li>
-                <li><strong>Are these retrieved documents actually relevant?</strong> → Grader checks each one</li>
-                <li><strong>None of them are good, what now?</strong> → Transform the query and try again</li>
-                <li><strong>Still nothing after retrying?</strong> → Fall back to web search</li>
-            </ul>
+                <ul>
+                    <li><strong>Should I use the vector store or web search?</strong> → Router decides based on query type</li>
+                    <li><strong>Are these retrieved documents actually relevant?</strong> → Grader checks each one</li>
+                    <li><strong>None of them are good, what now?</strong> → Transform the query and try again</li>
+                    <li><strong>Still nothing after retrying?</strong> → Fall back to web search</li>
+                </ul>
 
-            <p>This is what "adaptive" means in adaptive RAG. The system adapts its strategy based on what it finds.</p>
+                <p>This is what "adaptive" means in adaptive RAG. The system adapts its strategy based on what it finds.</p>
 
-            <h3>Lessons Learned: Why "It Works on My Machine" Matters</h3>
+                <h3>Lessons Learned: Why "It Works on My Machine" Matters</h3>
 
-            <p>After 67+ commits, countless debugging sessions, and more rate limit errors than I care to remember, here's what I learned:</p>
+                <p>After 67+ commits, countless debugging sessions, and more rate limit errors than I care to remember, here's what I learned:</p>
 
-            <h4>1. Production is a Different Beast</h4>
+                <h4>1. Production is a Different Beast</h4>
 
-            <p>Things that work perfectly in development will absolutely find new and creative ways to fail in production. Plan for it. Build fallbacks. Log everything.</p>
+                <p>Things that work perfectly in development will absolutely find new and creative ways to fail in production. Plan for it. Build fallbacks. Log everything.</p>
 
-            <h4>2. Embeddings Are Surprisingly Powerful</h4>
+                <h4>2. Embeddings Are Surprisingly Powerful</h4>
 
-            <p>I was skeptical at first. "Just turn text into numbers?" But the ability to find semantically similar content across 130K+ documents in milliseconds is genuinely impressive.</p>
+                <p>I was skeptical at first. "Just turn text into numbers?" But the ability to find semantically similar content across 130K+ documents in milliseconds is genuinely impressive.</p>
 
-            <h4>3. State Management is Hard</h4>
+                <h4>3. State Management is Hard</h4>
 
-            <p>LangGraph is great, but understanding how state flows through your graph takes time. Draw diagrams. Add debug logging at every node. Save context explicitly when you need it.</p>
+                <p>LangGraph is great, but understanding how state flows through your graph takes time. Draw diagrams. Add debug logging at every node. Save context explicitly when you need it.</p>
 
-            <h4>4. Always Have a Fallback</h4>
+                <h4>4. Always Have a Fallback</h4>
 
-            <p>My three-tier web search fallback (DuckDuckGo → Tavily → Vectorstore) saved me countless times. If you depend on an external service, assume it will fail.</p>
+                <p>My three-tier web search fallback (DuckDuckGo → Tavily → Vectorstore) saved me countless times. If you depend on an external service, assume it will fail.</p>
 
-            <h4>5. "It Works on My Machine" is Actually Valid</h4>
+                <h4>5. "It Works on My Machine" is Actually Valid</h4>
 
-            <p>Seriously. Having a local development environment where you can test the full pipeline without rate limits or API costs is invaluable. Production taught me what to fix. Development gave me the space to fix it.</p>
+                <p>Seriously. Having a local development environment where you can test the full pipeline without rate limits or API costs is invaluable. Production taught me what to fix. Development gave me the space to fix it.</p>
 
-            <h3>Technical Deep Dive: How the Pieces Fit Together</h3>
+                <h3>Technical Deep Dive: How the Pieces Fit Together</h3>
 
-            <h4>The Embedding Layer</h4>
+                <h4>The Embedding Layer</h4>
 
-            <p>When a query comes in: "What are the visa requirements for Brazil?"</p>
+                <p>When a query comes in: "What are the visa requirements for Brazil?"</p>
 
-            <ol>
-                <li>Sentence-transformers encodes it: <code>[0.23, -0.45, 0.12, ..., 0.67]</code> (384 numbers)</li>
-                <li>FAISS searches the index for the 5 closest document vectors</li>
-                <li>Returns metadata + distance scores: <code>[(doc1, 0.34), (doc2, 0.45), ...]</code></li>
-            </ol>
+                <ol>
+                    <li>Sentence-transformers encodes it: <code>[0.23, -0.45, 0.12, ..., 0.67]</code> (384 numbers)</li>
+                    <li>FAISS searches the index for the 5 closest document vectors</li>
+                    <li>Returns metadata + distance scores: <code>[(doc1, 0.34), (doc2, 0.45), ...]</code></li>
+                </ol>
 
-            <p>Lower distance = more similar. I typically use <code>top_k=5</code> to give the LLM enough context without overwhelming it.</p>
+                <p>Lower distance = more similar. I typically use <code>top_k=5</code> to give the LLM enough context without overwhelming it.</p>
 
-            <h4>The Grading System</h4>
+                <h4>The Grading System</h4>
 
-            <p>Not all retrieved documents are actually useful. That's where grading comes in:</p>
+                <p>Not all retrieved documents are actually useful. That's where grading comes in:</p>
 
 <pre><code class="language-python"># Simplified version of the grader
 class RetrievalGrader:
@@ -372,71 +380,82 @@ class RetrievalGrader:
         return "yes" in response.lower()
 </code></pre>
 
-            <p>Each document gets graded individually. If less than half are relevant, the query gets transformed and we try again.</p>
+                <p>Each document gets graded individually. If less than half are relevant, the query gets transformed and we try again.</p>
 
-            <h4>Query Transformation</h4>
+                <h4>Query Transformation</h4>
 
-            <p>When retrieval fails, don't just give up—rewrite the query:</p>
+                <p>When retrieval fails, don't just give up—rewrite the query:</p>
 
 <pre><code class="language-python">Original: "What do I need for Brazil?"
 Transformed: "What are the visa and entry requirements for traveling to Brazil from South Africa?"
 </code></pre>
 
-            <p>The transformed query is usually more specific and searches better. This is one retry loop that actually makes things better instead of worse.</p>
+                <p>The transformed query is usually more specific and searches better. This is one retry loop that actually makes things better instead of worse.</p>
 
-            <h3>What I'd Do Differently Next Time</h3>
+                <h3>What I'd Do Differently Next Time</h3>
 
-            <p>If I were starting this project from scratch today:</p>
+                <p>If I were starting this project from scratch today:</p>
 
-            <ul>
-                <li><strong>Start with monitoring</strong>: I added logging way too late. Should've had observability from day one.</li>
-                <li><strong>Test the failure modes</strong>: Write tests that simulate rate limits, network failures, empty results. You'll encounter all of them eventually.</li>
-                <li><strong>Document the state transitions</strong>: Draw the LangGraph flow before writing code, not after debugging it for 6 hours.</li>
-                <li><strong>Use structured outputs from the start</strong>: I retrofitted Pydantic models for grader outputs. Should've started with them.</li>
-                <li><strong>Profile early</strong>: FAISS search is fast, but I didn't realize the embedding step was the bottleneck until way later.</li>
-            </ul>
+                <ul>
+                    <li><strong>Start with monitoring</strong>: I added logging way too late. Should've had observability from day one.</li>
+                    <li><strong>Test the failure modes</strong>: Write tests that simulate rate limits, network failures, empty results. You'll encounter all of them eventually.</li>
+                    <li><strong>Document the state transitions</strong>: Draw the LangGraph flow before writing code, not after debugging it for 6 hours.</li>
+                    <li><strong>Use structured outputs from the start</strong>: I retrofitted Pydantic models for grader outputs. Should've started with them.</li>
+                    <li><strong>Profile early</strong>: FAISS search is fast, but I didn't realize the embedding step was the bottleneck until way later.</li>
+                </ul>
 
-            <h3>The Final Product</h3>
+                <h3>The Final Product</h3>
 
-            <p>So what did I end up with? A chatbot that:</p>
+                <p>So what did I end up with? A chatbot that:</p>
 
-            <ul>
-                <li>Answers questions about 130K+ Wikipedia passages using FAISS vector search</li>
-                <li>Falls back to web search (DuckDuckGo/Tavily) when the knowledge base doesn't have the answer</li>
-                <li>Handles queries in 10+ languages (using FastText detection + LLM translation)</li>
-                <li>Gracefully degrades when things fail (and they will fail)</li>
-                <li>Actually works, both on my machine and in production (most of the time)</li>
-            </ul>
+                <ul>
+                    <li>Answers questions about 130K+ Wikipedia passages using FAISS vector search</li>
+                    <li>Falls back to web search (DuckDuckGo/Tavily) when the knowledge base doesn't have the answer</li>
+                    <li>Handles queries in 10+ languages (using FastText detection + LLM translation)</li>
+                    <li>Gracefully degrades when things fail (and they will fail)</li>
+                    <li>Actually works, both on my machine and in production (most of the time)</li>
+                </ul>
 
-            <p>It's not perfect. The rate limiting still catches me sometimes. The grading can be slow. The transformed queries occasionally go off the rails.</p>
+                <p>It's not perfect. The rate limiting still catches me sometimes. The grading can be slow. The transformed queries occasionally go off the rails.</p>
 
-            <p>But it works. And more importantly, I learned a ton building it.</p>
+                <p>But it works. And more importantly, I learned a ton building it.</p>
 
-            <h3>Wrapping Up</h3>
+                <h3>Wrapping Up</h3>
 
-            <p>Building an adaptive RAG system taught me that:</p>
+                <p>Building an adaptive RAG system taught me that:</p>
 
-            <ul>
-                <li>Embeddings are just numbers, but smart numbers</li>
-                <li>FAISS makes searching 130K documents feel instant</li>
-                <li>Production will find every edge case you didn't think of</li>
-                <li>Fallbacks are not optional</li>
-                <li>State management is harder than it looks</li>
-                <li>"It works on my machine" is a valid starting point</li>
-            </ul>
+                <ul>
+                    <li>Embeddings are just numbers, but smart numbers</li>
+                    <li>FAISS makes searching 130K documents feel instant</li>
+                    <li>Production will find every edge case you didn't think of</li>
+                    <li>Fallbacks are not optional</li>
+                    <li>State management is harder than it looks</li>
+                    <li>"It works on my machine" is a valid starting point</li>
+                </ul>
 
-            <p>If you're building something similar, expect to debug rate limits, context loss, and hallucinations. Build monitoring from day one. Test your failure modes. And always have a fallback.</p>
+                <p>If you're building something similar, expect to debug rate limits, context loss, and hallucinations. Build monitoring from day one. Test your failure modes. And always have a fallback.</p>
 
-            <p>The code is messy in places, the error handling is overly defensive, and there are probably better ways to do some of this. But it works, it handles failures gracefully, and I learned more from the bugs than I did from the parts that worked the first time.</p>
+                <p>The code is messy in places, the error handling is overly defensive, and there are probably better ways to do some of this. But it works, it handles failures gracefully, and I learned more from the bugs than I did from the parts that worked the first time.</p>
 
-            <p>And honestly? That's the best part of building software.</p>
+                <p>And honestly? That's the best part of building software.</p>
+            </div>
 
-            <a href="../blog.html" class="back-link">← Back to Blog</a>
+            <nav class="post-nav">
+                <span></span>
+                <a class="next" href="the-review-bottleneck.html">
+                    <span class="dir">Next &rarr;</span>
+                    <span class="title">The Review Bottleneck: Why Software Engineering Isn't Ready for the AI Era</span>
+                </a>
+            </nav>
+            <div class="all-posts"><a href="../blog.html">All posts</a></div>
         </article>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Tassan Saidi</p>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; 2026 Tassan Saidi</p>
+            <p><a href="https://github.com/TassanSaidi">GitHub</a> &middot; <a href="https://www.linkedin.com/">LinkedIn</a></p>
+        </div>
     </footer>
 
     <!-- React Diagrams Bundle -->
