@@ -4,130 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - Tassan Saidi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="nav-container">
-                <h1 class="logo">Tassan Saidi</h1>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a class="logo" href="index.html">Tassan Saidi</a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html" aria-current="page">Blog</a></li>
+                <li><a href="https://github.com/TassanSaidi">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+            </ul>
         </nav>
     </header>
 
-    <main>
-        <section class="blog-header">
-            <h2>Blog</h2>
+    <main class="wrap">
+        <div class="page-head">
+            <h1>Blog</h1>
             <p>Thoughts, tutorials, and insights</p>
-        </section>
-
-        <section class="blog-posts">
-            <article class="blog-post">
-                <h3><a href="posts/going-into-debt.html">I Am Going Into Debt and Here Is Why You Should Join Me</a></h3>
-                <p class="post-meta">August 26, 2026</p>
-                <p class="post-excerpt">
-                    Tech debt gets a bad name, but financial debt can be strategic. On how to borrow
-                    from the world of finance, the DynamoDB lesson that changed how I build, and why
-                    impulsive debt is just debt that nobody wrote down.
-                </p>
-                <a href="posts/going-into-debt.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/my-language-is-dying.html">My Language Is Dying</a></h3>
-                <p class="post-meta">August 15, 2026</p>
-                <p class="post-excerpt">
-                    Code was once a language I spoke with a voice distinctly my own. LLMs have made me faster,
-                    but they have also made me quieter. On what we lose when the code review is replaced by
-                    a markdown file, and a model that has never met you.
-                </p>
-                <a href="posts/my-language-is-dying.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/scenes-from-home-affairs.html">Scenes from Home Affairs</a></h3>
-                <p class="post-meta">June 28, 2026</p>
-                <p class="post-excerpt">
-                    A witness account from a Home Affairs office in Cape Town. On the power of language,
-                    the dehumanization that follows, and what we reveal about ourselves through how we treat
-                    those on the margins of society.
-                </p>
-                <a href="posts/scenes-from-home-affairs.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/what-got-us-here.html">What Got Us Here, Won't Get Us There</a></h3>
-                <p class="post-meta">June 14, 2026</p>
-                <p class="post-excerpt">
-                    Evolution rewards adaptation. But the traits that helped us survive one environment
-                    can work against us when the world changes. On competition, maladaptation, and learning
-                    to repurpose the claws that got you here.
-                </p>
-                <a href="posts/what-got-us-here.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/something-to-hold-on-to.html">Something to Hold On To</a></h3>
-                <p class="post-meta">May 21, 2026</p>
-                <p class="post-excerpt">
-                    On burnout, the systems we build to survive it, and why having something to hold on to &mdash;
-                    hiking, exercise, journaling &mdash; matters more than working harder.
-                </p>
-                <a href="posts/something-to-hold-on-to.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/spectrum-vs-medium.html">The Spectrum vs The Medium</a></h3>
-                <p class="post-meta">May 12, 2026</p>
-                <p class="post-excerpt">
-                    On living with Asperger's Syndrome and navigating a world built on ambiguous language,
-                    implied meaning, and unspoken social contracts &mdash; and the ongoing work of building
-                    a more anti-fragile framework for understanding it.
-                </p>
-                <a href="posts/spectrum-vs-medium.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/synthecists.html">The Case for Humanity: What Chess Got Right About AI</a></h3>
-                <p class="post-meta">March 18, 2026</p>
-                <p class="post-excerpt">
-                    From Kasparov vs Deep Blue to AI agents today &mdash; why the amateur chess players
-                    who beat the grandmasters give us the best model for humanity's role
-                    in an AI-powered world.
-                </p>
-                <a href="posts/synthecists.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/the-review-bottleneck.html">The Review Bottleneck: Why Software Engineering Isn't Ready for the AI Era</a></h3>
-                <p class="post-meta">February 10, 2026</p>
-                <p class="post-excerpt">
-                    From dragging Scratch blocks to auditing AI-generated Pull Requests. A reflection on how AI has
-                    eliminated the writing bottleneck in software development, only to create a massive review gap
-                    that the profession isn't prepared for.
-                </p>
-                <a href="posts/the-review-bottleneck.html" class="read-more">Read more</a>
-            </article>
-
-            <article class="blog-post">
-                <h3><a href="posts/adaptive-rag-chatbot.html">I Built an Adaptive RAG Chatbot and It Works on My Machine</a></h3>
-                <p class="post-meta">January 4, 2026</p>
-                <p class="post-excerpt">
-                    A journey through retrieval-augmented generation, multilingual AI, and the art of context engineering.
-                    Learn how I built an adaptive RAG system that bridges Shona and English using 130K+ Wikipedia passages,
-                    FAISS vector search, and modern LLMs.
-                </p>
-                <a href="posts/adaptive-rag-chatbot.html" class="read-more">Read more</a>
-            </article>
-        </section>
+        </div>
+        <div class="card-grid">
+                <a class="post-card" href="posts/going-into-debt.html">
+                    <div class="card-meta"><span>August 26, 2026</span><span>&middot;</span><span>6 min</span><span class="tag">Engineering</span></div>
+                    <h3>I Am Going Into Debt and Here Is Why You Should Join Me</h3>
+                    <p>Tech debt gets a bad name, but financial debt can be strategic. On how to borrow from the world of finance, the DynamoDB lesson that changed how I build, and why impulsive debt is just debt that nobody wrote down.</p>
+                </a>
+                <a class="post-card" href="posts/my-language-is-dying.html">
+                    <div class="card-meta"><span>August 15, 2026</span><span>&middot;</span><span>5 min</span><span class="tag">Craft</span></div>
+                    <h3>My Language Is Dying</h3>
+                    <p>Code was once a language I spoke with a voice distinctly my own. LLMs have made me faster, but they have also made me quieter. On what we lose when the code review is replaced by a markdown file, and a model that has never met you.</p>
+                </a>
+                <a class="post-card" href="posts/scenes-from-home-affairs.html">
+                    <div class="card-meta"><span>June 28, 2026</span><span>&middot;</span><span>7 min</span><span class="tag">Essay</span></div>
+                    <h3>Scenes from Home Affairs</h3>
+                    <p>A witness account from a Home Affairs office in Cape Town. On the power of language, the dehumanization that follows, and what we reveal about ourselves through how we treat those on the margins of society.</p>
+                </a>
+                <a class="post-card" href="posts/what-got-us-here.html">
+                    <div class="card-meta"><span>June 14, 2026</span><span>&middot;</span><span>5 min</span><span class="tag">Essay</span></div>
+                    <h3>What Got Us Here, Won't Get Us There</h3>
+                    <p>Evolution rewards adaptation. But the traits that helped us survive one environment can work against us when the world changes. On competition, maladaptation, and learning to repurpose the claws that got you here.</p>
+                </a>
+                <a class="post-card" href="posts/something-to-hold-on-to.html">
+                    <div class="card-meta"><span>May 21, 2026</span><span>&middot;</span><span>4 min</span><span class="tag">Essay</span></div>
+                    <h3>Something to Hold On To</h3>
+                    <p>On burnout, the systems we build to survive it, and why having something to hold on to &mdash; hiking, exercise, journaling &mdash; matters more than working harder.</p>
+                </a>
+                <a class="post-card" href="posts/spectrum-vs-medium.html">
+                    <div class="card-meta"><span>May 12, 2026</span><span>&middot;</span><span>6 min</span><span class="tag">Essay</span></div>
+                    <h3>The Spectrum vs The Medium</h3>
+                    <p>On living with Asperger's Syndrome and navigating a world built on ambiguous language, implied meaning, and unspoken social contracts &mdash; and the ongoing work of building a more anti-fragile framework for understanding it.</p>
+                </a>
+                <a class="post-card" href="posts/synthecists.html">
+                    <div class="card-meta"><span>March 18, 2026</span><span>&middot;</span><span>9 min</span><span class="tag">AI</span></div>
+                    <h3>The Case for Humanity: What Chess Got Right About AI</h3>
+                    <p>From Kasparov vs Deep Blue to AI agents today &mdash; why the amateur chess players who beat the grandmasters give us the best model for humanity's role in an AI-powered world.</p>
+                </a>
+                <a class="post-card" href="posts/the-review-bottleneck.html">
+                    <div class="card-meta"><span>February 10, 2026</span><span>&middot;</span><span>6 min</span><span class="tag">Engineering</span></div>
+                    <h3>The Review Bottleneck: Why Software Engineering Isn't Ready for the AI Era</h3>
+                    <p>From dragging Scratch blocks to auditing AI-generated Pull Requests. A reflection on how AI has eliminated the writing bottleneck in software development, only to create a massive review gap that the profession isn't prepared for.</p>
+                </a>
+                <a class="post-card" href="posts/adaptive-rag-chatbot.html">
+                    <div class="card-meta"><span>January 4, 2026</span><span>&middot;</span><span>12 min</span><span class="tag">Engineering</span></div>
+                    <h3>I Built an Adaptive RAG Chatbot and It Works on My Machine</h3>
+                    <p>A journey through retrieval-augmented generation, multilingual AI, and the art of context engineering. Learn how I built an adaptive RAG system that bridges Shona and English using 130K+ Wikipedia passages, FAISS vector search, and modern LLMs.</p>
+                </a>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Tassan Saidi</p>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; 2026 Tassan Saidi</p>
+            <p><a href="https://github.com/TassanSaidi">GitHub</a> &middot; <a href="https://www.linkedin.com/">LinkedIn</a></p>
+        </div>
     </footer>
 </body>
 </html>

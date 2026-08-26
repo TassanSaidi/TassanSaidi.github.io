@@ -4,98 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tassan Saidi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="nav-container">
-                <h1 class="logo">Tassan Saidi</h1>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a class="logo" href="index.html">Tassan Saidi</a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="https://github.com/TassanSaidi">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+            </ul>
         </nav>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Tonderai Saidi</h2>
-                <p class="hero-subtitle">Backend Engineer | Problem Solver | System Architect in the Making</p>
-                <p class="hero-description">
-                    Passionate about solving complex engineering challenges in distributed systems,
-                    event-driven architectures, and fault-tolerant financial infrastructures.
-                </p>
-            </div>
-        </section>
+    <main class="wrap">
+        <div class="home">
+            <section class="intro">
+                <h1>Tonderai Saidi</h1>
+                <p>Backend engineer. I work on distributed systems, event-driven architectures, and fault-tolerant financial infrastructure &mdash; and I write about the parts that are harder than the code.</p>
+            </section>
 
-        <!-- About Section -->
-        <section class="about">
-            <h3>About Me</h3>
-            <p>
-                I am a backend engineer with a strong foundation in Java, Kotlin, and distributed systems.
-                My experience spans high-load event-driven architectures, secure NFC payment systems, and
-                fault-tolerant financial infrastructures. I approach debugging like an engineer, not just a coder—
-                focusing on first principles and anticipating system failures before they happen.
-            </p>
-        </section>
+            <section>
+                <div class="section-head">
+                    <span class="eyebrow">Recent writing</span>
+                    <a class="more" href="blog.html">All 9 posts &rarr;</a>
+                </div>
+                <div class="card-grid">
+                <a class="post-card" href="posts/going-into-debt.html">
+                    <div class="card-meta"><span>August 26, 2026</span><span>&middot;</span><span>6 min</span></div>
+                    <h3>I Am Going Into Debt and Here Is Why You Should Join Me</h3>
+                    <p>Tech debt gets a bad name, but financial debt can be strategic.</p>
+                </a>
+                <a class="post-card" href="posts/my-language-is-dying.html">
+                    <div class="card-meta"><span>August 15, 2026</span><span>&middot;</span><span>5 min</span></div>
+                    <h3>My Language Is Dying</h3>
+                    <p>LLMs have made me faster, but they have also made me quieter.</p>
+                </a>
+                <a class="post-card" href="posts/scenes-from-home-affairs.html">
+                    <div class="card-meta"><span>June 28, 2026</span><span>&middot;</span><span>7 min</span></div>
+                    <h3>Scenes from Home Affairs</h3>
+                    <p>A witness account from a Home Affairs office in Cape Town.</p>
+                </a>
+                <a class="post-card" href="posts/what-got-us-here.html">
+                    <div class="card-meta"><span>June 14, 2026</span><span>&middot;</span><span>5 min</span></div>
+                    <h3>What Got Us Here, Won't Get Us There</h3>
+                    <p>The traits that helped us survive one environment can work against us.</p>
+                </a>
+                </div>
+            </section>
 
-        <!-- Career Highlights -->
-        <section class="highlights">
-            <h3>Career Highlights</h3>
-            <ul class="highlight-list">
-                <li>Contributed to South Africa's first Visa & Mastercard-certified NFC POS solution</li>
-                <li>Spearheaded security enhancements leading to full SDK certification by Visa & Mastercard</li>
-                <li>Developed a BLE SDK for mobile payments, expanding payments ecosystem</li>
-                <li>Led a Lotto system overhaul, improving stability and scalability</li>
-                <li>Fixed critical bugs in high-load wagering systems, reducing production issues</li>
-            </ul>
-        </section>
-
-        <!-- Current Work -->
-        <section class="current-work">
-            <h3>Current Work</h3>
-            <div class="work-item">
-                <h4>Intermediate Software Engineer @ Capitec</h4>
-                <p class="work-meta">Aug 2025 - Present · Stellenbosch, South Africa (Hybrid)</p>
-                <ul>
-                    <li>Led design of centralized dashboard for AWS Lambda functions with real-time visibility</li>
-                    <li>Delivered emergency communication platform for call centres during outages</li>
-                    <li>Driving development of in-house incident management system to replace PagerDuty</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Skills -->
-        <section class="skills">
-            <h3>Technologies</h3>
-            <div class="skill-grid">
-                <span class="skill-tag">Java</span>
-                <span class="skill-tag">Kotlin</span>
-                <span class="skill-tag">AWS</span>
-                <span class="skill-tag">DynamoDB</span>
-                <span class="skill-tag">RabbitMQ</span>
-                <span class="skill-tag">PostgreSQL</span>
-                <span class="skill-tag">Kubernetes</span>
-                <span class="skill-tag">Docker</span>
-                <span class="skill-tag">Microservices</span>
-                <span class="skill-tag">Event-Driven Architecture</span>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="cta-section">
-            <h3>Explore My Work</h3>
-            <p>Read about building systems, solving problems, and engineering insights</p>
-            <a href="blog.html" class="cta-button">Read the Blog</a>
-        </section>
+            <section class="facts">
+                <div class="fact fact--now">
+                    <span class="eyebrow">Now</span>
+                    <p>Intermediate Software Engineer, Capitec &mdash; Stellenbosch</p>
+                </div>
+                <div class="fact">
+                    <span class="eyebrow">Works with</span>
+                    <p>Java, Kotlin, AWS, DynamoDB, RabbitMQ, PostgreSQL, Kubernetes, Docker, event-driven architecture</p>
+                </div>
+            </section>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Tassan Saidi</p>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; 2026 Tassan Saidi</p>
+            <p><a href="https://github.com/TassanSaidi">GitHub</a> &middot; <a href="https://www.linkedin.com/">LinkedIn</a></p>
+        </div>
     </footer>
 </body>
 </html>

@@ -4,75 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Case for Humanity: What Chess Got Right About AI - Tassan Saidi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="nav-container">
-                <h1 class="logo">Tassan Saidi</h1>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../blog.html">Blog</a></li>
-                </ul>
-            </div>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a class="logo" href="../index.html">Tassan Saidi</a>
+            <ul class="nav-links">
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../blog.html" aria-current="page">Blog</a></li>
+                <li><a href="https://github.com/TassanSaidi">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+            </ul>
         </nav>
     </header>
 
-    <main>
-        <article class="post-content">
+    <main class="wrap">
+        <article class="article">
+            <div class="article-meta">
+                <span class="tag">AI</span>
+                <span>March 18, 2026</span>
+                <span>&middot;</span>
+                <span>9 min read</span>
+            </div>
             <h1 class="post-title">The Case for Humanity: What Chess Got Right About AI</h1>
-            <p class="post-meta">March 18, 2026 · The Case for Humanity: What Chess Got Right About AI</p>
-
-            <p>I just finished reading <em>Deep Thinking</em> by Garry Kasparov. He describes the years leading up to his famous battle against Deep Blue — the chess algorithm that defeated a world-class grandmaster for the first time. There are striking parallels between the rise of chess engines in the '80s and '90s and the rise of AI agents today. I'll rely on those parallels to make a case for humanity and our role as billions of dollars continue to be spent on ever more powerful models.</p>
-
-            <p>Garry describes playing against various computer engines, and his impression went from amusement, to intrigue, to something more ominous. The engines were getting stronger, but they were limited not only by hardware, but by the tactical understanding of the engineers who built them. More power did not always translate to better performance if the evaluation rules incorrectly preferred one piece over another. And while the engines became dangerous in tactical complications, they were, as Garry put it, "clueless about strategic plans." He described it as "asymmetrical warfare" — computers excelled at sharp tactics in complex positions, a human's greatest weakness, while humans excelled at "positional play," the strategic considerations of quiet manoeuvring. Computers were like "visiting aliens" — they had no common sense beyond what they were told. An engine might not recognise that a pawn chain advancing on the kingside creates a suffocating attack three moves later. It only saw the immediate material balance.</p>
-
-            <p>But when there was an appetite to defeat a human grandmaster, developers built dedicated hardware to search deeper. By the 1997 rematch, Deep Blue could evaluate roughly 200 million positions per second — a brute-force approach incomparable to the handful of candidate moves a human grandmaster considers through pattern recognition and intuition. Garry and many other grandmasters recognised it was a matter of <em>when</em>, not <em>if</em>. He decided to delay that moment and cemented his place in history with a 4–2 victory in their first match in Philadelphia, 1996.</p>
-
-            <p>The parallels to today are obvious. The engines kept getting stronger with better hardware. There was a huge economic incentive to "win at all costs" — and we see this now with billions being spent on models that companies do not yet know how to monetise. Some of the best scientists are at work creating the most powerful model, with no clear plan for what comes next. The same was true for IBM — they dismantled Deep Blue after winning the rematch and refused Kasparov's requests for another match. Today, one rack sits in the National Museum of American History; the other is at the Computer History Museum in Mountain View.</p>
-
-            <p>All of us right now are Garry. Every day we're told a new model will take our jobs. Drivers are warned about autonomous vehicles. Companies like Replit and Cursor promise that all new software will be written by agents. During its Q4 2025 earnings call, Spotify's co-CEO Gustav Söderström said the company's best developers "have not written a single line of code since December," crediting an internal AI system built on Anthropic's Claude Code. In February 2026, Jack Dorsey's Block cut more than 4,000 employees — roughly 40% of its workforce — explicitly citing AI, though critics argue Block was largely unwinding pandemic-era hiring bloat. Even Sam Altman called this pattern "AI washing."</p>
-
-            <p>It's daunting because none of us can change the pace of it. And so we wait for the next "Most Powerful" model, as OpenAI and Anthropic trade blows. People have already lost their jobs. Startups are promising more productivity with leaner teams. The threat is real.</p>
-
-            <p>But the silver lining lies in what happened after the infamous match. There was still an interest in watching humans play chess, even though engines were stronger. In fact, interest has grown enormously — chess.com has grown from 100 million to over 250 million members in just over three years. The fact that chess continued, that we still want to see the emotions and the human touch, gives us hope. And just about every grandmaster today uses engines to verify their thinking and remove bias. The machines did not kill the game. They made it better.</p>
-
-            <p>This is where the idea of the "synthesist" becomes important. Kasparov himself used a chess engine after Deep Blue to understand the computer's moves and verify his own evaluations. Today on chess.com, live broadcasts feature an engine evaluation bar showing who has the advantage with each move. It helps viewers see what the players see — the time constraints and impending threats make more sense when an engine tells us who is ahead.</p>
-
-            <p>Grandmasters use engines to prepare — to spot gaps in an opponent's favourite opening, to try out ideas. But it still requires you to know chess. You cannot use the engine in competitive games. The engine enhances your preparation; it doesn't replace your ability to play under pressure, to manage your nerves, to find the right move when the clock is ticking.</p>
-
-            <p>And then there is Kasparov's most striking finding. In 2005, the PAL/CSS Freestyle Chess Tournament on Playchess.com allowed anyone to compete in teams with other players or computers. Several groups of strong grandmasters entered with powerful computers. The winner was not a grandmaster with a state-of-the-art PC. It was Steven Cramton and Zackary Stephen — two amateur chess players from New Hampshire, rated 1685 and 1398 USCF respectively — using three ordinary computers simultaneously. As Kasparov wrote: "Weak human + machine + better process was superior to a strong computer alone and, more remarkably, superior to a strong human + machine + inferior process." The amateurs understood how to use the engine better — how the parts worked together. Knowing how to orchestrate the tool mattered more than raw chess expertise.</p>
-
-            <p>We are doing this today. We let agents write the boilerplate code and verify processes with them. We focus on how different parts of a system interact, acting as synthesists. But it goes beyond software. Doctors Google medications mid-appointment — this can be done faster and more reliably with an agent. Lawyers consult legal doctrine that an agent could surface in seconds. The nuance is in application, because AI can still hallucinate. The Deloitte report commissioned by Australia's Department of Employment and Workplace Relations — an AU$440,000 (US$290,000) document full of fabricated references and non-existent academic papers — showed exactly that. Sydney University researcher Chris Rudge spotted the errors because one citation attributed a non-existent book to Lisa Burton Crawford, a professor of public and constitutional law, on a topic entirely outside her field. Deloitte admitted it had used Azure OpenAI GPT-4o, issued a partial refund, and revised the report. According to McKinsey's 2025 State of AI survey, inaccuracy remains the most commonly reported risk from generative AI, with nearly one-third of respondents citing negative consequences from errors. These tools accelerate how professionals work, but the human in the loop — the one who knows when something doesn't look right — is not optional. Not yet.</p>
-
-            <p>What comes next is not about letting machines write the code we don't want to write, or replacing the doctor who Googles a dosage. Jobs where a human touch is preferred will remain — and some may even command a premium. Imagine a world of autonomous taxis: silent, efficient, optimised. Now imagine paying a little more for a human driver — the one who greets you by name, tells you an annoying story about his weekend, asks how your kids are doing. That friction, that inefficiency, may turn out to be something we value precisely because a machine would never think to offer it. Jobs that can be improved by more logical decision-making will change. But the warmth of a human interaction is not a bug to be optimised away. The question is not whether machines will get stronger — they will. The question is whether we learn to work with them, as the chess world did. Kasparov wrote that "we must be optimistic about the future because it's a self-fulfilling prophecy." The amateur chess players who beat the grandmasters did not win because they were smarter. They won because they understood the process. That is the case for humanity. Not that we are faster or more powerful, but that we know how the pieces fit together — and we still care about the game.</p>
-
             <hr>
+            <div class="post-content">
+                <p>I just finished reading <em>Deep Thinking</em> by Garry Kasparov. He describes the years leading up to his famous battle against Deep Blue — the chess algorithm that defeated a world-class grandmaster for the first time. There are striking parallels between the rise of chess engines in the '80s and '90s and the rise of AI agents today. I'll rely on those parallels to make a case for humanity and our role as billions of dollars continue to be spent on ever more powerful models.</p>
 
-            <h3>References</h3>
+                <p>Garry describes playing against various computer engines, and his impression went from amusement, to intrigue, to something more ominous. The engines were getting stronger, but they were limited not only by hardware, but by the tactical understanding of the engineers who built them. More power did not always translate to better performance if the evaluation rules incorrectly preferred one piece over another. And while the engines became dangerous in tactical complications, they were, as Garry put it, "clueless about strategic plans." He described it as "asymmetrical warfare" — computers excelled at sharp tactics in complex positions, a human's greatest weakness, while humans excelled at "positional play," the strategic considerations of quiet manoeuvring. Computers were like "visiting aliens" — they had no common sense beyond what they were told. An engine might not recognise that a pawn chain advancing on the kingside creates a suffocating attack three moves later. It only saw the immediate material balance.</p>
 
-            <ol>
-                <li>Kasparov, G. (2017). <em>Deep Thinking: Where Machine Intelligence Ends and Human Creativity Begins</em>. PublicAffairs.</li>
-                <li>IBM. "Deep Blue." IBM Heritage. <a href="https://www.ibm.com/history/deep-blue">https://www.ibm.com/history/deep-blue</a></li>
-                <li>"Deep Blue versus Garry Kasparov." Kasparov.com. <a href="https://www.kasparov.com/timeline-event/deep-blue/">https://www.kasparov.com/timeline-event/deep-blue/</a> — 1996 match result (4–2, Philadelphia); 1997 rematch result (3½–2½).</li>
-                <li>"Deep Blue Supercomputer Tower." National Museum of American History, Smithsonian Institution. <a href="https://americanhistory.si.edu/collections/object/nmah_1005331">https://americanhistory.si.edu/collections/object/nmah_1005331</a> — Museum holdings and Deep Blue hardware description.</li>
-                <li>"Deep Blue II." Computer History Museum. <a href="https://www.computerhistory.org/chess/art-43305f13ef377/">https://www.computerhistory.org/chess/art-43305f13ef377/</a> — Second rack on display; 200 million positions per second; 480 custom chess chips.</li>
-                <li>"Dark horse ZackS wins Freestyle Chess Tournament." ChessBase News, 19 June 2005. <a href="https://en.chessbase.com/post/dark-horse-zacks-wins-freestyle-che-tournament">https://en.chessbase.com/post/dark-horse-zacks-wins-freestyle-che-tournament</a> — Steven Cramton (1685 USCF) and Zackary Stephen (1398 USCF) defeated grandmaster teams using three computers.</li>
-                <li>"How IBM's Deep Blue Beat World Champion Chess Player Garry Kasparov." IEEE Spectrum, 14 March 2022. <a href="https://spectrum.ieee.org/how-ibms-deep-blue-beat-world-champion-chess-player-garry-kasparov">https://spectrum.ieee.org/how-ibms-deep-blue-beat-world-champion-chess-player-garry-kasparov</a> — Deep Blue's technical capabilities and development history.</li>
-                <li>"Chess.com Reaches 250 Million Members." Chess.com News, February 2026. <a href="https://www.chess.com/news/view/chesscom-reaches-250-million-members">https://www.chess.com/news/view/chesscom-reaches-250-million-members</a></li>
-                <li>"Deloitte was caught using AI in $290,000 report to help the Australian government." Fortune, 7 October 2025. <a href="https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund/">https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund/</a> — Chris Rudge identified fabricated references; Lisa Burton Crawford citation; Azure OpenAI GPT-4o disclosure; partial refund.</li>
-                <li>McKinsey &amp; Company. "The State of AI: Global Survey 2025." November 2025. <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai">https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai</a> — 51% of organisations reported negative AI consequences; nearly one-third cited inaccuracy.</li>
-                <li>Kasparov, G. "The Chess Master and the Computer." <em>The New York Review of Books</em>, 11 February 2010. — Source of the "Weak human + machine + better process" quotation.</li>
-            </ol>
+                <p>But when there was an appetite to defeat a human grandmaster, developers built dedicated hardware to search deeper. By the 1997 rematch, Deep Blue could evaluate roughly 200 million positions per second — a brute-force approach incomparable to the handful of candidate moves a human grandmaster considers through pattern recognition and intuition. Garry and many other grandmasters recognised it was a matter of <em>when</em>, not <em>if</em>. He decided to delay that moment and cemented his place in history with a 4–2 victory in their first match in Philadelphia, 1996.</p>
 
-            <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                <p>The parallels to today are obvious. The engines kept getting stronger with better hardware. There was a huge economic incentive to "win at all costs" — and we see this now with billions being spent on models that companies do not yet know how to monetise. Some of the best scientists are at work creating the most powerful model, with no clear plan for what comes next. The same was true for IBM — they dismantled Deep Blue after winning the rematch and refused Kasparov's requests for another match. Today, one rack sits in the National Museum of American History; the other is at the Computer History Museum in Mountain View.</p>
+
+                <p>All of us right now are Garry. Every day we're told a new model will take our jobs. Drivers are warned about autonomous vehicles. Companies like Replit and Cursor promise that all new software will be written by agents. During its Q4 2025 earnings call, Spotify's co-CEO Gustav Söderström said the company's best developers "have not written a single line of code since December," crediting an internal AI system built on Anthropic's Claude Code. In February 2026, Jack Dorsey's Block cut more than 4,000 employees — roughly 40% of its workforce — explicitly citing AI, though critics argue Block was largely unwinding pandemic-era hiring bloat. Even Sam Altman called this pattern "AI washing."</p>
+
+                <p>It's daunting because none of us can change the pace of it. And so we wait for the next "Most Powerful" model, as OpenAI and Anthropic trade blows. People have already lost their jobs. Startups are promising more productivity with leaner teams. The threat is real.</p>
+
+                <p>But the silver lining lies in what happened after the infamous match. There was still an interest in watching humans play chess, even though engines were stronger. In fact, interest has grown enormously — chess.com has grown from 100 million to over 250 million members in just over three years. The fact that chess continued, that we still want to see the emotions and the human touch, gives us hope. And just about every grandmaster today uses engines to verify their thinking and remove bias. The machines did not kill the game. They made it better.</p>
+
+                <p>This is where the idea of the "synthesist" becomes important. Kasparov himself used a chess engine after Deep Blue to understand the computer's moves and verify his own evaluations. Today on chess.com, live broadcasts feature an engine evaluation bar showing who has the advantage with each move. It helps viewers see what the players see — the time constraints and impending threats make more sense when an engine tells us who is ahead.</p>
+
+                <p>Grandmasters use engines to prepare — to spot gaps in an opponent's favourite opening, to try out ideas. But it still requires you to know chess. You cannot use the engine in competitive games. The engine enhances your preparation; it doesn't replace your ability to play under pressure, to manage your nerves, to find the right move when the clock is ticking.</p>
+
+                <p>And then there is Kasparov's most striking finding. In 2005, the PAL/CSS Freestyle Chess Tournament on Playchess.com allowed anyone to compete in teams with other players or computers. Several groups of strong grandmasters entered with powerful computers. The winner was not a grandmaster with a state-of-the-art PC. It was Steven Cramton and Zackary Stephen — two amateur chess players from New Hampshire, rated 1685 and 1398 USCF respectively — using three ordinary computers simultaneously. As Kasparov wrote: "Weak human + machine + better process was superior to a strong computer alone and, more remarkably, superior to a strong human + machine + inferior process." The amateurs understood how to use the engine better — how the parts worked together. Knowing how to orchestrate the tool mattered more than raw chess expertise.</p>
+
+                <p>We are doing this today. We let agents write the boilerplate code and verify processes with them. We focus on how different parts of a system interact, acting as synthesists. But it goes beyond software. Doctors Google medications mid-appointment — this can be done faster and more reliably with an agent. Lawyers consult legal doctrine that an agent could surface in seconds. The nuance is in application, because AI can still hallucinate. The Deloitte report commissioned by Australia's Department of Employment and Workplace Relations — an AU$440,000 (US$290,000) document full of fabricated references and non-existent academic papers — showed exactly that. Sydney University researcher Chris Rudge spotted the errors because one citation attributed a non-existent book to Lisa Burton Crawford, a professor of public and constitutional law, on a topic entirely outside her field. Deloitte admitted it had used Azure OpenAI GPT-4o, issued a partial refund, and revised the report. According to McKinsey's 2025 State of AI survey, inaccuracy remains the most commonly reported risk from generative AI, with nearly one-third of respondents citing negative consequences from errors. These tools accelerate how professionals work, but the human in the loop — the one who knows when something doesn't look right — is not optional. Not yet.</p>
+
+                <p>What comes next is not about letting machines write the code we don't want to write, or replacing the doctor who Googles a dosage. Jobs where a human touch is preferred will remain — and some may even command a premium. Imagine a world of autonomous taxis: silent, efficient, optimised. Now imagine paying a little more for a human driver — the one who greets you by name, tells you an annoying story about his weekend, asks how your kids are doing. That friction, that inefficiency, may turn out to be something we value precisely because a machine would never think to offer it. Jobs that can be improved by more logical decision-making will change. But the warmth of a human interaction is not a bug to be optimised away. The question is not whether machines will get stronger — they will. The question is whether we learn to work with them, as the chess world did. Kasparov wrote that "we must be optimistic about the future because it's a self-fulfilling prophecy." The amateur chess players who beat the grandmasters did not win because they were smarter. They won because they understood the process. That is the case for humanity. Not that we are faster or more powerful, but that we know how the pieces fit together — and we still care about the game.</p>
+
+                <hr class="rule">
+
+                <h3>References</h3>
+
+                <ol>
+                    <li>Kasparov, G. (2017). <em>Deep Thinking: Where Machine Intelligence Ends and Human Creativity Begins</em>. PublicAffairs.</li>
+                    <li>IBM. "Deep Blue." IBM Heritage. <a href="https://www.ibm.com/history/deep-blue">https://www.ibm.com/history/deep-blue</a></li>
+                    <li>"Deep Blue versus Garry Kasparov." Kasparov.com. <a href="https://www.kasparov.com/timeline-event/deep-blue/">https://www.kasparov.com/timeline-event/deep-blue/</a> — 1996 match result (4–2, Philadelphia); 1997 rematch result (3½–2½).</li>
+                    <li>"Deep Blue Supercomputer Tower." National Museum of American History, Smithsonian Institution. <a href="https://americanhistory.si.edu/collections/object/nmah_1005331">https://americanhistory.si.edu/collections/object/nmah_1005331</a> — Museum holdings and Deep Blue hardware description.</li>
+                    <li>"Deep Blue II." Computer History Museum. <a href="https://www.computerhistory.org/chess/art-43305f13ef377/">https://www.computerhistory.org/chess/art-43305f13ef377/</a> — Second rack on display; 200 million positions per second; 480 custom chess chips.</li>
+                    <li>"Dark horse ZackS wins Freestyle Chess Tournament." ChessBase News, 19 June 2005. <a href="https://en.chessbase.com/post/dark-horse-zacks-wins-freestyle-che-tournament">https://en.chessbase.com/post/dark-horse-zacks-wins-freestyle-che-tournament</a> — Steven Cramton (1685 USCF) and Zackary Stephen (1398 USCF) defeated grandmaster teams using three computers.</li>
+                    <li>"How IBM's Deep Blue Beat World Champion Chess Player Garry Kasparov." IEEE Spectrum, 14 March 2022. <a href="https://spectrum.ieee.org/how-ibms-deep-blue-beat-world-champion-chess-player-garry-kasparov">https://spectrum.ieee.org/how-ibms-deep-blue-beat-world-champion-chess-player-garry-kasparov</a> — Deep Blue's technical capabilities and development history.</li>
+                    <li>"Chess.com Reaches 250 Million Members." Chess.com News, February 2026. <a href="https://www.chess.com/news/view/chesscom-reaches-250-million-members">https://www.chess.com/news/view/chesscom-reaches-250-million-members</a></li>
+                    <li>"Deloitte was caught using AI in $290,000 report to help the Australian government." Fortune, 7 October 2025. <a href="https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund/">https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund/</a> — Chris Rudge identified fabricated references; Lisa Burton Crawford citation; Azure OpenAI GPT-4o disclosure; partial refund.</li>
+                    <li>McKinsey &amp; Company. "The State of AI: Global Survey 2025." November 2025. <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai">https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai</a> — 51% of organisations reported negative AI consequences; nearly one-third cited inaccuracy.</li>
+                    <li>Kasparov, G. "The Chess Master and the Computer." <em>The New York Review of Books</em>, 11 February 2010. — Source of the "Weak human + machine + better process" quotation.</li>
+                </ol>
+            </div>
+
+            <nav class="post-nav">
+                <a class="prev" href="the-review-bottleneck.html">
+                    <span class="dir">&larr; Previous</span>
+                    <span class="title">The Review Bottleneck: Why Software Engineering Isn't Ready for the AI Era</span>
+                </a>
+                <a class="next" href="spectrum-vs-medium.html">
+                    <span class="dir">Next &rarr;</span>
+                    <span class="title">The Spectrum vs The Medium</span>
+                </a>
+            </nav>
+            <div class="all-posts"><a href="../blog.html">All posts</a></div>
         </article>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Tassan Saidi</p>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; 2026 Tassan Saidi</p>
+            <p><a href="https://github.com/TassanSaidi">GitHub</a> &middot; <a href="https://www.linkedin.com/">LinkedIn</a></p>
+        </div>
     </footer>
 </body>
 </html>
