@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Am Going Into Debt and Here Is Why You Should Join Me - Tassan Saidi</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1 class="logo">Tassan Saidi</h1>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../blog.html">Blog</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <article class="post-content">
+            <h1 class="post-title">I Am Going Into Debt and Here Is Why You Should Join Me</h1>
+            <p class="post-meta">August 26, 2026 · On Tech Debt, Strategy, and the Decisions Nobody Wrote Down</p>
+
+            <p>Every repository that I have ever worked in almost always has lines of code that are either inconsistent with the standards that we enforce for any new work, or objectively just poor quality code. You can easily see how a series of small decisions now have far reaching consequences that constrain how new work should be developed. We call this tech debt, and it has almost always been framed as a poor thing, as something we loathe. In a way it reminded us that we stood on the shoulders of very small giants, with back problems. But I would like to reframe how we look at tech debt and borrow from the world of finance, where debt can be incurred strategically and intentionally, with risk accounted for and not blindly. And where debt can help to relieve pressure in the present moment.</p>
+
+            <h2>How Debt Creeps In</h2>
+
+            <p>Much like financial debt, technical debt creeps up on you over time. It is difficult to spot in the present moment. It lies in the small decisions to centre a product around a particular framework, or a quick fix that does not address the underlying problem but takes care of 99% of the test cases. I can imagine a fresh graduate working their first job at their dream company, and their bank offers them a credit card. Suddenly you have access to money you did not necessarily earn and the bank blinds you with airport lounge benefits, even though you do not have a passport, and even a private banker because you are now important. Pretty soon you go from just using the credit card to buy fuel and essentials to using it for nights out, new clothes, the latest tech gadgets. And at the end of the month the minimum instalment does not look that bad. You can afford it because you got the new job. But over time these poor spending habits accrue and the effect compounds, and then you find yourself working hand-to-mouth, not because you do not earn enough, but because you are paying for decisions that you made in the past. The small transactions to get the latest phone and new jeans have resulted in an amount that feels insurmountable. Most of the money that you make goes into covering the costs of all the months of poor spending habits. And how did you get here? Blindly. As a willing participant in your own demise, all because you did not sit down to consider how the high interest on your credit card would come to bite you in the future. And on a human level I can appreciate the difficulty of someone being given an option to ease things in the present moment for a promise to pay it back over months. Compound interest is not intuitive, but there are tools we can use to help make sense of it. You could also just check with the private banker.</p>
+
+            <p>The same thing happens to a dev working on a team where the demands are high and the pressure from managers is never ending. With deadlines getting closer, the cost function presents itself. Do I take time to think about the best solution to the problem at hand, or do I do a quick fix that will not be detected by my peers and allows me to move the Jira ticket to done? The part of you that wants to prove to your peers that you are reliable will surface. The part of you that doubts your own abilities will creep up. And the easy option, the one that lessens your burden today, will appear. It will look tempting, and like a sailor to a siren you will head straight for it. Months later you are still developing new features around that quick fix, because without it the code is brittle and will not stand scrutiny. And no private banker to assist.</p>
+
+            <p>In both of the scenarios that I have painted, the key pattern is that people can go into debt without the intention of doing so. This happens not only to devs but to ordinary people every day, from a gambling addiction to poor spending habits. We can end up in situations where we cannot enjoy the fruits of our labour because we have a self-imposed tax.</p>
+
+            <h2>A Lesson From the Dialler</h2>
+
+            <p>Recently at work we have been building a new dialler solution which is a big deal, and one that I cannot go into too much detail on because of NDAs (and also snitches get stitches). As our solution was adopted by many more users we ran into a scalability issue, particularly with how we persisted data and the way we queried it. The original solution that we built on was not designed for many users, and DynamoDB was chosen because it allows for fast retrievals. I give it a key, let us say a userID, and it gives me the corresponding value. And because it is AWS managed, we did not need to worry about setting up infrastructure. And there comes the problem. We made a lot of changes to the original solution but never thought to question why DynamoDB was chosen. We built around it and in some ways compensated for it. We ran into issues as more records were added, because queries became too expensive and we could not easily search across different tables. Then our solutions architect, a bright fellow named Sashen, looked at the problem we were facing and asked why we had not used a SQL database, which objectively made more sense for the data we had. And we were dumbfounded. Because we did not make an intentional step to be where we were. We just made small decisions to stick with what worked and were now paying the price. Long story short, we switched to a SQL database and everything improved. Processes that took minutes were reduced to seconds. We ended up removing a lot of code that existed not because it was the best solution, but because it was the best solution that still kept our DynamoDB database working as we scaled. We were coupled to our debt and all new features paid the price.</p>
+
+            <p>This experience, beyond teaching me more about software architecture, sparked a series of thoughts. If I were building the old dialler solution with no context, would I choose a SQL database because it would make things easier down the line? At first the answer was yes. Then I had a change of heart. The engineers who came before me were not optimising for scale, they were optimising for survival. DynamoDB let them store records without first knowing what the records would look like, and that let them move fast enough to prove the thing was worth building. I am not sure they were wrong. The mistake was not the choice. The mistake was that nobody wrote down that it was a choice.</p>
+
+            <h2>Debt Worth Taking On</h2>
+
+            <p>I have since started taking on debt deliberately. When starting something new, I build a modular monolith rather than reaching for microservices. It is faster, and for a product that has no users yet, an architecture designed for scale you do not have is just cost with extra steps. The monolith lets me demonstrate that the product has promise, which is the only thing that matters at that stage. But the important part is that the modularity is intentional. When the time comes to break things into services, the seams are already there. I know where the boundaries are because I drew them. That is a debt worth incurring, because I decided upfront how it would be paid.</p>
+
+            <p>And this is something we do in everyday life, from saving up a big deposit to lower the instalments after financing your first car, to getting a bond on a house when interest rates are low. For the most part these decisions are not always poor. We can use debt as a lever, to make progress and to ease burdens. Financing a car means you have more money available to you for groceries, vacations and so on. Even using a balloon payment, there is nothing wrong with it, as long as you can account for it when the time comes.</p>
+
+            <h2>Where the Analogy Breaks</h2>
+
+            <p>But there is one place where the analogy breaks, and it is the most important part. Financial debt comes with a contract, a schedule, and a counterparty who will come looking for you. Tech debt has none of these. Nobody phones you when the interest is due. That is precisely why it goes unpaid, and it is why being strategic in engineering means manufacturing the accountability that finance gets for free. A name for the debt, and a condition under which you pay it. The modular monolith has both. DynamoDB had neither, and that is the only real difference between the two.</p>
+
+            <p>Being human means that we can intellectually understand what it means to go into debt and to owe a bank money. But it also means that our emotions can cause us to shop for things we do not need when we are feeling low. It means that we can make costly architectural decisions so that we have something to present to our managers at the start of the next week. So whatever decision you choose to make, be acutely aware of your own tendencies, your weaknesses and how you respond to pressure. With all of that accounted for, I am in favour of debt, when it is taken on deliberately. Impulsive debt is debt that nobody wrote down. Strategic debt has a name and a trigger. I am still keen to hear how others have accrued debt for their benefit.</p>
+
+            <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Tassan Saidi</p>
+    </footer>
+</body>
+</html>
