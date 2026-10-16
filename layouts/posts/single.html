@@ -1,0 +1,45 @@
+{{ define "main" }}
+<main class="wrap">
+    <article class="article">
+        <div class="article-meta">
+            {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
+            <span>{{ .Date.Format "January 2, 2006" }}</span>
+            <span>&middot;</span>
+            <span>{{ .ReadingTime }} min read</span>
+        </div>
+        <h1 class="post-title">{{ .Title }}</h1>
+        <hr>
+        <div class="post-content">
+            {{ .Content }}
+        </div>
+
+        {{ $pages := where .Site.RegularPages "Section" "posts" }}
+        {{ $pages = $pages.ByDate.Reverse }}
+        {{ $current := . }}
+        {{ range $i, $page := $pages }}
+            {{ if eq $page.Permalink $current.Permalink }}
+                {{ $prev := index $pages (sub $i 1) }}
+                {{ $next := index $pages (add $i 1) }}
+                {{ if or $prev $next }}
+                <nav class="post-nav">
+                    {{ if $prev }}
+                    <a class="prev" href="{{ $prev.RelPermalink }}">
+                        <span class="dir">&larr; Previous</span>
+                        <span class="title">{{ $prev.Title }}</span>
+                    </a>
+                    {{ else }}<div></div>{{ end }}
+                    {{ if $next }}
+                    <a class="next" href="{{ $next.RelPermalink }}">
+                        <span class="dir">Next &rarr;</span>
+                        <span class="title">{{ $next.Title }}</span>
+                    </a>
+                    {{ else }}<div></div>{{ end }}
+                </nav>
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+        <div class="all-posts"><a href="{{ "posts.html" | relURL }}">All posts</a></div>
+    </article>
+</main>
+{{ end }}

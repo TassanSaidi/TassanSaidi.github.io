@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} – {{ .Site.Title }}{{ end }}</title>
+    <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ "style.css" | relURL }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a class="logo" href="{{ "/" | relURL }}">Tonderai Saidi</a>
+            <ul class="nav-links">
+                <li><a href="{{ "work.html" | relURL }}">Work</a></li>
+                <li><a href="{{ "posts.html" | relURL }}">Writing</a></li>
+                <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    {{ block "main" . }}{{ end }}
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>&copy; {{ now.Year }} Tonderai Saidi</p>
+            <p><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a> &middot; <a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -6,3 +6,7 @@ dist/
 .DS_Store
 # Local Netlify folder
 .netlify
+
+# Hugo build artifacts
+public/
+.hugo_build.lock

@@ -1,0 +1,22 @@
+{{ define "main" }}
+<main class="wrap">
+    <div class="page-head">
+        <h1>Writing</h1>
+        <p>Thoughts, tutorials, and insights</p>
+    </div>
+    <div class="card-grid">
+        {{ range .Pages.ByDate.Reverse }}
+        <a class="post-card" href="{{ .RelPermalink }}">
+            <div class="card-meta">
+                <span>{{ .Date.Format "January 2, 2006" }}</span>
+                <span>&middot;</span>
+                <span>{{ .ReadingTime }} min</span>
+                {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
+            </div>
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description }}</p>
+        </a>
+        {{ end }}
+    </div>
+</main>
+{{ end }}
