@@ -478,11 +478,28 @@ th {
 }
 
 .all-posts {
-    display: flex;
-    justify-content: center;
-    margin-top: 22px;
-    font: 400 13.5px/1 var(--sans);
-    color: rgba(28, 26, 23, 0.55);
+    border-top: 1px solid var(--rule);
+    margin-top: 28px;
+    padding-top: 24px;
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.all-posts a {
+    font: 500 11px/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    transition: color 0.2s ease;
+}
+
+.all-posts a::before {
+    content: "← ";
+    letter-spacing: 0;
+}
+
+.all-posts a:hover {
+    color: var(--ink);
 }
 
 .load-more {
