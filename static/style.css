@@ -292,6 +292,23 @@ main.wrap {
     text-wrap: pretty;
 }
 
+.post-content a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.post-content a:hover {
+    color: var(--ink-soft);
+}
+
+.post-content img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 32px 0;
+}
+
 .post-content h2 {
     font: 500 25px/1.3 var(--serif);
     letter-spacing: -0.02em;
