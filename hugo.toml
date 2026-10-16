@@ -1,0 +1,21 @@
+baseURL = "https://tassansaidi.github.io/"
+title = "Tonderai Saidi"
+languageCode = "en-us"
+uglyURLs = true
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[params]
+  author = "Tonderai Saidi"
+  description = "Writing and work by Tonderai Saidi"
+  github = "https://github.com/TassanSaidi"
+  linkedin = "https://www.linkedin.com/in/tonderaisaidi/"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.highlight]
+  style = "github"
