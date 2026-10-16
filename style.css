@@ -176,6 +176,13 @@ main {
     padding: 70px 0 64px;
 }
 
+/* .wrap specificity (0,1,0) beats main (0,0,1), zeroing vertical padding on main.wrap.
+   main.wrap (0,1,1) restores the intended top/bottom gap. */
+main.wrap {
+    padding-top: 70px;
+    padding-bottom: 64px;
+}
+
 .home {
     display: flex;
     flex-direction: column;
@@ -803,6 +810,11 @@ th {
 
     main {
         padding: 44px 0 48px;
+    }
+
+    main.wrap {
+        padding-top: 40px;
+        padding-bottom: 48px;
     }
 
     .home {
