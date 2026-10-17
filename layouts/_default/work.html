@@ -21,7 +21,7 @@
                 </div>
 
                 {{/* Capitec is a client placement through Entelect: a branch off feature/entelect that merges back into it. */}}
-                <details class="gg-branch" name="roles" open>
+                <details class="gg-branch" open>
                     <summary>
                         <span class="gg-caret" aria-hidden="true"></span>
                         <span class="gg-label">feature/entelect</span>
@@ -49,7 +49,7 @@
                     </details>
                 </details>
 
-                <details class="gg-branch" name="roles">
+                <details class="gg-branch">
                     <summary>
                         <span class="gg-caret" aria-hidden="true"></span>
                         <span class="gg-label">feature/turfsport</span>
@@ -67,7 +67,7 @@
                     </ul>
                 </details>
 
-                <details class="gg-branch" name="roles">
+                <details class="gg-branch">
                     <summary>
                         <span class="gg-caret" aria-hidden="true"></span>
                         <span class="gg-label">feature/lipa</span>
@@ -84,7 +84,7 @@
                     </ul>
                 </details>
 
-                <details class="gg-branch" name="roles">
+                <details class="gg-branch">
                     <summary>
                         <span class="gg-caret" aria-hidden="true"></span>
                         <span class="gg-label">feature/energy-partners</span>
@@ -102,17 +102,14 @@
                 <div class="gg-init"><code>init: BScEng (Hons) Mechatronics, UCT 2017&ndash;2020</code></div>
             </div>
             <script>
-                // Expand all: drop `name` so top-level <details> stop being exclusive; restore it on collapse.
                 (() => {
                     const btn = document.querySelector('.gg-toggle');
-                    const top = document.querySelectorAll('.gg > .gg-branch');
-                    const all = document.querySelectorAll('.gg-branch');
+                    const first = document.querySelector('.gg > .gg-branch');
                     btn.hidden = false;
                     btn.addEventListener('click', () => {
                         const expand = btn.textContent === 'Expand all';
-                        top.forEach(d => expand ? d.removeAttribute('name') : (d.name = 'roles'));
                         // Collapse leaves the current role (first branch and its nested client branch) open.
-                        all.forEach(d => (d.open = expand || top[0].contains(d)));
+                        document.querySelectorAll('.gg-branch').forEach(d => (d.open = expand || first.contains(d)));
                         btn.textContent = expand ? 'Collapse all' : 'Expand all';
                     });
                 })();
