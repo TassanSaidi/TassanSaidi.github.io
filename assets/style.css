@@ -138,7 +138,7 @@ pre,
         stroke-width: 1.1;
         stroke-linecap: round;
         stroke-linejoin: round;
-        opacity: 0.09;
+        opacity: 0.2;
         transform: rotate(var(--r, 0deg));
         animation: drift 14s ease-in-out infinite alternate;
     }
