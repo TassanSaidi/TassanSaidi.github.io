@@ -18,6 +18,7 @@
     {{ with (site.GetPage "/posts").OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ .Permalink }}">{{ end }}
     {{ partial "opengraph.html" . }}
     {{ partial "twitter_cards.html" . }}
+    {{ partial "schema.html" . }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&display=swap" rel="stylesheet">

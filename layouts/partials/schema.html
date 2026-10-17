@@ -1,0 +1,11 @@
+{{- /* JSON-LD: Person on the home page, BlogPosting on posts. */ -}}
+{{- $person := dict "@type" "Person" "name" site.Params.author "url" site.Home.Permalink "jobTitle" "Backend Engineer" "sameAs" (slice site.Params.github site.Params.linkedin) "address" (dict "@type" "PostalAddress" "addressLocality" "Cape Town" "addressCountry" "ZA") -}}
+{{- $schema := dict -}}
+{{- if .IsHome -}}
+  {{- $schema = merge (dict "@context" "https://schema.org") $person -}}
+{{- else if and .IsPage (eq .Section "posts") -}}
+  {{- $schema = dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" .Description "datePublished" (.Date.Format "2006-01-02") "dateModified" (.Lastmod.Format "2006-01-02") "url" .Permalink "image" ("og.png" | absURL) "author" $person -}}
+{{- end -}}
+{{- with $schema }}
+<script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
+{{- end }}
