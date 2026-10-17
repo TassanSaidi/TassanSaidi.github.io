@@ -14,12 +14,32 @@
     --edge: rgba(28, 26, 23, 0.34);
     --accent: #b0532c;
     --lift: 0 10px 28px -14px rgba(28, 26, 23, 0.28);
+    --header-bg: rgba(250, 248, 245, 0.86);
+    --code-bg: rgba(28, 26, 23, 0.05);
     --radius: 12px;
     --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
     --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --mono: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
     --measure: 640px;
     --page: 900px;
+}
+
+/* Set on <html> by the inline script in baseof.html (stored choice, else system preference). */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #121110;
+    --card: #1b1a17;
+    --ink: #ece7df;
+    --ink-body: #d9d3ca;
+    --ink-soft: rgba(236, 231, 223, 0.7);
+    --ink-mute: rgba(236, 231, 223, 0.48);
+    --rule: rgba(236, 231, 223, 0.14);
+    --rule-soft: rgba(236, 231, 223, 0.1);
+    --edge: rgba(236, 231, 223, 0.32);
+    --accent: #e08a5f;
+    --lift: 0 10px 28px -14px rgba(0, 0, 0, 0.7);
+    --header-bg: rgba(18, 17, 16, 0.82);
+    --code-bg: rgba(236, 231, 223, 0.08);
 }
 
 * {
@@ -145,10 +165,10 @@ pre,
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(250, 248, 245, 0.86);
+    background: var(--header-bg);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(28, 26, 23, 0.12);
+    border-bottom: 1px solid var(--rule-soft);
 }
 
 .nav-container {
@@ -179,6 +199,43 @@ pre,
 
 .nav-links a:hover {
     color: var(--ink);
+}
+
+.theme-toggle {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-mute);
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: var(--ink);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+/* Show the moon in light mode, the sun in dark mode. */
+.theme-toggle .sun,
+[data-theme="dark"] .theme-toggle .moon {
+    display: none;
+}
+
+[data-theme="dark"] .theme-toggle .sun {
+    display: block;
 }
 
 .nav-links a[aria-current="page"] {
@@ -216,7 +273,7 @@ pre,
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    border: 1px solid rgba(28, 26, 23, 0.16);
+    border: 1px solid var(--rule);
     padding: 4px 8px;
 }
 
@@ -389,7 +446,7 @@ main.wrap {
 
 .intro p {
     font: 400 22px/1.55 var(--serif);
-    color: rgba(28, 26, 23, 0.78);
+    color: var(--ink-soft);
     text-wrap: pretty;
 }
 
@@ -607,7 +664,7 @@ code {
 
 p code,
 li code {
-    background: rgba(28, 26, 23, 0.05);
+    background: var(--code-bg);
     padding: 0.1em 0.35em;
     font-size: 0.85em;
 }
@@ -720,13 +777,13 @@ th {
     justify-content: center;
     margin-top: 34px;
     font: 400 13.5px/1 var(--sans);
-    color: rgba(28, 26, 23, 0.55);
+    color: var(--ink-mute);
 }
 
 /* ---------- Footer ---------- */
 
 .site-footer {
-    border-top: 1px solid rgba(28, 26, 23, 0.12);
+    border-top: 1px solid var(--rule-soft);
 }
 
 .site-footer .wrap {

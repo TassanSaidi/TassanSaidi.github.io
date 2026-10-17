@@ -18,4 +18,4 @@ buildExpired = false
   unsafe = true
 
 [markup.highlight]
-  style = "github"
+  noClasses = false
