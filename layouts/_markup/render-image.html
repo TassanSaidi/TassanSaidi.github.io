@@ -1,0 +1,4 @@
+{{- /* Root-relative images ("images/x.jpg") break on /posts/* pages; resolve them against the site root. */ -}}
+{{- $src := .Destination -}}
+{{- if not (or (hasPrefix $src "/") (hasPrefix $src "http")) }}{{ $src = $src | relURL }}{{ end -}}
+<img src="{{ $src }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }} loading="lazy" decoding="async">

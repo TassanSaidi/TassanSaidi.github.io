@@ -1,0 +1,1530 @@
+/* Tassan Saidi — editorial redesign
+   Palette: warm paper #faf8f5, ink #1c1a17, card #ffffff
+   Type: Newsreader (serif) for reading, Helvetica for metadata/UI */
+
+:root {
+    --paper: #faf8f5;
+    --card: #ffffff;
+    --ink: #1c1a17;
+    --ink-body: #26231f;
+    --ink-soft: rgba(28, 26, 23, 0.68);
+    --ink-mute: rgba(28, 26, 23, 0.45);
+    --rule: rgba(28, 26, 23, 0.14);
+    --rule-soft: rgba(28, 26, 23, 0.11);
+    --edge: rgba(28, 26, 23, 0.34);
+    --accent: #b0532c;
+    --lift: 0 10px 28px -14px rgba(28, 26, 23, 0.28);
+    --header-bg: rgba(250, 248, 245, 0.86);
+    --code-bg: rgba(28, 26, 23, 0.05);
+    --radius: 12px;
+    --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --mono: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
+    --measure: 640px;
+    --page: 900px;
+}
+
+/* Set on <html> by the inline script in baseof.html (stored choice, else system preference). */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1a1917;
+    --card: #222120;
+    --ink: #f1ece4;
+    --ink-body: #e6e0d6;
+    --ink-soft: rgba(241, 236, 228, 0.8);
+    --ink-mute: rgba(241, 236, 228, 0.6);
+    --rule: rgba(241, 236, 228, 0.16);
+    --rule-soft: rgba(241, 236, 228, 0.11);
+    --edge: rgba(241, 236, 228, 0.36);
+    --accent: #ec9a70;
+    --lift: 0 10px 28px -14px rgba(0, 0, 0, 0.7);
+    --header-bg: rgba(26, 25, 23, 0.85);
+    --code-bg: rgba(241, 236, 228, 0.09);
+}
+
+/* Light-on-dark serif reads thin; nudge reading text heavier (Newsreader is variable 300–800). */
+[data-theme="dark"] .post-content p,
+[data-theme="dark"] .post-content li,
+[data-theme="dark"] .intro p,
+[data-theme="dark"] .tl-card p,
+[data-theme="dark"] .pf-lede {
+    font-weight: 430;
+}
+
+/* Dark mode: icons pick up the accent with a faint glow. */
+[data-theme="dark"] .bg-icons svg {
+    stroke: var(--accent);
+    opacity: 0.22;
+    filter: drop-shadow(0 0 6px var(--accent));
+}
+
+[data-theme="dark"] .bg-icons text,
+[data-theme="dark"] .bg-icons .px {
+    fill: var(--accent);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--ink-soft);
+}
+
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: rgba(176, 83, 44, 0.18);
+}
+
+/* ---------- Rounded boxes ---------- */
+
+.door,
+.post-nav a,
+pre,
+.ascii-diagram {
+    border-radius: var(--radius);
+}
+
+.post-content img,
+.post-img {
+    border-radius: calc(var(--radius) / 2);
+}
+
+.tag {
+    border-radius: 999px;
+}
+
+/* ---------- Background icons (decorative, side gutters only) ---------- */
+
+.bg-icons {
+    display: none;
+}
+
+@media (min-width: 1180px) {
+    .bg-icons {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .bg-icons svg {
+        position: absolute;
+        width: var(--s, 52px);
+        height: var(--s, 52px);
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1.1;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.2;
+        transform: rotate(var(--r, 0deg));
+        animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .bg-icons text,
+    .bg-icons .px {
+        fill: var(--ink);
+        stroke: none;
+        font-family: var(--mono);
+    }
+
+    .bg-icons svg:nth-child(even) {
+        animation-duration: 18s;
+        animation-delay: -6s;
+    }
+}
+
+@keyframes drift {
+    to {
+        transform: rotate(var(--r, 0deg)) translateY(-14px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bg-icons svg {
+        animation: none;
+    }
+}
+
+@media print {
+    .bg-icons {
+        display: none !important;
+    }
+}
+
+.wrap {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: 0 56px;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--header-bg);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule-soft);
+}
+
+.nav-container {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: 26px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+}
+
+.logo {
+    font: 500 17px/1 var(--serif);
+    letter-spacing: 0.01em;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 26px;
+    font: 400 13.5px/1 var(--sans);
+}
+
+.nav-links a {
+    color: var(--ink-soft);
+}
+
+.nav-links a:hover {
+    color: var(--ink);
+}
+
+.theme-toggle {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: var(--ink);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+/* Show the moon in light mode, the sun in dark mode. */
+.theme-toggle .sun,
+[data-theme="dark"] .theme-toggle .moon {
+    display: none;
+}
+
+[data-theme="dark"] .theme-toggle .sun {
+    display: block;
+}
+
+.nav-links a[aria-current="page"] {
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+}
+
+/* ---------- Shared bits ---------- */
+
+.eyebrow {
+    font: 500 11px/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+}
+
+.section-head .more {
+    font: 400 13px/1 var(--sans);
+    color: var(--ink-mute);
+}
+
+.tag {
+    font: 400 11.5px/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border: 1px solid var(--rule);
+    padding: 4px 8px;
+}
+
+/* ---------- Writing timeline ---------- */
+
+/* Date column + gap; the rail sits in the middle of the gap. */
+.timeline {
+    --tl-date: 76px;
+    --tl-gap: 48px;
+    --tl-rail: calc(var(--tl-date) + var(--tl-gap) / 2);
+    position: relative;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    bottom: 0;
+    left: var(--tl-rail);
+    width: 1px;
+    background: var(--rule);
+}
+
+.tl-year + .tl-year {
+    margin-top: 40px;
+}
+
+.tl-year-label {
+    position: relative;
+    width: var(--tl-date);
+    margin-bottom: 18px;
+    font: 400 26px/1 var(--serif);
+    letter-spacing: -0.02em;
+    text-align: right;
+}
+
+/* Year marker: a hollow ring on the rail. */
+.tl-year-label::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: calc(var(--tl-rail) - 7px);
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--edge);
+    border-radius: 50%;
+    background: var(--paper);
+}
+
+.tl-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tl-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--tl-date) 1fr;
+    column-gap: var(--tl-gap);
+    align-items: start;
+}
+
+/* Entry dot on the rail. */
+.tl-entry::before {
+    content: "";
+    position: absolute;
+    top: 26px;
+    left: calc(var(--tl-rail) - 4.5px);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--edge);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tl-date {
+    padding-top: 22px;
+    text-align: right;
+    font: 400 11.5px/1.5 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    transition: color 0.2s ease;
+}
+
+.tl-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--rule-soft);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tl-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font: 400 11.5px/1 var(--sans);
+    letter-spacing: 0.05em;
+    color: var(--ink-mute);
+}
+
+.tl-card h3 {
+    font: 500 21px/1.3 var(--serif);
+    letter-spacing: -0.015em;
+    transition: color 0.2s ease;
+}
+
+.tl-card p {
+    font: 400 15px/1.6 var(--serif);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+}
+
+.tl-entry:hover::before,
+.tl-entry:focus-visible::before {
+    background: var(--accent);
+    transform: scale(1.5);
+}
+
+.tl-entry:hover .tl-date {
+    color: var(--accent);
+}
+
+.tl-entry:hover .tl-card {
+    border-color: var(--edge);
+    transform: translateX(4px);
+    box-shadow: var(--lift);
+}
+
+.tl-entry:hover h3 {
+    color: var(--accent);
+}
+
+/* ---------- Home ---------- */
+
+main {
+    padding: 70px 0 64px;
+}
+
+/* .wrap specificity (0,1,0) beats main (0,0,1), zeroing vertical padding on main.wrap.
+   main.wrap (0,1,1) restores the intended top/bottom gap. */
+main.wrap {
+    padding-top: 70px;
+    padding-bottom: 64px;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.intro {
+    max-width: var(--measure);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.intro h1 {
+    font: 400 42px/1.15 var(--serif);
+    letter-spacing: -0.02em;
+}
+
+.intro p {
+    font: 400 22px/1.55 var(--serif);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+}
+
+.facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px 56px;
+    border-top: 1px solid var(--rule);
+    padding-top: 26px;
+}
+
+.fact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fact p {
+    font: 400 16px/1.5 var(--serif);
+    max-width: 420px;
+}
+
+.fact--now {
+    min-width: 150px;
+    max-width: 240px;
+}
+
+/* ---------- Blog index ---------- */
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 18px;
+    margin-bottom: 34px;
+}
+
+.page-head h1 {
+    font: 400 34px/1.1 var(--serif);
+    letter-spacing: -0.02em;
+}
+
+.page-head p {
+    font: 400 14px/1.4 var(--sans);
+    color: var(--ink-mute);
+}
+
+/* ---------- Article ---------- */
+
+.article {
+    max-width: var(--measure);
+    margin: 0 auto;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font: 400 12px/1 var(--sans);
+    letter-spacing: 0.05em;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+}
+
+.article h1.post-title {
+    font: 400 40px/1.15 var(--serif);
+    letter-spacing: -0.025em;
+    margin-bottom: 20px;
+}
+
+.article > hr,
+.rule {
+    border: 0;
+    height: 1px;
+    background: var(--rule);
+    margin: 0 0 26px;
+}
+
+.post-content p {
+    font: 400 19px/1.75 var(--serif);
+    color: var(--ink-body);
+    margin-bottom: 20px;
+    text-wrap: pretty;
+}
+
+.post-content a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+}
+
+.post-content a:hover {
+    color: var(--accent);
+}
+
+.post-content img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 32px 0;
+}
+
+.post-content h2 {
+    font: 500 25px/1.3 var(--serif);
+    letter-spacing: -0.02em;
+    margin: 44px 0 14px;
+}
+
+.post-content h3 {
+    font: 500 21px/1.35 var(--serif);
+    letter-spacing: -0.01em;
+    margin: 34px 0 12px;
+}
+
+.post-content h4 {
+    font: 500 18px/1.4 var(--serif);
+    margin: 26px 0 10px;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 22px 1.3em;
+}
+
+.post-content li {
+    font: 400 19px/1.75 var(--serif);
+    color: var(--ink-body);
+    margin-bottom: 8px;
+}
+
+.post-content blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 22px;
+    margin: 0 0 22px;
+    color: var(--ink-soft);
+    font-style: italic;
+}
+
+/* Figures */
+
+.post-figure {
+    margin: 32px 0;
+}
+
+.post-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.post-figure--wide {
+    margin-left: calc((var(--page) - var(--measure)) / -2);
+    margin-right: calc((var(--page) - var(--measure)) / -2);
+}
+
+.post-figure--wide .post-img {
+    max-height: 480px;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+.post-figure--phone {
+    display: flex;
+    justify-content: center;
+}
+
+.post-figure--phone .post-img {
+    width: 280px;
+    border: 1px solid var(--rule);
+}
+
+.post-figure figcaption {
+    font: 400 12.5px/1.5 var(--sans);
+    color: var(--ink-mute);
+    margin-top: 10px;
+}
+
+.post-photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 32px 0;
+}
+
+.post-photo-grid .post-figure {
+    margin: 0;
+}
+
+.post-img--portrait {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    object-position: center top;
+}
+
+/* Code and tables */
+
+pre {
+    background: var(--card);
+    border: 1px solid var(--rule-soft);
+    padding: 20px 22px;
+    overflow-x: auto;
+    margin-bottom: 22px;
+}
+
+code {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-body);
+}
+
+p code,
+li code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    font-size: 0.85em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 22px;
+    font-family: var(--sans);
+    font-size: 14px;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule-soft);
+}
+
+th {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--ink-mute);
+}
+
+.ascii-diagram {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--rule-soft);
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+}
+
+/* ---------- Post footer nav ---------- */
+
+.post-nav {
+    border-top: 1px solid var(--rule);
+    margin-top: 18px;
+    padding-top: 26px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.post-nav a {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    background: var(--card);
+    border: 1px solid var(--rule-soft);
+    padding: 18px 20px;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-nav a:hover {
+    border-color: var(--edge);
+    transform: translateY(-2px);
+    box-shadow: var(--lift);
+}
+
+.post-nav .dir {
+    font: 400 11.5px/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.post-nav .title {
+    font: 500 17px/1.3 var(--serif);
+    color: var(--ink);
+}
+
+.post-nav .next {
+    text-align: right;
+}
+
+.all-posts {
+    border-top: 1px solid var(--rule);
+    margin-top: 28px;
+    padding-top: 24px;
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.all-posts a {
+    font: 500 11px/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    transition: color 0.2s ease;
+}
+
+.all-posts a::before {
+    content: "← ";
+    letter-spacing: 0;
+}
+
+.all-posts a:hover {
+    color: var(--ink);
+}
+
+.load-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 34px;
+    font: 400 13.5px/1 var(--sans);
+    color: var(--ink-mute);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+    border-top: 1px solid var(--rule-soft);
+}
+
+.site-footer .wrap {
+    padding: 22px 56px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font: 400 12.5px/1 var(--sans);
+    color: var(--ink-mute);
+}
+
+.site-footer a {
+    color: var(--ink-mute);
+}
+
+.site-footer a:hover {
+    color: var(--ink);
+}
+
+/* ---------- Responsive ---------- */
+
+/* ---------- Portfolio (sans, ruled, dense) ---------- */
+
+.portfolio {
+    display: flex;
+    flex-direction: column;
+    gap: 54px;
+}
+
+.pf-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.pf-section > .eyebrow {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 10px;
+}
+
+.pf-lede {
+    font: 400 18px/1.65 var(--serif);
+    color: var(--ink-body);
+    max-width: var(--measure);
+    text-wrap: pretty;
+}
+
+/* ---------- Work git graph ---------- */
+
+/* x positions of the main line and the branch lane; content starts at --indent. */
+.gg {
+    --main: 8px;
+    --lane: 38px;
+    --indent: 64px;
+    --curve: 16px;
+    position: relative;
+    font-family: var(--sans);
+}
+
+/* main: runs from HEAD down to the init commit. */
+.gg::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: var(--main);
+    width: 2px;
+    background: var(--edge);
+}
+
+.gg-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.gg-pill,
+.gg-label {
+    font: 500 12px/1 var(--mono);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    padding: 5px 9px;
+}
+
+/* Sits on top of the main line's start. */
+.gg-pill {
+    position: relative;
+    background: var(--card);
+    color: var(--ink);
+}
+
+.gg-toggle {
+    font: 400 13px/1 var(--sans);
+    color: var(--ink-mute);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 4px;
+    cursor: pointer;
+}
+
+.gg-toggle:hover {
+    color: var(--ink);
+}
+
+/* Each branch: fork curve (::before), lane (background), merge curve (::after). */
+.gg-branch {
+    position: relative;
+    padding: 30px 0 30px var(--indent);
+    background: linear-gradient(var(--edge), var(--edge)) no-repeat
+        var(--lane) var(--curve) / 2px calc(100% - 2 * var(--curve));
+}
+
+.gg-branch + .gg-branch {
+    margin-top: 10px;
+}
+
+.gg-branch::before,
+.gg-branch::after {
+    content: "";
+    position: absolute;
+    left: var(--main);
+    width: calc(var(--lane) - var(--main) + 2px);
+    height: var(--curve);
+    border: 2px solid var(--edge);
+    border-left: 0;
+}
+
+.gg-branch::before {
+    top: 0;
+    border-bottom: 0;
+    border-top-right-radius: var(--curve);
+}
+
+.gg-branch::after {
+    bottom: 0;
+    border-top: 0;
+    border-bottom-right-radius: var(--curve);
+}
+
+/* Summary row gets a hover tint; the negative margin keeps text aligned, so dots add --pad back. */
+.gg-branch summary {
+    --pad: 8px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: calc(-1 * var(--pad));
+    padding: var(--pad);
+    border-radius: 8px;
+    list-style: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.gg-branch summary:hover {
+    background: var(--code-bg);
+}
+
+/* Tree-view caret: points right when collapsed, down when open. */
+.gg-caret {
+    width: 0;
+    height: 0;
+    margin-right: -4px;
+    border-left: 6px solid var(--ink-mute);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.gg-branch[open] > summary .gg-caret {
+    transform: rotate(90deg);
+}
+
+/* "+3 commits" hint, only while collapsed. */
+.gg-count {
+    font: 400 11.5px/1 var(--mono);
+    color: var(--ink-mute);
+}
+
+.gg-branch[open] > summary .gg-count {
+    display: none;
+}
+
+/* Nested client branch: its "main" is the parent's lane. Values are relative to the parent's content box. */
+.gg-sub {
+    --main: -26px;
+    --lane: 4px;
+    --indent: 34px;
+    margin-top: 22px;
+}
+
+.gg-branch summary::-webkit-details-marker {
+    display: none;
+}
+
+.gg-branch summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+    border-radius: 4px;
+}
+
+/* Branch commit dot on the lane. */
+.gg-branch summary::before {
+    content: "";
+    position: absolute;
+    top: calc(5px + var(--pad));
+    left: calc(var(--lane) - var(--indent) - 5px + var(--pad));
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--edge);
+    background: var(--paper);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.gg-label {
+    color: var(--ink-soft);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.gg-title {
+    font: 600 15px/1.4 var(--sans);
+    color: var(--ink);
+}
+
+.gg-hash {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-mute);
+}
+
+.gg-org,
+.gg-when {
+    flex-basis: 100%;
+}
+
+.gg-org {
+    font: 400 14px/1.5 var(--sans);
+    color: var(--ink-soft);
+}
+
+.gg-when {
+    margin-top: -4px;
+    font: 400 11.5px/1.6 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+/* `>` so a nested branch only lights up for its own hover/open state. */
+.gg-branch > summary:hover::before,
+.gg-branch[open] > summary::before {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.gg-branch > summary:hover .gg-label,
+.gg-branch[open] > summary .gg-label {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Opening a branch: commits (and nested branches) slide in one after another. */
+.gg-branch[open] > .gg-commits li,
+.gg-branch[open] > .gg-sub {
+    animation: gg-in 0.35s ease both;
+}
+
+.gg-branch[open] > .gg-commits li:nth-child(2) { animation-delay: 0.07s; }
+.gg-branch[open] > .gg-commits li:nth-child(3) { animation-delay: 0.14s; }
+.gg-branch[open] > .gg-commits li:nth-child(4) { animation-delay: 0.21s; }
+.gg-branch[open] > .gg-commits li:nth-child(5) { animation-delay: 0.28s; }
+
+@keyframes gg-in {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+}
+
+/* Smooth height on open/close where supported (Chromium); elsewhere it just snaps.
+   Clip vertically only: commit dots sit to the left of the content box. */
+@supports (interpolate-size: allow-keywords) {
+    .gg {
+        interpolate-size: allow-keywords;
+    }
+
+    .gg-branch::details-content {
+        height: 0;
+        overflow-x: visible;
+        overflow-y: clip;
+        transition: height 0.3s ease, content-visibility 0.3s allow-discrete;
+    }
+
+    .gg-branch[open]::details-content {
+        height: auto;
+    }
+}
+
+/* Bullet points as commits on the lane. */
+.gg-commits {
+    list-style: none;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gg-commits li {
+    position: relative;
+    max-width: 620px;
+    font: 400 14.5px/1.65 var(--sans);
+    color: var(--ink-body);
+    text-wrap: pretty;
+}
+
+.gg-commits li::before {
+    content: "";
+    position: absolute;
+    top: 0.5em;
+    left: calc(var(--lane) - var(--indent) - 3px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--edge);
+}
+
+/* Root commit: hollow ring on main. Paper fill below the ring hides main's tail. */
+.gg-init {
+    position: relative;
+    padding: 6px 0 0 calc(var(--main) + 22px);
+    background: linear-gradient(transparent 14px, var(--paper) 14px);
+}
+
+.gg-init::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: calc(var(--main) - 5px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--edge);
+    background: var(--paper);
+}
+
+.gg-init code {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gg-branch summary,
+    .gg-branch summary::before,
+    .gg-caret,
+    .gg-label,
+    .gg-branch::details-content {
+        transition: none;
+    }
+
+    .gg-branch[open] > .gg-commits li,
+    .gg-branch[open] > .gg-sub {
+        animation: none;
+    }
+}
+
+/* Skills */
+
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 34px;
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 22px;
+}
+
+.skill-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.skill-group h3 {
+    font: 600 12px/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.skill-group p {
+    font: 400 14.5px/1.75 var(--sans);
+    color: var(--ink-soft);
+}
+
+/* Definition rows (education, achievements, languages, availability) */
+
+.pf-rows {
+    border-top: 1px solid var(--rule-soft);
+    margin: 0;
+}
+
+.pf-row {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    /* column-gap only: a row-gap would add 34px between the stacked Awards dd rows,
+       which is what `dd + dd { margin-top: 6px }` is there to control. */
+    column-gap: 34px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+}
+
+.pf-row dt {
+    font: 400 11.5px/1.6 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.pf-row dd {
+    /* Required: without an explicit column, grid auto-placement drops the 2nd and 4th
+       dd into the 170px label column. */
+    grid-column: 2;
+    margin: 0;
+    font: 400 14.5px/1.65 var(--sans);
+    color: var(--ink-body);
+}
+
+.pf-row dd + dd {
+    margin-top: 6px;
+}
+
+.cv-link {
+    align-self: flex-start;
+    font: 400 13px/1 var(--sans);
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 4px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.cv-link:hover {
+    color: var(--ink);
+    border-color: var(--edge);
+}
+
+/* ---------- Home doors and writing list ---------- */
+
+.doors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.door {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--rule-soft);
+    padding: 26px 28px;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.door:hover {
+    border-color: var(--edge);
+    transform: translateY(-2px);
+    box-shadow: var(--lift);
+}
+
+.door:hover .go {
+    color: var(--accent);
+}
+
+.door h2 {
+    font: 500 21px/1.3 var(--serif);
+    letter-spacing: -0.015em;
+}
+
+.door p {
+    font: 400 14.5px/1.6 var(--sans);
+    color: var(--ink-soft);
+    text-wrap: pretty;
+}
+
+.door .go {
+    margin-top: 2px;
+    font: 400 13px/1 var(--sans);
+    color: var(--ink-mute);
+}
+
+.writing-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule-soft);
+}
+
+.writing-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft);
+}
+
+.writing-row .when {
+    font: 400 11.5px/1.5 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.writing-row .title {
+    font: 400 17px/1.4 var(--serif);
+    color: var(--ink);
+    text-wrap: pretty;
+}
+
+.writing-row:hover .title {
+    color: var(--accent);
+}
+
+.not-found {
+    font: 400 14px/1 var(--sans);
+    color: var(--ink-mute);
+}
+
+@media (max-width: 820px) {
+    .doors,
+    .skill-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-figure--wide {
+        margin-left: -24px;
+        margin-right: -24px;
+    }
+}
+
+@media (max-width: 620px) {
+    body {
+        font-size: 16px;
+    }
+
+    .wrap,
+    .nav-container,
+    .site-footer .wrap {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    /* Header is sticky, so keep it short on phones. */
+    .nav-container {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .nav-links {
+        gap: 20px;
+    }
+
+    main {
+        padding: 44px 0 48px;
+    }
+
+    main.wrap {
+        padding-top: 40px;
+        padding-bottom: 48px;
+    }
+
+    .home {
+        gap: 44px;
+    }
+
+    .intro h1 {
+        font-size: 32px;
+    }
+
+    .intro p {
+        font-size: 19px;
+    }
+
+    .page-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .page-head h1 {
+        font-size: 28px;
+    }
+
+    .article h1.post-title {
+        font-size: 30px;
+    }
+
+    .post-content p,
+    .post-content li {
+        font-size: 18px;
+        line-height: 1.72;
+    }
+
+    /* Timeline collapses to rail on the left, date above each card. */
+    .timeline {
+        --tl-rail: 5px;
+    }
+
+    .tl-year-label {
+        width: auto;
+        text-align: left;
+        padding-left: 28px;
+    }
+
+    .tl-entry {
+        grid-template-columns: 1fr;
+        row-gap: 6px;
+        padding-left: 28px;
+    }
+
+    .tl-entry::before {
+        top: 4px;
+    }
+
+    .tl-date {
+        padding-top: 0;
+        text-align: left;
+    }
+
+    .tl-card {
+        padding: 16px 18px;
+    }
+
+    .tl-card h3 {
+        font-size: 19px;
+    }
+
+    .post-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .post-nav .next {
+        text-align: left;
+    }
+
+    .post-photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .post-img--portrait {
+        aspect-ratio: 4 / 5;
+    }
+
+    .site-footer .wrap {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pf-row,
+    .writing-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* Must reset to column 1. Leaving `grid-column: 2` on a single-column grid
+       creates an implicit second column and reintroduces the desktop split. */
+    .pf-row dd {
+        grid-column: 1;
+    }
+
+    /* Phones: drop the graph drawing (lines, curves, dots, HEAD/init) and keep a plain
+       expandable list. Capitec stays visibly nested under Entelect via a left rule. */
+    .gg::before,
+    .gg-branch::before,
+    .gg-branch::after,
+    .gg-branch summary::before,
+    .gg-pill,
+    .gg-hash,
+    .gg-init {
+        display: none;
+    }
+
+    .gg-head {
+        justify-content: flex-end;
+    }
+
+    .gg-branch {
+        padding: 16px 0;
+        background: none;
+        border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .gg-branch + .gg-branch {
+        margin-top: 0;
+    }
+
+    .gg-sub {
+        margin-top: 14px;
+        padding: 4px 0 4px 14px;
+        border-bottom: 0;
+        border-left: 2px solid var(--rule);
+    }
+
+    .gg-commits li {
+        padding-left: 16px;
+    }
+
+    .gg-commits li::before {
+        left: 0;
+        top: 0.7em;
+        width: 6px;
+        height: 6px;
+    }
+
+    .portfolio {
+        gap: 42px;
+    }
+}

@@ -10,7 +10,9 @@ buildExpired = false
 
 [params]
   author = "Tonderai Saidi"
-  description = "Writing and work by Tonderai Saidi"
+  description = "Tonderai Saidi is a backend engineer in Cape Town writing about distributed systems, AI, and the human side of building software."
+  # Default link-preview image (static/og.png) for pages without their own.
+  images = ["og.png"]
   github = "https://github.com/TassanSaidi"
   linkedin = "https://www.linkedin.com/in/tonderaisaidi/"
 
@@ -18,4 +20,4 @@ buildExpired = false
   unsafe = true
 
 [markup.highlight]
-  style = "github"
+  noClasses = false

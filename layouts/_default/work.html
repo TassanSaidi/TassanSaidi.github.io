@@ -14,60 +14,111 @@
 
         <section class="pf-section">
             <span class="eyebrow">Experience</span>
-            <div class="role-list">
+            <div class="gg">
+                <div class="gg-head">
+                    <span class="gg-pill">HEAD -&gt; main</span>
+                    <button class="gg-toggle" type="button" hidden>Expand all</button>
+                </div>
 
-                <article class="role">
-                    <div class="role-when">August 2025 &mdash; Present<br>Cape Town</div>
-                    <div class="role-id">
-                        <span class="role-title">Software Engineer</span>
-                        <span class="role-org">Capitec Bank &middot; contracting from Entelect &middot; Telephony Team</span>
-                    </div>
-                    <ul class="role-points">
-                        <li>Led the design and development of a centralized dashboard providing real-time visibility into AWS Lambda functions, their execution flows, and relationships with key AWS resources, leveraging AWS Step Functions, CloudWatch, and DynamoDB for orchestration and observability</li>
-                        <li>Delivered a communication platform enabling managers to broadcast emergency messages directly to call centres, ensuring rapid alignment and operational resilience during outages</li>
-                        <li>Driving the development of an in-house incident management and escalation system to replace PagerDuty, streamlining response workflows, reducing vendor dependency, and integrating tightly with our AWS ecosystem</li>
+                {{/* Capitec is a client placement through Entelect: a branch off feature/entelect that merges back into it. */}}
+                <details class="gg-branch" open>
+                    <summary>
+                        <span class="gg-caret" aria-hidden="true"></span>
+                        <span class="gg-label">feature/entelect</span>
+                        <span class="gg-title">Software Engineer</span>
+                        <span class="gg-count">+1 commit, +1 branch</span>
+                        <code class="gg-hash">c41e8a0</code>
+                        <span class="gg-org">Entelect &middot; consulting</span>
+                        <span class="gg-when">August 2025 &mdash; Present &middot; Cape Town</span>
+                    </summary>
+                    <ul class="gg-commits">
+                        <li>Developed a minimal Wi-Fi heatmap to help identify Wi-Fi weak zones in the office</li>
                     </ul>
-                </article>
+                    <details class="gg-branch gg-sub" open>
+                        <summary>
+                            <span class="gg-caret" aria-hidden="true"></span>
+                            <span class="gg-label">client/capitec</span>
+                            <span class="gg-title">Software Engineer</span>
+                            <span class="gg-count">+5 commits</span>
+                            <code class="gg-hash">a3f9c21</code>
+                            <span class="gg-org">Capitec Bank &middot; contracting from Entelect &middot; Telephony Team</span>
+                            <span class="gg-when">August 2025 &mdash; Present &middot; Cape Town</span>
+                        </summary>
+                        <ul class="gg-commits">
+                            <li>Led the design and development of a centralized dashboard providing real-time visibility into AWS Lambda functions, their execution flows, and relationships with key AWS resources, leveraging AWS Step Functions, CloudWatch, and DynamoDB for orchestration and observability</li>
+                            <li>Delivered a communication platform enabling managers to broadcast emergency messages directly to call centres, ensuring rapid alignment and operational resilience during outages</li>
+                            <li>Driving the development of an in-house incident management and escalation system to replace PagerDuty, streamlining response workflows, reducing vendor dependency, and integrating tightly with our AWS ecosystem</li>
+                            <li>Helped build an in-house blended dialler on Amazon Connect</li>
+                            <li>Built an AI-powered dashboard that evaluates call centre agent performance and makes actionable recommendations</li>
+                        </ul>
+                    </details>
+                </details>
 
-                <article class="role">
-                    <div class="role-when">March 2024 &mdash; August 2025<br>Cape Town</div>
-                    <div class="role-id">
-                        <span class="role-title">Software Engineer</span>
-                        <span class="role-org">Turfsport</span>
-                    </div>
-                    <ul class="role-points">
+                <details class="gg-branch">
+                    <summary>
+                        <span class="gg-caret" aria-hidden="true"></span>
+                        <span class="gg-label">feature/turfsport</span>
+                        <span class="gg-title">Software Engineer</span>
+                        <span class="gg-count">+4 commits</span>
+                        <code class="gg-hash">7be04d6</code>
+                        <span class="gg-org">Turfsport</span>
+                        <span class="gg-when">March 2024 &mdash; August 2025 &middot; Cape Town</span>
+                    </summary>
+                    <ul class="gg-commits">
                         <li>Migrated core racing platform to Java 17, enhancing security by 30% while improving performance by 15%</li>
                         <li>Implemented AWS OpenSearch to optimize large-scale data queries, achieving 10% faster system response</li>
                         <li>Standardized documentation processes and automated troubleshooting procedures</li>
                         <li>Maintained and enhanced frontend dashboards using Angular components, contributing to full stack development</li>
                     </ul>
-                </article>
+                </details>
 
-                <article class="role">
-                    <div class="role-when">July 2021 &mdash; March 2024<br>Cape Town</div>
-                    <div class="role-id">
-                        <span class="role-title">Software Engineer</span>
-                        <span class="role-org">Lipa Payments</span>
-                    </div>
-                    <ul class="role-points">
+                <details class="gg-branch">
+                    <summary>
+                        <span class="gg-caret" aria-hidden="true"></span>
+                        <span class="gg-label">feature/lipa</span>
+                        <span class="gg-title">Software Engineer</span>
+                        <span class="gg-count">+3 commits</span>
+                        <code class="gg-hash">e18c5f0</code>
+                        <span class="gg-org">Lipa Payments</span>
+                        <span class="gg-when">July 2021 &mdash; March 2024 &middot; Cape Town</span>
+                    </summary>
+                    <ul class="gg-commits">
                         <li>Developed PCI-compliant microservices and REST APIs for financial products, accelerating third-party integrations</li>
                         <li>Led Mastercard Payment Gateway integration project, ensuring secure transaction processing</li>
                         <li>Created CI/CD automation tooling in Go, reducing pipeline setup time</li>
                     </ul>
-                </article>
+                </details>
 
-                <article class="role">
-                    <div class="role-when">April 2021 &mdash; June 2021<br>Cape Town</div>
-                    <div class="role-id">
-                        <span class="role-title">Data Acquisition Engineer</span>
-                        <span class="role-org">Energy Partners</span>
-                    </div>
-                    <ul class="role-points">
+                <details class="gg-branch">
+                    <summary>
+                        <span class="gg-caret" aria-hidden="true"></span>
+                        <span class="gg-label">feature/energy-partners</span>
+                        <span class="gg-title">Data Acquisition Engineer</span>
+                        <span class="gg-count">+1 commit</span>
+                        <code class="gg-hash">4d2a9b7</code>
+                        <span class="gg-org">Energy Partners</span>
+                        <span class="gg-when">April 2021 &mdash; June 2021 &middot; Cape Town</span>
+                    </summary>
+                    <ul class="gg-commits">
                         <li>Built real-time PostgreSQL dashboards for monitoring energy consumption data</li>
                     </ul>
-                </article>
+                </details>
 
+                <div class="gg-init"><code>init: BScEng (Hons) Mechatronics, UCT 2017&ndash;2020</code></div>
             </div>
+            <script>
+                (() => {
+                    const btn = document.querySelector('.gg-toggle');
+                    const first = document.querySelector('.gg > .gg-branch');
+                    btn.hidden = false;
+                    btn.addEventListener('click', () => {
+                        const expand = btn.textContent === 'Expand all';
+                        // Collapse leaves the current role (first branch and its nested client branch) open.
+                        document.querySelectorAll('.gg-branch').forEach(d => (d.open = expand || first.contains(d)));
+                        btn.textContent = expand ? 'Collapse all' : 'Expand all';
+                    });
+                })();
+            </script>
         </section>
 
         <section class="pf-section">
