@@ -5,18 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} – {{ .Site.Title }}{{ end }}</title>
     <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <link rel="canonical" href="{{ .Permalink }}">
+    <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+    {{ with (site.GetPage "/posts").OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ .Permalink }}">{{ end }}
+    {{ partial "opengraph.html" . }}
+    {{ partial "twitter_cards.html" . }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ "style.css" | relURL }}">
+    {{ $css := resources.Get "style.css" | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 </head>
 <body>
+    {{ partial "bg-icons.html" . }}
     <header class="site-header">
         <nav class="nav-container">
             <a class="logo" href="{{ "/" | relURL }}">Tonderai Saidi</a>
             <ul class="nav-links">
-                <li><a href="{{ "work.html" | relURL }}">Work</a></li>
-                <li><a href="{{ "posts.html" | relURL }}">Writing</a></li>
+                <li><a href="{{ "work.html" | relURL }}"{{ if eq .Layout "work" }} aria-current="page"{{ end }}>Work</a></li>
+                <li><a href="{{ "posts.html" | relURL }}"{{ if eq .Section "posts" }} aria-current="page"{{ end }}>Writing</a></li>
                 <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a></li>
                 <li><a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>
             </ul>
@@ -28,7 +35,7 @@
     <footer class="site-footer">
         <div class="wrap">
             <p>&copy; {{ now.Year }} Tonderai Saidi</p>
-            <p><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a> &middot; <a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></p>
+            <p><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a> &middot; <a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="{{ "posts/index.xml" | relURL }}">RSS</a></p>
         </div>
     </footer>
 </body>
