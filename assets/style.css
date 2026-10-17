@@ -852,71 +852,325 @@ th {
     text-wrap: pretty;
 }
 
-/* Experience rows */
+/* ---------- Work git graph ---------- */
 
-.role {
-    display: grid;
-    grid-template-columns: 170px 1fr;
-    gap: 4px 34px;
-    padding: 24px 0;
-    border-top: 1px solid var(--rule-soft);
+/* x positions of the main line and the branch lane; content starts at --indent. */
+.gg {
+    --main: 8px;
+    --lane: 38px;
+    --indent: 64px;
+    --curve: 16px;
+    position: relative;
+    font-family: var(--sans);
 }
 
-.role:first-of-type {
+/* main: runs from HEAD down to the init commit. */
+.gg::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: var(--main);
+    width: 2px;
+    background: var(--edge);
+}
+
+.gg-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.gg-pill,
+.gg-label {
+    font: 500 12px/1 var(--mono);
+    border: 1px solid var(--edge);
+    border-radius: 999px;
+    padding: 5px 9px;
+}
+
+/* Sits on top of the main line's start. */
+.gg-pill {
+    position: relative;
+    background: var(--card);
+    color: var(--ink);
+}
+
+.gg-toggle {
+    font: 400 13px/1 var(--sans);
+    color: var(--ink-mute);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 4px;
+    cursor: pointer;
+}
+
+.gg-toggle:hover {
+    color: var(--ink);
+}
+
+/* Each branch: fork curve (::before), lane (background), merge curve (::after). */
+.gg-branch {
+    position: relative;
+    padding: 30px 0 30px var(--indent);
+    background: linear-gradient(var(--edge), var(--edge)) no-repeat
+        var(--lane) var(--curve) / 2px calc(100% - 2 * var(--curve));
+}
+
+.gg-branch + .gg-branch {
+    margin-top: 10px;
+}
+
+.gg-branch::before,
+.gg-branch::after {
+    content: "";
+    position: absolute;
+    left: var(--main);
+    width: calc(var(--lane) - var(--main) + 2px);
+    height: var(--curve);
+    border: 2px solid var(--edge);
+    border-left: 0;
+}
+
+.gg-branch::before {
+    top: 0;
+    border-bottom: 0;
+    border-top-right-radius: var(--curve);
+}
+
+.gg-branch::after {
+    bottom: 0;
     border-top: 0;
-    padding-top: 4px;
+    border-bottom-right-radius: var(--curve);
 }
 
-.role-when {
+/* Summary row gets a hover tint; the negative margin keeps text aligned, so dots add --pad back. */
+.gg-branch summary {
+    --pad: 8px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: calc(-1 * var(--pad));
+    padding: var(--pad);
+    border-radius: 8px;
+    list-style: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.gg-branch summary:hover {
+    background: var(--code-bg);
+}
+
+/* Tree-view caret: points right when collapsed, down when open. */
+.gg-caret {
+    width: 0;
+    height: 0;
+    margin-right: -4px;
+    border-left: 6px solid var(--ink-mute);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.gg-branch[open] > summary .gg-caret {
+    transform: rotate(90deg);
+}
+
+/* "+3 commits" hint, only while collapsed. */
+.gg-count {
+    font: 400 11.5px/1 var(--mono);
+    color: var(--ink-mute);
+}
+
+.gg-branch[open] > summary .gg-count {
+    display: none;
+}
+
+/* Nested client branch: its "main" is the parent's lane. Values are relative to the parent's content box. */
+.gg-sub {
+    --main: -26px;
+    --lane: 4px;
+    --indent: 34px;
+    margin-top: 22px;
+}
+
+.gg-branch summary::-webkit-details-marker {
+    display: none;
+}
+
+.gg-branch summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+    border-radius: 4px;
+}
+
+/* Branch commit dot on the lane. */
+.gg-branch summary::before {
+    content: "";
+    position: absolute;
+    top: calc(5px + var(--pad));
+    left: calc(var(--lane) - var(--indent) - 5px + var(--pad));
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--edge);
+    background: var(--paper);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.gg-label {
+    color: var(--ink-soft);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.gg-title {
+    font: 600 15px/1.4 var(--sans);
+    color: var(--ink);
+}
+
+.gg-hash {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-mute);
+}
+
+.gg-org,
+.gg-when {
+    flex-basis: 100%;
+}
+
+.gg-org {
+    font: 400 14px/1.5 var(--sans);
+    color: var(--ink-soft);
+}
+
+.gg-when {
+    margin-top: -4px;
     font: 400 11.5px/1.6 var(--sans);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-mute);
 }
 
-.role-id {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+/* `>` so a nested branch only lights up for its own hover/open state. */
+.gg-branch > summary:hover::before,
+.gg-branch[open] > summary::before {
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
-.role-title {
-    font: 600 15px/1.4 var(--sans);
-    letter-spacing: 0.01em;
-    color: var(--ink);
+.gg-branch > summary:hover .gg-label,
+.gg-branch[open] > summary .gg-label {
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
-.role-org {
-    font: 400 14px/1.5 var(--sans);
-    color: var(--ink-soft);
+/* Opening a branch: commits (and nested branches) slide in one after another. */
+.gg-branch[open] > .gg-commits li,
+.gg-branch[open] > .gg-sub {
+    animation: gg-in 0.35s ease both;
 }
 
-.role-points {
-    grid-column: 2;
+.gg-branch[open] > .gg-commits li:nth-child(2) { animation-delay: 0.07s; }
+.gg-branch[open] > .gg-commits li:nth-child(3) { animation-delay: 0.14s; }
+.gg-branch[open] > .gg-commits li:nth-child(4) { animation-delay: 0.21s; }
+
+@keyframes gg-in {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+}
+
+/* Smooth height on open/close where supported (Chromium); elsewhere it just snaps.
+   Clip vertically only: commit dots sit to the left of the content box. */
+@supports (interpolate-size: allow-keywords) {
+    .gg {
+        interpolate-size: allow-keywords;
+    }
+
+    .gg-branch::details-content {
+        height: 0;
+        overflow-x: visible;
+        overflow-y: clip;
+        transition: height 0.3s ease, content-visibility 0.3s allow-discrete;
+    }
+
+    .gg-branch[open]::details-content {
+        height: auto;
+    }
+}
+
+/* Bullet points as commits on the lane. */
+.gg-commits {
     list-style: none;
-    margin: 13px 0 0;
+    margin-top: 16px;
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 10px;
 }
 
-.role-points li {
+.gg-commits li {
     position: relative;
-    padding-left: 18px;
     max-width: 620px;
     font: 400 14.5px/1.65 var(--sans);
     color: var(--ink-body);
     text-wrap: pretty;
 }
 
-.role-points li::before {
+.gg-commits li::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0.62em;
-    width: 6px;
-    height: 1px;
+    top: 0.5em;
+    left: calc(var(--lane) - var(--indent) - 3px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
     background: var(--edge);
+}
+
+/* Root commit: hollow ring on main. Paper fill below the ring hides main's tail. */
+.gg-init {
+    position: relative;
+    padding: 6px 0 0 calc(var(--main) + 22px);
+    background: linear-gradient(transparent 14px, var(--paper) 14px);
+}
+
+.gg-init::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: calc(var(--main) - 5px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--edge);
+    background: var(--paper);
+}
+
+.gg-init code {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gg-branch summary,
+    .gg-branch summary::before,
+    .gg-caret,
+    .gg-label,
+    .gg-branch::details-content {
+        transition: none;
+    }
+
+    .gg-branch[open] > .gg-commits li,
+    .gg-branch[open] > .gg-sub {
+        animation: none;
+    }
 }
 
 /* Skills */
@@ -1213,18 +1467,33 @@ th {
         gap: 10px;
     }
 
-    .role,
     .pf-row,
     .writing-row {
         grid-template-columns: 1fr;
         gap: 8px;
     }
 
-    /* Both must reset to column 1. Leaving `grid-column: 2` on a single-column grid
+    /* Must reset to column 1. Leaving `grid-column: 2` on a single-column grid
        creates an implicit second column and reintroduces the desktop split. */
-    .role-points,
     .pf-row dd {
         grid-column: 1;
+    }
+
+    .gg {
+        --main: 6px;
+        --lane: 26px;
+        --indent: 44px;
+        --curve: 12px;
+    }
+
+    .gg-sub {
+        --main: -18px;
+        --lane: 2px;
+        --indent: 24px;
+    }
+
+    .gg-hash {
+        margin-left: 0;
     }
 
     .portfolio {
