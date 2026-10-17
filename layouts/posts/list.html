@@ -2,20 +2,30 @@
 <main class="wrap">
     <div class="page-head">
         <h1>Writing</h1>
-        <p>Thoughts, tutorials, and insights</p>
+        <p>{{ len .Pages }} essays, newest first</p>
     </div>
-    <div class="card-grid">
-        {{ range .Pages.ByDate.Reverse }}
-        <a class="post-card" href="{{ .RelPermalink }}">
-            <div class="card-meta">
-                <span>{{ .Date.Format "January 2, 2006" }}</span>
-                <span>&middot;</span>
-                <span>{{ .ReadingTime }} min</span>
-                {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
-            </div>
-            <h3>{{ .Title }}</h3>
-            <p>{{ .Description }}</p>
-        </a>
+    <div class="timeline">
+        {{ range .Pages.GroupByDate "2006" }}
+        <section class="tl-year">
+            <h2 class="tl-year-label">{{ .Key }}</h2>
+            <ol class="tl-list">
+                {{ range .Pages }}
+                <li>
+                    <a class="tl-entry" href="{{ .RelPermalink }}">
+                        <time class="tl-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2" }}</time>
+                        <div class="tl-card">
+                            <div class="tl-meta">
+                                {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
+                                <span>{{ .ReadingTime }} min read</span>
+                            </div>
+                            <h3>{{ .Title }}</h3>
+                            <p>{{ .Description }}</p>
+                        </div>
+                    </a>
+                </li>
+                {{ end }}
+            </ol>
+        </section>
         {{ end }}
     </div>
 </main>
