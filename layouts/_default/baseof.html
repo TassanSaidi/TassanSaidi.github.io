@@ -31,7 +31,7 @@
         <nav class="nav-container">
             <a class="logo" href="{{ "/" | relURL }}">Tonderai Saidi</a>
             <ul class="nav-links">
-                <li><a href="{{ "work.html" | relURL }}"{{ if eq .Layout "work" }} aria-current="page"{{ end }}>Work</a></li>
+                <li><a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>Work</a></li>
                 <li><a href="{{ "posts.html" | relURL }}"{{ if eq .Section "posts" }} aria-current="page"{{ end }}>Writing</a></li>
                 <li><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a></li>
                 <li><a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>
