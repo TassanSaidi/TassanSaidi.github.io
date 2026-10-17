@@ -215,7 +215,7 @@ pre,
 }
 
 .nav-links a {
-    color: var(--ink-mute);
+    color: var(--ink-soft);
 }
 
 .nav-links a:hover {
@@ -227,7 +227,7 @@ pre,
     padding: 0;
     border: 0;
     background: none;
-    color: var(--ink-mute);
+    color: var(--ink-soft);
     cursor: pointer;
 }
 
