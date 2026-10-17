@@ -1479,21 +1479,48 @@ th {
         grid-column: 1;
     }
 
-    .gg {
-        --main: 6px;
-        --lane: 26px;
-        --indent: 44px;
-        --curve: 12px;
+    /* Phones: drop the graph drawing (lines, curves, dots, HEAD/init) and keep a plain
+       expandable list. Capitec stays visibly nested under Entelect via a left rule. */
+    .gg::before,
+    .gg-branch::before,
+    .gg-branch::after,
+    .gg-branch summary::before,
+    .gg-pill,
+    .gg-hash,
+    .gg-init {
+        display: none;
+    }
+
+    .gg-head {
+        justify-content: flex-end;
+    }
+
+    .gg-branch {
+        padding: 16px 0;
+        background: none;
+        border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .gg-branch + .gg-branch {
+        margin-top: 0;
     }
 
     .gg-sub {
-        --main: -18px;
-        --lane: 2px;
-        --indent: 24px;
+        margin-top: 14px;
+        padding: 4px 0 4px 14px;
+        border-bottom: 0;
+        border-left: 2px solid var(--rule);
     }
 
-    .gg-hash {
-        margin-left: 0;
+    .gg-commits li {
+        padding-left: 16px;
+    }
+
+    .gg-commits li::before {
+        left: 0;
+        top: 0.7em;
+        width: 6px;
+        height: 6px;
     }
 
     .portfolio {
