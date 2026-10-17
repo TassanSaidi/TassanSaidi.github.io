@@ -197,7 +197,7 @@ pre,
     padding: 26px 56px;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: 24px;
 }
 
@@ -208,6 +208,7 @@ pre,
 
 .nav-links {
     list-style: none;
+    margin-left: auto;
     display: flex;
     gap: 26px;
     font: 400 13.5px/1 var(--sans);
@@ -246,6 +247,45 @@ pre,
     stroke: currentColor;
     stroke-width: 1.6;
     stroke-linecap: round;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Hamburger: phones only (see the 620px block), and only when JS can drive it. */
+.nav-menu {
+    display: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+
+.nav-menu svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.nav-menu .close,
+.nav-menu[aria-expanded="true"] .bars {
+    display: none;
+}
+
+.nav-menu[aria-expanded="true"] .close {
+    display: block;
+}
+
+.nav-menu:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 /* Show the moon in light mode, the sun in dark mode. */
@@ -1290,17 +1330,56 @@ th {
         padding-right: 24px;
     }
 
-    /* Header is sticky, so keep it short on phones. */
+    /* Header is sticky, so keep it to one short row: name, theme toggle, hamburger. */
     .nav-container {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        position: relative;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 16px;
     }
 
     .nav-links {
         gap: 20px;
+    }
+
+    .theme-toggle svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .js .nav-menu {
+        display: flex;
+    }
+
+    /* Links become a dropdown under the header row. */
+    .js .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 6px 24px 14px;
+        background: var(--paper);
+        border-bottom: 1px solid var(--rule-soft);
+        font-size: 16px;
+    }
+
+    .js .nav-links.open {
+        display: flex;
+    }
+
+    .js .nav-links a {
+        display: block;
+        padding: 12px 0;
+    }
+
+    .js .nav-links a[aria-current="page"] {
+        border-bottom: 0;
+        color: var(--accent);
     }
 
     main {
