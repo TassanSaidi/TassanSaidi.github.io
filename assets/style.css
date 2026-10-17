@@ -27,19 +27,32 @@
 /* Set on <html> by the inline script in baseof.html (stored choice, else system preference). */
 [data-theme="dark"] {
     color-scheme: dark;
-    --paper: #121110;
-    --card: #1b1a17;
-    --ink: #ece7df;
-    --ink-body: #d9d3ca;
-    --ink-soft: rgba(236, 231, 223, 0.7);
-    --ink-mute: rgba(236, 231, 223, 0.48);
-    --rule: rgba(236, 231, 223, 0.14);
-    --rule-soft: rgba(236, 231, 223, 0.1);
-    --edge: rgba(236, 231, 223, 0.32);
-    --accent: #e08a5f;
+    --paper: #1a1917;
+    --card: #222120;
+    --ink: #f1ece4;
+    --ink-body: #e6e0d6;
+    --ink-soft: rgba(241, 236, 228, 0.8);
+    --ink-mute: rgba(241, 236, 228, 0.6);
+    --rule: rgba(241, 236, 228, 0.16);
+    --rule-soft: rgba(241, 236, 228, 0.11);
+    --edge: rgba(241, 236, 228, 0.36);
+    --accent: #ec9a70;
     --lift: 0 10px 28px -14px rgba(0, 0, 0, 0.7);
-    --header-bg: rgba(18, 17, 16, 0.82);
-    --code-bg: rgba(236, 231, 223, 0.08);
+    --header-bg: rgba(26, 25, 23, 0.85);
+    --code-bg: rgba(241, 236, 228, 0.09);
+}
+
+/* Light-on-dark serif reads thin; nudge reading text heavier (Newsreader is variable 300–800). */
+[data-theme="dark"] .post-content p,
+[data-theme="dark"] .post-content li,
+[data-theme="dark"] .intro p,
+[data-theme="dark"] .tl-card p,
+[data-theme="dark"] .pf-lede {
+    font-weight: 430;
+}
+
+[data-theme="dark"] .bg-icons svg {
+    opacity: 0.07;
 }
 
 * {
