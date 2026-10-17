@@ -91,8 +91,8 @@ pre,
 
     .bg-icons svg {
         position: absolute;
-        width: 52px;
-        height: 52px;
+        width: var(--s, 52px);
+        height: var(--s, 52px);
         fill: none;
         stroke: var(--ink);
         stroke-width: 1.1;
@@ -101,6 +101,13 @@ pre,
         opacity: 0.09;
         transform: rotate(var(--r, 0deg));
         animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .bg-icons text,
+    .bg-icons .px {
+        fill: var(--ink);
+        stroke: none;
+        font-family: var(--mono);
     }
 
     .bg-icons svg:nth-child(even) {
@@ -136,6 +143,12 @@ pre,
 /* ---------- Header ---------- */
 
 .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(250, 248, 245, 0.86);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(28, 26, 23, 0.12);
 }
 
