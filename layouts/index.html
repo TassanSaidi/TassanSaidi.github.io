@@ -6,32 +6,9 @@
     <div class="home">
         <section class="intro">
             <h1>Tonderai Saidi</h1>
-            <p>Backend engineer working on high-availability event-driven architectures, RESTful APIs, and distributed systems in financial services &mdash; and writing about the parts that are harder than the code.</p>
         </section>
 
-        <section class="facts">
-            <div class="fact fact--now">
-                <span class="eyebrow">Currently</span>
-                <p>Software Engineer, Capitec Bank &mdash; Cape Town</p>
-            </div>
-            <div class="fact">
-                <span class="eyebrow">Core stack</span>
-                <p>Java, Kotlin, Spring Boot, PostgreSQL, AWS, Kubernetes, Docker, RabbitMQ, event-driven architecture</p>
-            </div>
-        </section>
-
-        <section class="doors">
-            <a class="door" href="{{ "work.html" | relURL }}">
-                <h2>Work</h2>
-                <p>Over four years across banking, payments, and racing platforms. Experience, technical skills, education, and a downloadable CV.</p>
-                <span class="go">View the portfolio &rarr;</span>
-            </a>
-            <a class="door" href="{{ "posts.html" | relURL }}">
-                <h2>Writing</h2>
-                <p>{{ $count }} {{ if eq $count 1 }}essay{{ else }}essays{{ end }} on engineering craft, AI and the review bottleneck, language, and the human side of building software.</p>
-                <span class="go">Read the writing &rarr;</span>
-            </a>
-        </section>
+        {{ partial "portfolio.html" . }}
 
         <section>
             <div class="section-head">

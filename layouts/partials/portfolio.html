@@ -1,0 +1,159 @@
+{{/* Profile, git-graph experience, skills, education. Rendered on the home page. */}}
+<div class="portfolio">
+    <section class="pf-section">
+        <span class="eyebrow">Profile</span>
+        <p class="pf-lede">Backend Engineer with 4+ years of experience in financial systems, combining strong SOLID design principles with analytical thinking from my mechatronics background. I specialize in high-availability event-driven architectures, RESTful APIs, and distributed systems using Java and Kotlin. Experienced in Spring Boot, PostgreSQL, and AWS/Kubernetes environments, I deliver robust, scalable solutions with rigorous testing practices.</p>
+        <a class="cv-link" href="{{ "cv.pdf" | relURL }}">Download CV (PDF)</a>
+    </section>
+
+    <section class="pf-section">
+        <span class="eyebrow">Experience</span>
+        <div class="gg">
+            <div class="gg-head">
+                <span class="gg-pill">HEAD -&gt; main</span>
+                <button class="gg-toggle" type="button" hidden>Expand all</button>
+            </div>
+
+            {{/* Capitec is a client placement through Entelect: a branch off feature/entelect that merges back into it. */}}
+            <details class="gg-branch" open>
+                <summary>
+                    <span class="gg-caret" aria-hidden="true"></span>
+                    <span class="gg-label">feature/entelect</span>
+                    <span class="gg-title">Software Engineer</span>
+                    <span class="gg-count">+1 commit, +1 branch</span>
+                    <code class="gg-hash">c41e8a0</code>
+                    <span class="gg-org">Entelect &middot; consulting</span>
+                    <span class="gg-when">August 2025 &mdash; Present &middot; Cape Town</span>
+                </summary>
+                <ul class="gg-commits">
+                    <li>Developed a minimal Wi-Fi heatmap to help identify Wi-Fi weak zones in the office</li>
+                </ul>
+                <details class="gg-branch gg-sub" open>
+                    <summary>
+                        <span class="gg-caret" aria-hidden="true"></span>
+                        <span class="gg-label">client/capitec</span>
+                        <span class="gg-title">Software Engineer</span>
+                        <span class="gg-count">+5 commits</span>
+                        <code class="gg-hash">a3f9c21</code>
+                        <span class="gg-org">Capitec Bank &middot; contracting from Entelect &middot; Telephony Team</span>
+                        <span class="gg-when">August 2025 &mdash; Present &middot; Cape Town</span>
+                    </summary>
+                    <ul class="gg-commits">
+                        <li>Led the design and development of a centralized dashboard providing real-time visibility into AWS Lambda functions, their execution flows, and relationships with key AWS resources, leveraging AWS Step Functions, CloudWatch, and DynamoDB for orchestration and observability</li>
+                        <li>Delivered a communication platform enabling managers to broadcast emergency messages directly to call centres, ensuring rapid alignment and operational resilience during outages</li>
+                        <li>Driving the development of an in-house incident management and escalation system to replace PagerDuty, streamlining response workflows, reducing vendor dependency, and integrating tightly with our AWS ecosystem</li>
+                        <li>Helped build an in-house blended dialler on Amazon Connect</li>
+                        <li>Built an AI-powered dashboard that evaluates call centre agent performance and makes actionable recommendations</li>
+                    </ul>
+                </details>
+            </details>
+
+            <details class="gg-branch">
+                <summary>
+                    <span class="gg-caret" aria-hidden="true"></span>
+                    <span class="gg-label">feature/turfsport</span>
+                    <span class="gg-title">Software Engineer</span>
+                    <span class="gg-count">+4 commits</span>
+                    <code class="gg-hash">7be04d6</code>
+                    <span class="gg-org">Turfsport</span>
+                    <span class="gg-when">March 2024 &mdash; August 2025 &middot; Cape Town</span>
+                </summary>
+                <ul class="gg-commits">
+                    <li>Migrated core racing platform to Java 17, enhancing security by 30% while improving performance by 15%</li>
+                    <li>Implemented AWS OpenSearch to optimize large-scale data queries, achieving 10% faster system response</li>
+                    <li>Standardized documentation processes and automated troubleshooting procedures</li>
+                    <li>Maintained and enhanced frontend dashboards using Angular components, contributing to full stack development</li>
+                </ul>
+            </details>
+
+            <details class="gg-branch">
+                <summary>
+                    <span class="gg-caret" aria-hidden="true"></span>
+                    <span class="gg-label">feature/lipa</span>
+                    <span class="gg-title">Software Engineer</span>
+                    <span class="gg-count">+3 commits</span>
+                    <code class="gg-hash">e18c5f0</code>
+                    <span class="gg-org">Lipa Payments</span>
+                    <span class="gg-when">July 2021 &mdash; March 2024 &middot; Cape Town</span>
+                </summary>
+                <ul class="gg-commits">
+                    <li>Developed PCI-compliant microservices and REST APIs for financial products, accelerating third-party integrations</li>
+                    <li>Led Mastercard Payment Gateway integration project, ensuring secure transaction processing</li>
+                    <li>Created CI/CD automation tooling in Go, reducing pipeline setup time</li>
+                </ul>
+            </details>
+
+            <details class="gg-branch">
+                <summary>
+                    <span class="gg-caret" aria-hidden="true"></span>
+                    <span class="gg-label">feature/energy-partners</span>
+                    <span class="gg-title">Data Acquisition Engineer</span>
+                    <span class="gg-count">+1 commit</span>
+                    <code class="gg-hash">4d2a9b7</code>
+                    <span class="gg-org">Energy Partners</span>
+                    <span class="gg-when">April 2021 &mdash; June 2021 &middot; Cape Town</span>
+                </summary>
+                <ul class="gg-commits">
+                    <li>Built real-time PostgreSQL dashboards for monitoring energy consumption data</li>
+                </ul>
+            </details>
+
+            <div class="gg-init"><code>init: BScEng (Hons) Mechatronics, UCT 2017&ndash;2020</code></div>
+        </div>
+        <script>
+            (() => {
+                const btn = document.querySelector('.gg-toggle');
+                const first = document.querySelector('.gg > .gg-branch');
+                btn.hidden = false;
+                btn.addEventListener('click', () => {
+                    const expand = btn.textContent === 'Expand all';
+                    // Collapse leaves the current role (first branch and its nested client branch) open.
+                    document.querySelectorAll('.gg-branch').forEach(d => (d.open = expand || first.contains(d)));
+                    btn.textContent = expand ? 'Collapse all' : 'Expand all';
+                });
+            })();
+        </script>
+    </section>
+
+    <section class="pf-section">
+        <span class="eyebrow">Technical skills</span>
+        <div class="skill-grid">
+            <div class="skill-group">
+                <h3>Languages</h3>
+                <p>Java, Kotlin, Python, SQL</p>
+            </div>
+            <div class="skill-group">
+                <h3>Frameworks and tools</h3>
+                <p>Spring Boot, Maven/Gradle, JUnit, React Native, Git, Jira</p>
+            </div>
+            <div class="skill-group">
+                <h3>Infrastructure</h3>
+                <p>AWS EKS, Kubernetes, Docker, RabbitMQ, SQL, NoSQL</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pf-section">
+        <span class="eyebrow">Education and achievements</span>
+        <dl class="pf-rows">
+            <div class="pf-row">
+                <dt>2017 &mdash; 2020</dt>
+                <dd>BScEng (Hons) Mechatronics, University of Cape Town</dd>
+            </div>
+            <div class="pf-row">
+                <dt>Awards</dt>
+                <dd>Dean's List recognition at UCT</dd>
+                <dd>International Programming Olympiad Award</dd>
+                <dd>UCT Mathematics Olympiad Award</dd>
+            </div>
+            <div class="pf-row">
+                <dt>Languages</dt>
+                <dd>English (C1) &middot; Shona (B1)</dd>
+            </div>
+            <div class="pf-row">
+                <dt>Availability</dt>
+                <dd>Open to relocation and remote opportunities in Europe. Blue Card and Chancekaart eligible.</dd>
+            </div>
+        </dl>
+    </section>
+</div>
