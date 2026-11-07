@@ -1,6 +1,19 @@
 {{ define "main" }}
-{{- $audioFile := printf "static/audio/posts/%s.mp3" .File.ContentBaseName -}}
+{{- $slug := .File.ContentBaseName -}}
+{{- $audioFile := printf "static/audio/posts/%s.mp3" $slug -}}
 {{- $hasAudio := os.FileExists $audioFile -}}
+{{- $altAudioFile := printf "static/audio/posts/%s-alt.mp3" $slug -}}
+{{- $hasAltAudio := os.FileExists $altAudioFile -}}
+{{- $durFile := printf "static/audio/posts/%s.duration" $slug -}}
+{{- $durSecs := 0 -}}
+{{- if os.FileExists $durFile -}}
+  {{- $durSecs = int (strings.TrimSpace (os.ReadFile $durFile)) -}}
+{{- end -}}
+{{- $durLabel := "" -}}
+{{- if gt $durSecs 0 -}}
+  {{- $durMins := div $durSecs 60 -}}
+  {{- $durLabel = printf "%d min listen" $durMins -}}
+{{- end -}}
 <main class="wrap">
     <article class="article">
         <div class="article-meta">
@@ -8,13 +21,19 @@
             <span>{{ .Date.Format "January 2, 2006" }}</span>
             <span>&middot;</span>
             <span>{{ .ReadingTime }} min read</span>
+            {{- if $durLabel }}
+            <span>&middot;</span>
+            <span class="audio-dur-meta">&#9654;&nbsp;{{ $durLabel }}</span>
+            {{- end }}
         </div>
         <h1 class="post-title">{{ .Title }}</h1>
         <hr>
         {{- if $hasAudio }}
-        <div class="audio-player" id="audio-player">
+        <div class="audio-player" id="audio-player"
+             data-src="{{ printf "/audio/posts/%s.mp3" $slug | relURL }}"
+             {{ if $hasAltAudio }}data-src-alt="{{ printf "/audio/posts/%s-alt.mp3" $slug | relURL }}"{{ end }}>
             <audio id="article-audio"
-                   src="{{ printf "/audio/posts/%s.mp3" .File.ContentBaseName | relURL }}"
+                   src="{{ printf "/audio/posts/%s.mp3" $slug | relURL }}"
                    preload="metadata"></audio>
             <button class="audio-play" id="audio-play" aria-label="Play article" type="button">
                 <svg class="audio-icon audio-icon--play" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
@@ -24,22 +43,33 @@
                 <input type="range" class="audio-progress" id="audio-progress"
                        min="0" max="100" value="0" step="0.1" aria-label="Seek">
             </div>
-            <span class="audio-time" id="audio-time">0:00</span>
+            <span class="audio-time" id="audio-time">{{ if $durLabel }}{{ $durLabel }}{{ else }}0:00{{ end }}</span>
             <select class="audio-speed" id="audio-speed" aria-label="Playback speed">
                 <option value="1" selected>1×</option>
                 <option value="1.25">1.25×</option>
                 <option value="1.5">1.5×</option>
                 <option value="2">2×</option>
             </select>
+            {{- if $hasAltAudio }}
+            <select class="audio-voice" id="audio-voice" aria-label="Voice">
+                <option value="primary">US English</option>
+                <option value="alt">British English</option>
+            </select>
+            {{- end }}
         </div>
         <script>
         (function () {
-            var audio = document.getElementById("article-audio");
-            var btn   = document.getElementById("audio-play");
-            var prog  = document.getElementById("audio-progress");
+            var player = document.getElementById("audio-player");
+            var audio  = document.getElementById("article-audio");
+            var btn    = document.getElementById("audio-play");
+            var prog   = document.getElementById("audio-progress");
             var timeEl = document.getElementById("audio-time");
             var speed  = document.getElementById("audio-speed");
+            var voice  = document.getElementById("audio-voice");
             if (!audio || !btn) return;
+
+            var srcPrimary = player.dataset.src;
+            var srcAlt     = player.dataset.srcAlt || null;
 
             function fmt(s) {
                 var m = Math.floor(s / 60), sec = Math.floor(s % 60);
@@ -81,6 +111,21 @@
             speed.addEventListener("change", function () {
                 audio.playbackRate = parseFloat(speed.value);
             });
+
+            if (voice && srcAlt) {
+                voice.addEventListener("change", function () {
+                    var wasPlaying = !audio.paused;
+                    var pos = audio.currentTime;
+                    audio.pause();
+                    audio.src = voice.value === "alt" ? srcAlt : srcPrimary;
+                    audio.load();
+                    audio.addEventListener("loadedmetadata", function resume() {
+                        audio.currentTime = Math.min(pos, audio.duration || 0);
+                        if (wasPlaying) audio.play();
+                        audio.removeEventListener("loadedmetadata", resume);
+                    });
+                });
+            }
         })();
         </script>
         {{- end }}
