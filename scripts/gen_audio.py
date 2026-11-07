@@ -29,7 +29,8 @@ from pathlib import Path
 
 POSTS_DIR = Path("content/posts")
 AUDIO_DIR = Path("static/audio/posts")
-VOICE = "af_heart"   # warm, natural-sounding female voice
+VOICE     = "af_heart"   # primary: warm, natural-sounding US female voice
+VOICE_ALT = "bf_emma"    # alt: British English female (closest open-source to SA English)
 MODEL_DIR = Path(os.environ.get("KOKORO_MODEL_DIR", ".kokoro"))
 
 
@@ -93,11 +94,27 @@ def extract_text(md_path: Path) -> str:
     return text
 
 
+def _wav_to_mp3(wav_path: Path, out_path: Path) -> None:
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-i", str(wav_path),
+         "-codec:a", "libmp3lame", "-qscale:a", "4", str(out_path)],
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    wav_path.unlink(missing_ok=True)
+    if result.returncode != 0:
+        sys.exit(f"ffmpeg failed: {result.stderr.decode()}")
+
+
 def generate(md_path: Path, force: bool = False) -> Path:
     slug = md_path.stem
-    out_path = AUDIO_DIR / f"{slug}.mp3"
+    out_path     = AUDIO_DIR / f"{slug}.mp3"
+    out_path_alt = AUDIO_DIR / f"{slug}-alt.mp3"
+    dur_path     = AUDIO_DIR / f"{slug}.duration"
 
-    if out_path.exists() and not force:
+    primary_exists = out_path.exists()
+    alt_exists     = out_path_alt.exists()
+
+    if primary_exists and alt_exists and not force:
         print(f"  skip {slug} (exists, use --force to regenerate)")
         return out_path
 
@@ -113,7 +130,7 @@ def generate(md_path: Path, force: bool = False) -> Path:
     except ImportError:
         sys.exit("Error: run  pip install kokoro-onnx soundfile  first")
 
-    model_file = MODEL_DIR / "kokoro-v1.0.onnx"
+    model_file  = MODEL_DIR / "kokoro-v1.0.onnx"
     voices_file = MODEL_DIR / "voices-v1.0.bin"
     if not model_file.exists() or not voices_file.exists():
         sys.exit(
@@ -121,26 +138,28 @@ def generate(md_path: Path, force: bool = False) -> Path:
             "See the script docstring for download instructions."
         )
 
-    kokoro = Kokoro(str(model_file), str(voices_file))
-    samples, sample_rate = kokoro.create(text, voice=VOICE, speed=1.0, lang="en-us")
-
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+    kokoro = Kokoro(str(model_file), str(voices_file))
 
-    wav_path = out_path.with_suffix(".wav")
-    sf.write(str(wav_path), samples, sample_rate)
+    if not primary_exists or force:
+        samples, sample_rate = kokoro.create(text, voice=VOICE, speed=1.0, lang="en-us")
+        wav_path = out_path.with_suffix(".wav")
+        sf.write(str(wav_path), samples, sample_rate)
+        _wav_to_mp3(wav_path, out_path)
+        # Write duration sidecar (seconds) for Hugo to show "X min listen"
+        duration_secs = int(len(samples) / sample_rate)
+        dur_path.write_text(str(duration_secs))
+        size_kb = out_path.stat().st_size // 1024
+        print(f"  → {out_path} ({size_kb} KB, {duration_secs // 60}m{duration_secs % 60:02d}s)")
 
-    result = subprocess.run(
-        ["ffmpeg", "-y", "-i", str(wav_path),
-         "-codec:a", "libmp3lame", "-qscale:a", "4", str(out_path)],
-        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
-    )
-    wav_path.unlink(missing_ok=True)
+    if not alt_exists or force:
+        samples_alt, sr_alt = kokoro.create(text, voice=VOICE_ALT, speed=1.0, lang="en-gb")
+        wav_path_alt = out_path_alt.with_suffix(".wav")
+        sf.write(str(wav_path_alt), samples_alt, sr_alt)
+        _wav_to_mp3(wav_path_alt, out_path_alt)
+        size_kb_alt = out_path_alt.stat().st_size // 1024
+        print(f"  → {out_path_alt} ({size_kb_alt} KB)")
 
-    if result.returncode != 0:
-        sys.exit(f"ffmpeg failed: {result.stderr.decode()}")
-
-    size_kb = out_path.stat().st_size // 1024
-    print(f"  → {out_path} ({size_kb} KB)")
     return out_path
 
 
