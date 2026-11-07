@@ -961,6 +961,9 @@ th {
     border-bottom-right-radius: var(--curve);
 }
 
+/* Active (unmerged) branch: show top fork curve, suppress bottom merge-back. */
+.gg-branch.gg-active::after { content: none; }
+
 /* Summary row gets a hover tint; the negative margin keeps text aligned, so dots add --pad back. */
 .gg-branch summary {
     --pad: 8px;
