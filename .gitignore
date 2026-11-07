@@ -10,3 +10,6 @@ dist/
 # Hugo build artifacts
 public/
 .hugo_build.lock
+
+# Kokoro TTS model files (large; downloaded by CI or local setup script)
+.kokoro/
