@@ -1,4 +1,6 @@
 {{ define "main" }}
+{{- $audioFile := printf "static/audio/posts/%s.mp3" .File.ContentBaseName -}}
+{{- $hasAudio := os.FileExists $audioFile -}}
 <main class="wrap">
     <article class="article">
         <div class="article-meta">
@@ -9,6 +11,79 @@
         </div>
         <h1 class="post-title">{{ .Title }}</h1>
         <hr>
+        {{- if $hasAudio }}
+        <div class="audio-player" id="audio-player">
+            <audio id="article-audio"
+                   src="{{ printf "/audio/posts/%s.mp3" .File.ContentBaseName | relURL }}"
+                   preload="metadata"></audio>
+            <button class="audio-play" id="audio-play" aria-label="Play article" type="button">
+                <svg class="audio-icon audio-icon--play" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+                <svg class="audio-icon audio-icon--pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <div class="audio-track">
+                <input type="range" class="audio-progress" id="audio-progress"
+                       min="0" max="100" value="0" step="0.1" aria-label="Seek">
+            </div>
+            <span class="audio-time" id="audio-time">0:00</span>
+            <select class="audio-speed" id="audio-speed" aria-label="Playback speed">
+                <option value="1" selected>1×</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+                <option value="2">2×</option>
+            </select>
+        </div>
+        <script>
+        (function () {
+            var audio = document.getElementById("article-audio");
+            var btn   = document.getElementById("audio-play");
+            var prog  = document.getElementById("audio-progress");
+            var timeEl = document.getElementById("audio-time");
+            var speed  = document.getElementById("audio-speed");
+            if (!audio || !btn) return;
+
+            function fmt(s) {
+                var m = Math.floor(s / 60), sec = Math.floor(s % 60);
+                return m + ":" + (sec < 10 ? "0" : "") + sec;
+            }
+
+            audio.addEventListener("loadedmetadata", function () {
+                timeEl.textContent = "0:00 / " + fmt(audio.duration);
+            });
+
+            audio.addEventListener("timeupdate", function () {
+                if (!audio.duration) return;
+                prog.value = (audio.currentTime / audio.duration) * 100;
+                timeEl.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+            });
+
+            audio.addEventListener("ended", function () {
+                btn.setAttribute("aria-label", "Play article");
+                btn.classList.remove("playing");
+                prog.value = 0;
+            });
+
+            btn.addEventListener("click", function () {
+                if (audio.paused) {
+                    audio.play();
+                    btn.setAttribute("aria-label", "Pause article");
+                    btn.classList.add("playing");
+                } else {
+                    audio.pause();
+                    btn.setAttribute("aria-label", "Play article");
+                    btn.classList.remove("playing");
+                }
+            });
+
+            prog.addEventListener("input", function () {
+                if (audio.duration) audio.currentTime = (prog.value / 100) * audio.duration;
+            });
+
+            speed.addEventListener("change", function () {
+                audio.playbackRate = parseFloat(speed.value);
+            });
+        })();
+        </script>
+        {{- end }}
         <div class="post-content">
             {{ .Content }}
         </div>
