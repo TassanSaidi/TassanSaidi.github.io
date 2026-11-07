@@ -36,6 +36,13 @@ MODEL_DIR = Path(os.environ.get("KOKORO_MODEL_DIR", ".kokoro"))
 def extract_text(md_path: Path) -> str:
     text = md_path.read_text(encoding="utf-8")
 
+    # Extract title from frontmatter before stripping it
+    title_match = re.search(
+        r'^---\n.*?^title:\s*["\']?(.+?)["\']?\s*$.*?\n---\n',
+        text, flags=re.DOTALL | re.MULTILINE
+    )
+    title = title_match.group(1).strip() if title_match else ""
+
     # Strip YAML frontmatter
     text = re.sub(r"^---\n.*?\n---\n", "", text, flags=re.DOTALL)
 
@@ -66,11 +73,23 @@ def extract_text(md_path: Path) -> str:
     text = re.sub(r"\*{1,3}([^*]+)\*{1,3}", r"\1", text)
     text = re.sub(r"_{1,3}([^_]+)_{1,3}", r"\1", text)
 
-    # Strip ATX headings markers (keep the heading text)
-    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+    # Strip ATX heading markers; add trailing period so TTS pauses after each heading
+    def _heading_with_pause(m):
+        heading = m.group(1).strip()
+        return heading if re.search(r"[.!?]$", heading) else heading + "."
+    text = re.sub(r"^#{1,6}\s+(.+)$", _heading_with_pause, text, flags=re.MULTILINE)
+
+    # Add period before paragraph breaks where paragraph doesn't end in punctuation,
+    # so TTS pauses naturally between paragraphs
+    text = re.sub(r"([^\S\n]*[^.!?,\n])(\n\n)", r"\1.\2", text)
 
     # Collapse excess whitespace
     text = re.sub(r"\n{3,}", "\n\n", text).strip()
+
+    # Prepend title so it's read aloud before the body, with a pause after
+    if title:
+        text = title + ".\n\n" + text
+
     return text
 
 
