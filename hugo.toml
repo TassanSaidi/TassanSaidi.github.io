@@ -16,6 +16,13 @@ buildExpired = false
   github = "https://github.com/TassanSaidi"
   linkedin = "https://www.linkedin.com/in/tonderaisaidi/"
 
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+
+[services.rss]
+  limit = 20
+
 [markup.goldmark.renderer]
   unsafe = true
 

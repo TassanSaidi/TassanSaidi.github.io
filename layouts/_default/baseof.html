@@ -57,7 +57,7 @@
     <footer class="site-footer">
         <div class="wrap">
             <p>&copy; {{ now.Year }} Tonderai Saidi</p>
-            <p><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a> &middot; <a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a> &middot; <a href="{{ "posts/index.xml" | relURL }}">RSS</a></p>
+            <p><a href="{{ .Site.Params.github }}" target="_blank" rel="noopener">GitHub</a> &middot; <a href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener">LinkedIn</a> &middot; {{ with (site.GetPage "/posts").OutputFormats.Get "rss" }}<a href="{{ .Permalink }}" title="Subscribe via RSS"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:-.15em;margin-right:.25em"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>RSS</a>{{ end }}</p>
         </div>
     </footer>
 </body>
