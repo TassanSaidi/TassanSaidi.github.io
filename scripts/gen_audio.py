@@ -48,7 +48,15 @@ def extract_text(md_path: Path) -> str:
     # Strip Markdown image syntax
     text = re.sub(r"!\[.*?\]\(.*?\)", " ", text)
 
-    # Strip HTML tags
+    # Strip entire HTML block elements that should not be narrated
+    for block_tag in ("figure", "svg", "aside", "table", "pre", "code"):
+        text = re.sub(
+            rf"<{block_tag}(?:\s[^>]*)?>.*?</{block_tag}>",
+            " ", text, flags=re.DOTALL | re.IGNORECASE
+        )
+    # Strip self-closing img tags (alt text should not be read)
+    text = re.sub(r"<img\s[^>]*/?>", " ", text, flags=re.IGNORECASE)
+    # Strip remaining HTML tags (keep the text content between them)
     text = re.sub(r"<[^>]+>", " ", text)
 
     # Strip Markdown links but keep link text
