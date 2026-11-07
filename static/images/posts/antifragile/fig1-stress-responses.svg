@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 115" width="700" height="115" font-family="Georgia, serif">
+  <defs>
+    <marker id="a" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6Z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <text x="350" y="18" text-anchor="middle" font-size="13" fill="#111827" font-style="italic">Only an anti-fragile system is better after the shock</text>
+  <!-- Fragile -->
+  <rect x="8" y="28" width="148" height="66" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="82" y="52" text-anchor="middle" font-size="12" fill="#374151" font-weight="bold">Fragile</text>
+  <text x="82" y="68" text-anchor="middle" font-size="11" fill="#6b7280">Breaks under</text>
+  <text x="82" y="82" text-anchor="middle" font-size="11" fill="#6b7280">stress</text>
+  <!-- Arrow 1 -->
+  <line x1="158" y1="61" x2="171" y2="61" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Robust -->
+  <rect x="174" y="28" width="148" height="66" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="248" y="52" text-anchor="middle" font-size="12" fill="#374151" font-weight="bold">Robust</text>
+  <text x="248" y="68" text-anchor="middle" font-size="11" fill="#6b7280">Absorbs the hit,</text>
+  <text x="248" y="82" text-anchor="middle" font-size="11" fill="#6b7280">doesn't change</text>
+  <!-- Arrow 2 -->
+  <line x1="324" y1="61" x2="337" y2="61" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Resilient -->
+  <rect x="340" y="28" width="148" height="66" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="414" y="52" text-anchor="middle" font-size="12" fill="#374151" font-weight="bold">Resilient</text>
+  <text x="414" y="68" text-anchor="middle" font-size="11" fill="#6b7280">Bends and</text>
+  <text x="414" y="82" text-anchor="middle" font-size="11" fill="#6b7280">springs back</text>
+  <!-- Arrow 3 -->
+  <line x1="490" y1="61" x2="503" y2="61" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Anti-fragile (blue highlight) -->
+  <rect x="506" y="28" width="186" height="66" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="599" y="52" text-anchor="middle" font-size="12" fill="#1d4ed8" font-weight="bold">Anti-fragile</text>
+  <text x="599" y="68" text-anchor="middle" font-size="11" fill="#1d4ed8">Gets stronger</text>
+  <text x="599" y="82" text-anchor="middle" font-size="11" fill="#1d4ed8">because of the last shock</text>
+</svg>

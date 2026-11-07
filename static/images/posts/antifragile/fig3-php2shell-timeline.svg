@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 205" width="700" height="205" font-family="Georgia, serif">
+  <!-- Background -->
+  <rect width="700" height="205" fill="#ffffff"/>
+  <text x="350" y="18" text-anchor="middle" font-size="13" fill="#111827" font-style="italic">PHP2Shell: from discovery to exploitation</text>
+  <!-- Axis -->
+  <line x1="190" y1="55" x2="690" y2="55" stroke="#d1d5db" stroke-width="1"/>
+  <line x1="190" y1="55" x2="190" y2="195" stroke="#d1d5db" stroke-width="1"/>
+  <!-- Month labels (chart x=190–690, 72 days Aug 11 – Oct 26) -->
+  <!-- Aug 11 = day 0 → x=190; Oct 26 = day 76 → x=190+76*6.579=690 -->
+  <!-- px/day ≈ 6.944 -->
+  <text x="190" y="48" text-anchor="middle" font-size="10" fill="#6b7280">11 Aug</text>
+  <text x="441" y="48" text-anchor="middle" font-size="10" fill="#6b7280">17 Oct</text>
+  <text x="469" y="48" text-anchor="middle" font-size="10" fill="#6b7280">20 Oct</text>
+  <text x="483" y="48" text-anchor="middle" font-size="10" fill="#6b7280">21 Oct</text>
+  <text x="690" y="48" text-anchor="middle" font-size="10" fill="#6b7280">26 Oct</text>
+  <!-- Vertical tick lines -->
+  <line x1="190" y1="55" x2="190" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  <line x1="441" y1="55" x2="441" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  <line x1="469" y1="55" x2="469" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  <line x1="483" y1="55" x2="483" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  <line x1="690" y1="55" x2="690" y2="58" stroke="#9ca3af" stroke-width="1"/>
+  <!-- Row guide lines -->
+  <line x1="188" y1="78" x2="692" y2="78" stroke="#f3f4f6" stroke-width="1"/>
+  <line x1="188" y1="106" x2="692" y2="106" stroke="#f3f4f6" stroke-width="1"/>
+  <line x1="188" y1="134" x2="692" y2="134" stroke="#f3f4f6" stroke-width="1"/>
+  <line x1="188" y1="162" x2="692" y2="162" stroke="#f3f4f6" stroke-width="1"/>
+  <line x1="188" y1="190" x2="692" y2="190" stroke="#f3f4f6" stroke-width="1"/>
+  <!-- Row labels -->
+  <text x="185" y="82" text-anchor="end" font-size="11" fill="#374151">Calif / GPT-5.6 Sol</text>
+  <text x="185" y="110" text-anchor="end" font-size="11" fill="#374151">Wiz / AI agent</text>
+  <text x="185" y="138" text-anchor="end" font-size="11" fill="#374151">Hacker News leak</text>
+  <text x="185" y="162" text-anchor="end" font-size="11" fill="#1d4ed8" font-weight="bold">Disclosure + NSA</text>
+  <text x="185" y="190" text-anchor="end" font-size="11" fill="#374151">CISA confirms</text>
+  <!-- Data points (diamonds) -->
+  <!-- Row 1: 11 Aug = x=190 -->
+  <polygon points="190,73 195,78 190,83 185,78" fill="#374151"/>
+  <text x="196" y="82" font-size="10" fill="#374151">First flaw reported</text>
+  <!-- Row 2: 24 Aug = day 13 → x=190+13*6.944=280 -->
+  <polygon points="280,101 285,106 280,111 275,106" fill="#374151"/>
+  <text x="286" y="110" font-size="10" fill="#374151">Second flaw reported</text>
+  <!-- Row 3: 20 Oct = day 70 → x=190+70*6.944=676 -->
+  <polygon points="676,129 681,134 676,139 671,134" fill="#374151"/>
+  <text x="668" y="128" text-anchor="end" font-size="10" fill="#374151">Anonymous post claims bugs are real</text>
+  <!-- Row 4: 21 Oct = day 71 → x=190+71*6.944=683 -->
+  <polygon points="683,157 688,162 683,167 678,162" fill="#1d4ed8"/>
+  <text x="675" y="156" text-anchor="end" font-size="10" fill="#1d4ed8" font-weight="bold">Disclosure brought forward</text>
+  <!-- Row 5 AWS note at day 67=17Oct → x=441, then CISA day 76=26Oct → x=190+76*6.944=718→cap at 690 -->
+  <!-- AWS exploit attempts: 17 Oct = day 67 → x=190+67*6.944=655 ... but timeline says AWS 17 Oct is row separate -->
+  <!-- Actually let me re-check: 5 rows as: Calif, Wiz, AWS exploit (17 Oct), Leak (20 Oct), Disclosure (21 Oct), CISA (26 Oct) = 6 events -->
+  <!-- Per summary spec: rows at y=78,106,134,162,190; diamonds at (190,78),(280,106),(676,134),(683,162 blue),(690,190) -->
+  <!-- Row 5: CISA 26 Oct = day 76 → x=190+76*6.944=718 capped to 690 -->
+  <polygon points="690,185 695,190 690,195 685,190" fill="#374151"/>
+  <text x="682" y="184" text-anchor="end" font-size="10" fill="#374151">CISA confirms exploitation</text>
+  <!-- Note about AWS -->
+  <text x="441" y="195" font-size="9" fill="#9ca3af" font-style="italic">↑ AWS spots exploit attempts</text>
+</svg>
