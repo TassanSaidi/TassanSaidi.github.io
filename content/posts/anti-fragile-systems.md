@@ -6,7 +6,7 @@ description: "From call centres and load shedding to PHP2Shell and Apollo 13 —
 ---
 
 <figure class="post-figure">
-<img src="/images/posts/antifragile/fig1-stress-responses.svg" alt="Four responses to stress: Fragile breaks, Robust absorbs, Resilient springs back, Anti-fragile gets stronger">
+<img src="/images/posts/antifragile/fig1-stress-responses.svg" alt="Four responses to stress: Fragile breaks, Robust absorbs, Resilient springs back, Anti-fragile gets stronger" />
 <figcaption>Four responses to stress, from the call-centre example</figcaption>
 </figure>
 
@@ -23,7 +23,7 @@ Then we make it **resilient**. A system is resilient if it can withstand, adapt 
 But the multi-carrier plan has a flaw. Redundancy only protects you from failures that are independent of each other, and load shedding is not. When the grid drops to a high stage, it doesn't matter whose name is on the tower. Once the backup batteries run flat (or have been stolen), every carrier in that area degrades together. Our offices in other cities are often on similar schedules. Our four independent providers turn out to share one dependency: the grid. Engineers call this a common-mode failure. On paper we had redundancy; in practice we had the same single point of failure four times over.
 
 <figure class="post-figure">
-<img src="/images/posts/antifragile/fig2-common-mode-failure.svg" alt="Four carriers, one shared point of failure: the grid">
+<img src="/images/posts/antifragile/fig2-common-mode-failure.svg" alt="Four carriers, one shared point of failure: the grid" />
 <figcaption>Common-mode failure · four carriers, one grid</figcaption>
 </figure>
 
@@ -57,7 +57,7 @@ On 21 October 2026, the industry got a stress test it hadn't planned for. A pair
 - **26 October:** CISA confirms both flaws are being exploited, adds them to its Known Exploited Vulnerabilities catalogue and gives US federal agencies until 29 October to patch.
 
 <figure class="post-figure">
-<img src="/images/posts/antifragile/fig3-php2shell-timeline.svg" alt="PHP2Shell timeline from August to October 2026">
+<img src="/images/posts/antifragile/fig3-php2shell-timeline.svg" alt="PHP2Shell timeline from August to October 2026" />
 <figcaption>PHP2Shell timeline · August to October 2026</figcaption>
 </figure>
 
@@ -70,7 +70,7 @@ Compare that with aviation. Because the consequences of a crash are so dire, eve
 For most of us, the response to PHP2Shell looked like the response to every vulnerability before it: we patched and moved on. There was no black box: no record of how our systems behaved under the threat, how long our teams took to respond, or where they got stuck. The patch fixed the bug. Nothing fixed the system that was so unprepared for it.
 
 <figure class="post-figure">
-<img src="/images/posts/antifragile/fig4-aviation-vs-software.svg" alt="Aviation closes the loop; software stops at the patch">
+<img src="/images/posts/antifragile/fig4-aviation-vs-software.svg" alt="Aviation closes the loop; software stops at the patch" />
 <figcaption>Learning from failure · aviation vs software</figcaption>
 </figure>
 
@@ -87,7 +87,7 @@ So we will be handed more vulnerabilities than we know how to cut hotfix branche
 This is why I believe anti-fragile software matters more now than ever. Like any good theory, though, it only counts if we practise it, and what we practise on is the whole system: the software, the engineers and the way they work together.
 
 <figure class="post-figure">
-<img src="/images/posts/antifragile/fig5-loop.svg" alt="Loop diagram: every lap of the loop leaves the system stronger">
+<img src="/images/posts/antifragile/fig5-loop.svg" alt="Loop diagram: every lap of the loop leaves the system stronger" />
 </figure>
 
 Each practice below sits on one stage of this loop, and the black box records all of them.
