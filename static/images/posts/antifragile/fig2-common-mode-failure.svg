@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 275" width="700" height="275" font-family="Georgia, serif">
+  <defs>
+    <marker id="a" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6Z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <text x="350" y="18" text-anchor="middle" font-size="13" fill="#111827" font-style="italic">Four carriers, one shared point of failure</text>
+  <!-- Call centre box -->
+  <rect x="250" y="28" width="200" height="45" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="350" y="49" text-anchor="middle" font-size="12" fill="#374151" font-weight="bold">Our call centre</text>
+  <text x="350" y="64" text-anchor="middle" font-size="11" fill="#6b7280">(1,000 concurrent calls)</text>
+  <!-- Trunk line down -->
+  <line x1="350" y1="73" x2="350" y2="100" stroke="#9ca3af" stroke-width="1.5"/>
+  <!-- Horizontal bar -->
+  <line x1="85" y1="100" x2="615" y2="100" stroke="#9ca3af" stroke-width="1.5"/>
+  <!-- Drops to carriers -->
+  <line x1="85" y1="100" x2="85" y2="118" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="258" y1="100" x2="258" y2="118" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="435" y1="100" x2="435" y2="118" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="615" y1="100" x2="615" y2="118" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Carrier boxes -->
+  <rect x="10" y="118" width="150" height="45" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="85" y="140" text-anchor="middle" font-size="11" fill="#374151" font-weight="bold">Carrier A</text>
+  <text x="85" y="154" text-anchor="middle" font-size="10" fill="#6b7280">Site: Johannesburg</text>
+  <rect x="183" y="118" width="150" height="45" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="258" y="140" text-anchor="middle" font-size="11" fill="#374151" font-weight="bold">Carrier B</text>
+  <text x="258" y="154" text-anchor="middle" font-size="10" fill="#6b7280">Site: Durban</text>
+  <rect x="360" y="118" width="150" height="45" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="435" y="140" text-anchor="middle" font-size="11" fill="#374151" font-weight="bold">Carrier C</text>
+  <text x="435" y="154" text-anchor="middle" font-size="10" fill="#6b7280">Site: Cape Town</text>
+  <rect x="540" y="118" width="150" height="45" rx="4" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="615" y="140" text-anchor="middle" font-size="11" fill="#374151" font-weight="bold">Carrier D</text>
+  <text x="615" y="154" text-anchor="middle" font-size="10" fill="#6b7280">Site: Pretoria</text>
+  <!-- Drops to grid bar -->
+  <line x1="85" y1="163" x2="85" y2="210" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="258" y1="163" x2="258" y2="210" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="435" y1="163" x2="435" y2="210" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="615" y1="163" x2="615" y2="210" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- Grid bar -->
+  <rect x="10" y="210" width="680" height="52" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="350" y="232" text-anchor="middle" font-size="12" fill="#b91c1c" font-weight="bold">The grid</text>
+  <text x="350" y="249" text-anchor="middle" font-size="11" fill="#b91c1c">Load shedding takes every tower down together</text>
+  <!-- "redundant on paper" label -->
+  <text x="692" y="140" text-anchor="end" font-size="10" fill="#9ca3af" font-style="italic">redundant on paper</text>
+</svg>

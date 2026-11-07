@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" width="700" height="420" font-family="Georgia, serif">
+  <defs>
+    <marker id="a" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6Z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <text x="350" y="20" text-anchor="middle" font-size="13" fill="#111827" font-style="italic">Every lap of the loop leaves the system stronger</text>
+  <!-- STRESS box (top-left) -->
+  <rect x="10" y="38" width="295" height="115" rx="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="22" y="62" font-size="13" fill="#374151" font-weight="bold">Stress</text>
+  <text x="22" y="80" font-size="11" fill="#6b7280">Real or deliberately induced:</text>
+  <text x="22" y="96" font-size="11" fill="#6b7280">an outage, a game day, a chaos</text>
+  <text x="22" y="112" font-size="11" fill="#6b7280">experiment, an AI red-team</text>
+  <text x="22" y="128" font-size="11" fill="#6b7280">exercise, a patch drill</text>
+  <!-- RESPOND box (top-right) -->
+  <rect x="395" y="38" width="295" height="115" rx="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="407" y="62" font-size="13" fill="#374151" font-weight="bold">Respond</text>
+  <text x="407" y="80" font-size="11" fill="#6b7280">Engineers and systems react:</text>
+  <text x="407" y="96" font-size="11" fill="#6b7280">failovers trigger, teams page,</text>
+  <text x="407" y="112" font-size="11" fill="#6b7280">mitigations are applied,</text>
+  <text x="407" y="128" font-size="11" fill="#6b7280">service is restored</text>
+  <!-- CHANGE box (bottom-left) -->
+  <rect x="10" y="295" width="295" height="115" rx="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="22" y="319" font-size="13" fill="#374151" font-weight="bold">Change</text>
+  <text x="22" y="337" font-size="11" fill="#6b7280">System is updated because</text>
+  <text x="22" y="353" font-size="11" fill="#6b7280">of what was learnt: code,</text>
+  <text x="22" y="369" font-size="11" fill="#6b7280">config, runbooks, training,</text>
+  <text x="22" y="385" font-size="11" fill="#6b7280">dependencies, inventory</text>
+  <!-- REVIEW box (bottom-right) -->
+  <rect x="395" y="295" width="295" height="115" rx="6" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+  <text x="407" y="319" font-size="13" fill="#374151" font-weight="bold">Review</text>
+  <text x="407" y="337" font-size="11" fill="#6b7280">Blameless postmortem:</text>
+  <text x="407" y="353" font-size="11" fill="#6b7280">what broke, what held,</text>
+  <text x="407" y="369" font-size="11" fill="#6b7280">how long each step took,</text>
+  <text x="407" y="385" font-size="11" fill="#6b7280">where the team got stuck</text>
+  <!-- Center blue box -->
+  <rect x="215" y="193" width="270" height="60" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="350" y="218" text-anchor="middle" font-size="12" fill="#1d4ed8" font-weight="bold">Keep a black box</text>
+  <text x="350" y="236" text-anchor="middle" font-size="11" fill="#1d4ed8">recording every lap</text>
+  <!-- Clockwise arrows -->
+  <!-- Stress→Respond: horizontal top, y=95 -->
+  <line x1="308" y1="95" x2="390" y2="95" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Respond→Review: vertical right, x=542 -->
+  <line x1="542" y1="155" x2="542" y2="290" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Review→Change: horizontal bottom, y=352 -->
+  <line x1="390" y1="352" x2="310" y2="352" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Change→Stress: vertical left, x=157 -->
+  <line x1="157" y1="290" x2="157" y2="157" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- Dashed connectors from center box to quadrant boxes -->
+  <line x1="215" y1="193" x2="305" y2="153" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="485" y1="193" x2="395" y2="153" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="215" y1="253" x2="305" y2="295" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="485" y1="253" x2="395" y2="295" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="4 3"/>
+  <!-- "stronger each lap" label -->
+  <text x="157" y="228" text-anchor="middle" font-size="10" fill="#9ca3af" font-style="italic">stronger</text>
+  <text x="157" y="242" text-anchor="middle" font-size="10" fill="#9ca3af" font-style="italic">each lap</text>
+</svg>
